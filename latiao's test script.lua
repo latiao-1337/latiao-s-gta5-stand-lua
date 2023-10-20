@@ -1042,6 +1042,7 @@ local ALL_script_hosts = {
     "xml_menus",
     "yoga",
 
+
 }
 
 
@@ -1067,39 +1068,32 @@ function ADD_MP_INDEX(stat)
 end
 
 function STAT_SET_INT(stat, value)
-    print(stat .. "," .. value)
     STATS.STAT_SET_INT(util.joaat(ADD_MP_INDEX(stat)), value, true)
-    print(util.joaat(ADD_MP_INDEX(stat)))
 end
-
 function STAT_SET_BOOL(stat, value)
     STATS.STAT_SET_BOOL(util.joaat(ADD_MP_INDEX(stat)), value, true)
 end
-
 function STAT_SET_STRING(stat, value)
     STATS.STAT_SET_STRING(util.joaat(ADD_MP_INDEX(stat)), value, true)
 end
-
 function STAT_SET_DATE(stat, year, month, day, hour, min)
-    local DatePTR = memory.alloc(8 * 7) -- Thanks for helping memory stuffs, aaronlink127#0127
+    local DatePTR = memory.alloc(8*7) -- Thanks for helping memory stuffs, aaronlink127#0127
     memory.write_int(DatePTR, year)
-    memory.write_int(DatePTR + 8, month)
-    memory.write_int(DatePTR + 16, day)
-    memory.write_int(DatePTR + 24, hour)
-    memory.write_int(DatePTR + 32, min)
-    memory.write_int(DatePTR + 40, 0) -- Seconds
-    memory.write_int(DatePTR + 48, 0) -- Milliseconds
+    memory.write_int(DatePTR+8, month)
+    memory.write_int(DatePTR+16, day)
+    memory.write_int(DatePTR+24, hour)
+    memory.write_int(DatePTR+32, min)
+    memory.write_int(DatePTR+40, 0) -- Seconds
+    memory.write_int(DatePTR+48, 0) -- Milliseconds
     STATS.STAT_SET_DATE(util.joaat(ADD_MP_INDEX(stat)), DatePTR, 7, true)
 end
 
 function STAT_SET_MASKED_INT(stat, value1, value2)
     STATS.STAT_SET_MASKED_INT(util.joaat(ADD_MP_INDEX(stat)), value1, value2, 8, true)
 end
-
 function SET_PACKED_STAT_BOOL_CODE(stat, value)
     STATS.SET_PACKED_STAT_BOOL_CODE(stat, value, util.get_char_slot())
 end
-
 function STAT_INCREMENT(stat, value)
     STATS.STAT_INCREMENT(util.joaat(ADD_MP_INDEX(stat)), value, true)
 end
@@ -1109,13 +1103,11 @@ function STAT_GET_INT(stat)
     STATS.STAT_GET_INT(util.joaat(ADD_MP_INDEX(stat)), IntPTR, -1)
     return memory.read_int(IntPTR)
 end
-
 function STAT_GET_FLOAT(stat)
     local FloatPTR = memory.alloc_int()
     STATS.STAT_GET_FLOAT(util.joaat(ADD_MP_INDEX(stat)), FloatPTR, -1)
     return tonumber(string.format("%.3f", memory.read_float(FloatPTR)))
 end
-
 function STAT_GET_BOOL(stat)
     if STAT_GET_INT(stat) ~= 0 then
         return "true"
@@ -1123,13 +1115,11 @@ function STAT_GET_BOOL(stat)
         return "false"
     end
 end
-
 function STAT_GET_STRING(stat)
     return STATS.STAT_GET_STRING(util.joaat(ADD_MP_INDEX(stat)), -1)
 end
-
 function STAT_GET_DATE(stat, type)
-    local DatePTR = memory.alloc(8 * 7)
+    local DatePTR = memory.alloc(8*7)
     STATS.STAT_GET_DATE(util.joaat(ADD_MP_INDEX(stat)), DatePTR, 7, true)
     local DateTypes = {
         "Years",
@@ -1150,7 +1140,6 @@ end
 function SET_INT_GLOBAL(global, value)
     memory.write_int(memory.script_global(global), value)
 end
-
 function SET_FLOAT_GLOBAL(global, value)
     memory.write_float(memory.script_global(global), value)
 end
@@ -1170,7 +1159,6 @@ function SET_INT_LOCAL(script, script_local, value)
         memory.write_int(memory.script_local(script, script_local), value)
     end
 end
-
 function SET_FLOAT_LOCAL(script, script_local, value)
     if memory.script_local(script, script_local) ~= 0 then
         memory.write_float(memory.script_local(script, script_local), value)
@@ -1189,12 +1177,6 @@ end
 function SET_BIT(bits, place) -- Credit goes to WiriScript
     return (bits | (1 << place))
 end
-
-function SET_GLOBAL_BIT(global, bit)
-    local Addr = memory.script_global(global)
-    memory.write_int(Addr, SET_BIT(memory.read_int(Addr), bit))
-end
-
 function SET_LOCAL_BIT(script, script_local, bit)
     if memory.script_local(script, script_local) ~= 0 then
         local Addr = memory.script_local(script, script_local)
@@ -1202,6 +1184,7 @@ function SET_LOCAL_BIT(script, script_local, bit)
     end
 end
 
+---
 ---
 
 menu.action(menu.my_root(), "restart lua", { "latiaorestartlua" }, "restartlua", function()
@@ -1255,7 +1238,7 @@ end)
 menu.toggle(killaura, "kill_aura_F_Loop", {}, "", function(on)
     kill_aura_F_Loop = on
 end)
-local time = menu.slider(killaura, "time", { "time" }, "", 0,
+local time = menu.slider(killaura, "killauratime", { "killauratime" }, "", 0,
     2147483647, 0, 1,
     function() end)
 
@@ -1315,14 +1298,14 @@ end)
 
 menu.toggle_loop(world, "delallobjects", { "latiaodelallobjects" }, "delallobjects.", function()
     for k, ent in pairs(entities.get_all_objects_as_handles()) do
-        entities.delete_by_handle(ent)
+        entities.delete(ent)
     end
 end)
 
 menu.toggle_loop(world, "delallpeds", { "latiaodelallpeds" }, "delallpeds.", function()
     for k, ent in pairs(entities.get_all_peds_as_handles()) do
         if not entities.is_player_ped(ent) then
-        entities.delete_by_handle(ent)
+            entities.delete(ent)
         end
     end
 end)
@@ -1331,13 +1314,13 @@ end)
 
 menu.toggle_loop(world, "delallvehicles", { "latiaodelallvehicles" }, "delallvehicles.", function()
     for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
-        entities.delete_by_handle(ent)
+        entities.delete(ent)
     end
 end)
 
 menu.toggle_loop(world, "delallpickups", { "latiaodelallvehicles" }, "delallvehicles.", function()
     for k, ent in pairs(entities.get_all_pickups_as_handles()) do
-        entities.delete_by_handle(ent)
+        entities.delete(ent)
     end
 end)
 
@@ -1361,7 +1344,7 @@ menu.action(world, "delall", { "latiaodelall" }, "delall.", function()
     end
 
     for _, target in ipairs(targets) do
-        entities.delete_by_handle(target)
+        entities.delete(target)
         menu.trigger_commands("deleteropes")
     end
 end)
@@ -1412,7 +1395,7 @@ end)
 menu.toggle_loop(world, "remove DEAD(ped)", { "latiaoremoveDEADped" }, ("latiaoremoveDEADped"), function()
     for _, ped in pairs(entities.get_all_peds_as_handles()) do
         if ENTITY.IS_ENTITY_DEAD(ped) then
-            entities.delete_by_handle(ped)
+            entities.delete(ped)
             util.yield()
         end
     end
@@ -1481,8 +1464,8 @@ menu.toggle_loop(world, "silencekillallped", { "latiaosilencekillallped" }, "lat
     for _, ped in entities.get_all_peds_as_handles() do
         if not entities.is_player_ped(ped) then
             local pos = players.get_position(players.user())
-            ENTITY.SET_ENTITY_COORDS(ped, pos.x, pos.y, 2500, false)
-            FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, 2500, 0, 2147483647, false, true, 0.0)
+            ENTITY.SET_ENTITY_COORDS(ped, pos.x, pos.y, pos.z-50, false)
+            FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z-50, 0, 1, false, true, 0.0)
         end
     end
 end)
@@ -1494,6 +1477,8 @@ menu.toggle_loop(world, "tppedto 00", { "latiaotppedto00" }, "latiaotpped00.", f
         end
     end
 end)
+
+
 
 
 menu.toggle_loop(world, "SET_PED_TO_RAGDOLL_WITH_FALL ped", { "latiaoSET_PED_TO_RAGDOLL_WITH_FALL" },
@@ -1579,7 +1564,7 @@ menu.toggle_loop(world, "del cops", { "latiaodelcops" }, "latiaodelcops", functi
                 copsModels
 
             then
-                entities.delete_by_handle(ent)
+                entities.delete(ent)
                 break
             end
         end
@@ -1735,7 +1720,7 @@ menu.action(server, "kick me", { "latiaokickme" }, "latiaokickme.", function()
 end)
 
 menu.toggle_loop(server, "if you host reportall", { "latiaoreportall" }, "reportall.", function()
-    util.yield(100)
+    util.yield(1000)
     if NETWORK.NETWORK_IS_HOST() then
         menu.trigger_command(menu.ref_by_path("Players>All Players>Increment Commend/Report Stats>Cheating or Modding"))
         util.yield()
@@ -1990,7 +1975,7 @@ menu.action(dividends, "RefreshBoards", { "latiaoRefreshBoards" }, "",
     function()
         local Board1 = STAT_GET_INT("H3OPT_BITSET0")
         local Board2 = STAT_GET_INT("H3OPT_BITSET1")
-        STAT_SET_INT("H3OPT_BITSET0",  math.random(2147483647))
+        STAT_SET_INT("H3OPT_BITSET0", math.random(2147483647))
         STAT_SET_INT("H3OPT_BITSET1", math.random(2147483647))
         util.yield_once()
         STAT_SET_INT("H3OPT_BITSET0", Board1)
@@ -2060,7 +2045,7 @@ menu.action(dividends, "del prop_chem_grill_bit", { "latiaodelprop_chem_grill_bi
     function()
         for k, ent in pairs(entities.get_all_objects_as_handles()) do
             if ENTITY.GET_ENTITY_MODEL(ent) == util.joaat("prop_chem_grill_bit") then
-                entities.delete_by_handle(ent)
+                entities.delete(ent)
                 break
             end
         end
@@ -2188,7 +2173,7 @@ local test2 = menu.slider(dividends, "31587 + 69 fm_mission_controlle", { "fm_mi
     2147483647, 0, 1,
     function() end)
 
-    menu.toggle_loop(dividends, "debugfm_mission_controller", { "finfmc" }, "finfm_mission_controller", function()
+menu.toggle_loop(dividends, "debugfm_mission_controller", { "finfmc" }, "finfm_mission_controller", function()
     SET_INT_LOCAL("fm_mission_controller", 28331 + 1, menu.get_value(test1))
     SET_INT_LOCAL("fm_mission_controller", 31587 + 69, menu.get_value(test2))
 end)
@@ -2284,6 +2269,7 @@ local function testMenuSetup(pid)
 
 
 
+
     menu.toggle_loop(testMenu, "weapon_pistol SHOOT", {}, "", function()
         local pos = players.get_position(pid)
         MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 100, true,
@@ -2369,7 +2355,7 @@ local function testMenuSetup(pid)
 
 
 
-    menu.toggle_loop(testMenu, "bad TASK_VEHICLE_HELI_PROTECT crash", { "latiaobadSET_MODEL_AS_NO_LONGER_NEEDEDcrash" },
+    menu.action(testMenu, "bad TASK_VEHICLE_HELI_PROTECT crash", { "latiaobadSET_MODEL_AS_NO_LONGER_NEEDEDcrash" },
         "", function()
             util.request_model(util.joaat("oppressor"))
             util.request_model(util.joaat("u_m_m_jesus_01"))
@@ -2380,13 +2366,12 @@ local function testMenuSetup(pid)
             PED.SET_PED_INTO_VEHICLE(jesus, oppressor, -1)
             TASK.TASK_VEHICLE_HELI_PROTECT(jesus, oppressor, ped, 10.0, 0, 10, 0, 0)
             util.yield(100)
-            entities.delete_by_handle(jesus)
-            if not players.exists(pid) then util.stop_thread() end
+            entities.delete(jesus)
         end)
 
 
 
-    menu.toggle_loop(testMenu, "bad BREAK_OBJECT_FRAGMENT_CHILD crash", { "latiaobadBBREAK_OBJECT_FRAGMENT_CHILDcrash" },
+    menu.action(testMenu, "bad BREAK_OBJECT_FRAGMENT_CHILD crash", { "latiaobadBBREAK_OBJECT_FRAGMENT_CHILDcrash" },
         "",
         function()
             local pos = players.get_position(pid)
@@ -2394,7 +2379,7 @@ local function testMenuSetup(pid)
             local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"), pos)
             OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
             util.yield(100)
-            entities.delete_by_handle(object)
+            entities.delete(object)
             if not players.exists(pid) then util.stop_thread() end
         end)
 
@@ -2406,25 +2391,27 @@ local function testMenuSetup(pid)
             ENTITY.SET_ENTITY_COORDS_NO_OFFSET(object, pos, false, true, true)
 
             util.yield(100)
-            entities.delete_by_handle(object)
+            entities.delete(object)
             if not players.exists(pid) then util.stop_thread() end
         end)
+
 
     menu.action(testMenu, "bad GIVE_WEAPON_TO_PED dead crash", {}, "", function()
         local ped = util.joaat('cs_manuel')
         STREAMING.REQUEST_MODEL(ped)
         local pos = players.get_position(pid)
-        createped = entities.create_ped(26, ped, pos, 0)
+        local createped = entities.create_ped(26, ped, pos, 0)
         WEAPON.GIVE_WEAPON_TO_PED(createped, util.joaat('WEAPON_HOMINGLAUNCHER'), 100, true, true)
         util.yield(1000)
         FIRE.ADD_EXPLOSION(pos, 0, 100.0, false, true, 100.0)
     end)
 
-
     menu.toggle_loop(testMenu, "freemode script crash kick", { "latiaoscriptkick" }, "", function()
         util.trigger_script_event(1 << pid, { -1544003568 })
         if not players.exists(pid) then util.stop_thread() end
     end)
+
+
 
 
     menu.action(testMenu, "NETWORK_SESSION_KICK_PLAYER", { "latiaoNETWORK_SESSION_KICK_PLAYER" }, "", function()
@@ -2448,7 +2435,7 @@ local function testMenuSetup(pid)
     menu.action(testMenu, "del tun", { "" }, "", function()
         for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
             if ENTITY.GET_ENTITY_MODEL(ent) == util.joaat("tug") then
-                entities.delete_by_handle(ent)
+                entities.delete(ent)
             end
         end
     end)
@@ -2552,17 +2539,22 @@ local function testMenuSetup(pid)
         FIRE.ADD_EXPLOSION(pos, 12, 2147483647, true, false, 2147483647.0)
         if not players.exists(pid) then util.stop_thread() end
     end)
-    menu.toggle_loop(testMenu, "stand no check EXPLOSION loop", { "latiaoFlameLoop" }, "", function()
+    menu.toggle_loop(testMenu, "loop tp objects", { "" }, "", function()
         local pos = players.get_position(pid)
-        FIRE.ADD_EXPLOSION(pos, 0, 100.0, true, false, 100.0)
-        if not players.exists(pid) then util.stop_thread() end
-        util.yield(500)
+        for _, target in ipairs(entities.get_all_objects_as_handles()) do
+            ENTITY.SET_ENTITY_COORDS(target, pos.x, pos.y, pos.z, false)
+        end
     end)
-    menu.toggle_loop(testMenu, "stand no check Flame loop", { "latiaoFlameLoop" }, "", function()
+    menu.toggle_loop(testMenu, "loop tp", { "" }, "", function()
         local pos = players.get_position(pid)
-        FIRE.ADD_EXPLOSION(pos, 12, 100.0, true, false, 100.0)
+        ENTITY.SET_ENTITY_COORDS(players.user_ped(), pos.x, pos.y, pos.z, false)
+    end)
+
+    menu.toggle_loop(testMenu, "bounty script spamm", { "latiaoscriptbountyspamm" }, "", function()
+        util.trigger_script_event(1 << pid,
+            { 1517551547, pid, pid, 0, math.random(-2147483647, 2147483647), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                -1, -1 })
         if not players.exists(pid) then util.stop_thread() end
-        util.yield(500)
     end)
 end
 
@@ -2617,7 +2609,7 @@ menu.toggle_loop(test, "debugshot", { "latiaodebugshot" }, ("latiaobadpost"), fu
         local handle = memory.read_int(outptr)
         aim_info.hash = ENTITY.GET_ENTITY_MODEL(handle)
         aim_info.model = util.reverse_joaat(aim_info.hash)
-        aim_info.health = ENTITY.GET_ENTITY_HEALTH(handle)
+        aim_info.health = entities.get_health(handle)
         aim_info.OWNER = PLAYER.GET_PLAYER_NAME(entities.get_owner(handle))
         local text = "hash=" ..
             aim_info.hash ..
@@ -2645,7 +2637,7 @@ menu.toggle_loop(world, "del cctv_cam(pls use in solo if bug)", { "" }, "", func
     for _, ent in pairs(entities.get_all_objects_as_handles()) do
         for _, targetModelHash in pairs(Models) do
             if ENTITY.GET_ENTITY_MODEL(ent) == targetModelHash then
-                entities.delete_by_handle(ent)
+                entities.delete(ent)
                 util.yield()
                 break
             end
@@ -3046,7 +3038,7 @@ menu.toggle_loop(server, "nodamage EXPLOSION spamm", { "latiaobedsoundforall" },
 end)
 
 
-menu.action(about, "github:latiao-owo", { "" }, "", function()
+menu.action(about, "github:latiao-1337", { "" }, "", function()
 
 end)
 
@@ -3108,6 +3100,81 @@ menu.action(world, "LOAD_ALL_OBJECTS_NOW", { "LOAD_ALL_OBJECTS_NOW" }, "LOAD_ALL
 end)
 menu.action(dividends, "CREATE_VEHICLE polmav", { "" }, "", function()
     util.request_model(util.joaat("polmav"))
-    local pos = v3.new(579,12,103)
-    entities.create_vehicle(util.joaat("polmav"),pos,0)
+    local pos = v3.new(579, 12, 103)
+    entities.create_vehicle(util.joaat("polmav"), pos, 0)
+end)
+
+menu.toggle_loop(test, "FIX_OBJECT_FRAGMENT all", { "latiaobadBBREAK_OBJECT_FRAGMENT_CHILDcrash" },
+    "",
+    function()
+        for _, ent in pairs(entities.get_all_objects_as_handles()) do
+            OBJECT.FIX_OBJECT_FRAGMENT(ent)
+        end
+    end)
+menu.toggle_loop(test, "BREAK_OBJECT_FRAGMENT_CHILD all", { "latiaobadBBREAK_OBJECT_FRAGMENT_CHILDcrash" },
+    "",
+    function()
+        for _, ent in pairs(entities.get_all_objects_as_handles()) do
+            OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(ent, 0, false)
+        end
+    end)
+menu.toggle_loop(test, "print all ob", { "printallob" },
+    "",
+    function()
+        for _, ent in pairs(entities.get_all_objects_as_handles()) do
+        end
+    end)
+
+menu.toggle_loop(server, "bounty script spamm for all", { "latiaobounty script spammforall" }, "", function()
+    for k, pid in pairs(players.list()) do
+        if pid == players.user() then
+            goto out
+        end
+        util.trigger_script_event(1 << pid,
+            { 1517551547, pid, pid, 0, math.random(-2147483647, 2147483647), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                -1, -1 })
+        ::out::
+    end
+end)
+
+
+
+menu.action(server, "latiaoALL_script_hosts_test host test", { "latiaoALL_script_hosts_test" },
+    "latiaoALL_script_hosts_test.", function()
+        for _, script in ipairs(ALL_script_hosts) do
+            local host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, 0, 0)
+            local host2 = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, -1, 0)
+
+            if host ~= -1 then
+                local name = PLAYER.GET_PLAYER_NAME(host)
+                print(script .. ",0,0=" .. name)
+            end
+
+            if host2 ~= -1 then
+                local name = PLAYER.GET_PLAYER_NAME(host2)
+                print(script .. ",-1,0=" .. name)
+            end
+        end
+    end)
+
+
+menu.toggle_loop(server, "auto super request_script_host for all ", { "autorequest_script_hostall" },
+    "autorequest_script_hostall.", function()
+        for _, script in ipairs(ALL_script_hosts) do
+            local host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, 0, 0)
+            local host2 = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, -1, 0)
+            if host ~= -1 and not (host == players.user()) then
+                util.request_script_host(script)
+            end
+            if host2 ~= -1 and not (host2 == players.user()) then
+                util.request_script_host(script)
+            end
+        end
+    end)
+menu.action(world, "TASK_SET_BLOCKING_OF_NON_TEMPORARY_EVENTS", { "latiaoTASK_SET_BLOCKING_OF_NON_TEMPORARY_EVENTS" }, ("kickpedvehicle"), function()
+    for _, ped in pairs(entities.get_all_peds_as_handles()) do
+        if not entities.is_player_ped(ped) then
+            TASK.TASK_SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, true)
+        end
+    end
 end)
