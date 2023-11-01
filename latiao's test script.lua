@@ -746,7 +746,7 @@ menu.toggle_loop(server, "LOVEkick + report all moder", {"latiaocrashkickmod"}, 
     end
 end)
 
-menu.toggle_loop(server, "LOVEkick all moder", {"latiaocrashkickmod"}, "crash and kickmod.", function()
+menu.toggle_loop(server, "LOVEkick all moder", {""}, ".", function()
     for k, pid in pairs(players.list()) do
         if pid == players.get_host() or pid == players.user() then
             goto out
@@ -908,9 +908,29 @@ menu.toggle_loop(server, "REQUES_ENTITY ped", {"latiaoREQUES_ENTITYped"}, "latia
     end
 end)
 
+menu.toggle_loop(server, "REQUES_ENTITY ped2", {"latiaoREQUES_ENTITYped"}, "latiaoREQUES_ENTITYped.", function()
+    for _, target in ipairs(entities.get_all_peds_as_handles()) do
+        local owner = entities.get_owner(target)
+        if owner ~= players.user() then
+            NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
+        end
+    end
+
+end)
+
 menu.toggle_loop(server, "REQUES_ENTITY objects", {"latiaoREQUES_ENTITYobjects"}, "REQUES_ENTITYobjects.", function()
     for _, target in ipairs(entities.get_all_objects_as_handles()) do
         NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
+    end
+end)
+
+menu.toggle_loop(server, "REQUES_ENTITY objects2", {"latiaoREQUES_ENTITYobjects"}, "REQUES_ENTITYobjects.", function()
+    for _, target in ipairs(entities.get_all_objects_as_handles()) do
+        local owner = entities.get_owner(target)
+        if owner ~= players.user() then
+            print(target)
+            NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
+        end
     end
 end)
 
@@ -919,6 +939,15 @@ menu.toggle_loop(server, "REQUES_ENTITY vehicles", {"latiaoREQUES_ENTITYvehicles
         NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
     end
 end)
+menu.toggle_loop(server, "REQUES_ENTITY vehicles2", {"latiaoREQUES_ENTITYvehicles"}, "REQUES_ENTITYvehicles.",
+    function()
+        for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
+            local owner = entities.get_owner(target)
+            if owner ~= players.user() then
+                NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
+            end
+        end
+    end)
 
 menu.toggle_loop(server, "REQUES_ENTITY vehicles no player", {""}, ".", function()
     for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
@@ -932,10 +961,85 @@ menu.toggle_loop(server, "REQUES_ENTITY vehicles no player", {""}, ".", function
     end
     ::out::
 end)
+
+menu.toggle_loop(server, "REQUES_ENTITY vehicles no player2", {""}, ".", function()
+    for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
+        for k, pid in pairs(players.list()) do
+            local v1 = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), true)
+            if target == v1 then
+                goto out
+            end
+            local owner = entities.get_owner(target)
+            if owner ~= players.user() then
+                NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
+            end
+        end
+    end
+    ::out::
+end)
 menu.toggle_loop(server, "REQUES_ENTITY pickups", {""}, "", function()
     for k, target in pairs(entities.get_all_pickups_as_handles()) do
         NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
     end
+end)
+menu.toggle_loop(server, "REQUES_ENTITY pickups2", {""}, "", function()
+    for k, target in pairs(entities.get_all_pickups_as_handles()) do
+        local owner = entities.get_owner(target)
+        if owner ~= players.user() then
+            NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
+        end
+    end
+end)
+menu.action(server, "REQUES_ENTITY all", {"latiaoREQUES_ENTITYall"}, "latiaoREQUES_ENTITYall.", function()
+    local targets = {}
+
+    for _, ped in ipairs(entities.get_all_peds_as_handles()) do
+        table.insert(targets, ped)
+    end
+
+    for _, vehicle in ipairs(entities.get_all_vehicles_as_handles()) do
+        table.insert(targets, vehicle)
+    end
+
+    for _, object in ipairs(entities.get_all_objects_as_handles()) do
+        table.insert(targets, object)
+    end
+
+    for _, pickups in ipairs(entities.get_all_pickups_as_handles()) do
+        table.insert(targets, pickups)
+    end
+    for _, target in ipairs(targets) do
+        NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
+    end
+
+end)
+
+menu.action(server, "REQUES_ENTITY all2", {"latiaoREQUES_ENTITYall"}, "latiaoREQUES_ENTITYall.", function()
+    local targets = {}
+
+    for _, ped in ipairs(entities.get_all_peds_as_handles()) do
+        table.insert(targets, ped)
+    end
+
+    for _, vehicle in ipairs(entities.get_all_vehicles_as_handles()) do
+        table.insert(targets, vehicle)
+    end
+
+    for _, object in ipairs(entities.get_all_objects_as_handles()) do
+        table.insert(targets, object)
+    end
+
+    for _, pickups in ipairs(entities.get_all_pickups_as_handles()) do
+        table.insert(targets, pickups)
+    end
+    for _, target in ipairs(targets) do
+        local owner = entities.get_owner(target)
+        if owner ~= players.user() then
+            NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
+            print(target)
+        end
+    end
+
 end)
 
 menu.action(test, "NETWORK_SESSION_END", {"latiaoNETWORK_SESSION_END"}, "NETWORK_SESSION_END.", function()
@@ -1080,16 +1184,15 @@ menu.toggle_loop(dividends, "Doomsday all (you host)", {"latiaoDoomsdayallyouhos
         SET_INT_GLOBAL(1967630 + 812 + 50 + 4, menu.get_value(Doomsday))
     end)
 
-menu.action(dividends, "unclock Perico Points", {}, "", function()
+
+
+menu.action(dividends, "load Perico", {}, "", function()
     STAT_SET_INT("H4CNF_BS_ENTR", -1)
     STAT_SET_INT("H4CNF_BS_GEN", -1)
-end)
-
-menu.action(dividends, "reset Perico", {}, "", function()
-    STAT_SET_INT("H4_MISSIONS", 0)
-end)
-menu.action(dividends, "load Perico", {}, "", function()
+    STAT_SET_INT("H4CNF_BS_ABIL", -1)
+    STAT_SET_INT("H4CNF_APPROACH", -1)
     STAT_SET_INT("H4_MISSIONS", -1)
+
 end)
 
 local Perico = menu.slider(dividends, "Perico", {"Perico"}, "2550000", -2147483647, 2147483647, 100, 5, function()
@@ -1238,9 +1341,9 @@ end)
 
 menu.action(server, "if you host block ad bot join", {}, "", function()
     if NETWORK.NETWORK_IS_HOST() then
-        menu.trigger_commands("Online>Session>Block Joins>From Known Advertisers on")
+        menu.trigger_command(menu.ref_by_path("Online>Session>Block Joins>From Known Advertisers" .. "on"))
     else
-        menu.trigger_commands("Online>Session>Block Joins>From Known Advertisers on")
+        menu.trigger_command(menu.ref_by_path("Online>Session>Block Joins>From Known Advertisers" .. "off"))
     end
 end)
 
@@ -1271,8 +1374,15 @@ local function testMenuSetup(pid)
         menu.trigger_commands("loveletterkick" .. player)
     end)
 
+    menu.toggle_loop(testMenu, "CLEAR_PED_TASKS_IMMEDIATELY", {}, "", function()
+        local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+        TASK.CLEAR_PED_TASKS_IMMEDIATELY(playerped)
+    end)
+
     menu.toggle_loop(testMenu, "super kill cheat", {}, "", function()
         local pos = v3.new(players.get_position(pid))
+        local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+        TASK.CLEAR_PED_TASKS_IMMEDIATELY(playerped)
         util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
         menu.trigger_commands("kill" .. players.get_name(pid))
         FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
@@ -1283,6 +1393,8 @@ local function testMenuSetup(pid)
 
     menu.toggle_loop(testMenu, "super nick kill cheat", {}, "", function()
         local pos = v3.new(players.get_position(pid))
+        local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+        TASK.CLEAR_PED_TASKS_IMMEDIATELY(playerped)
         util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
         FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
         if not players.exists(pid) then
@@ -1290,9 +1402,11 @@ local function testMenuSetup(pid)
         end
     end)
     menu.toggle_loop(testMenu, "Super RandomPlayerEXPLOSION kill cheat", {"latiaoRandomPlayerEXPLOSION"}, "", function()
-        local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.list()[math.random(1, #players.list())])
+        local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(math.random(0, 32))
 
         local pos = players.get_position(pid)
+        local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+        TASK.CLEAR_PED_TASKS_IMMEDIATELY(playerped)
         util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
         FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
         if not players.exists(pid) then
@@ -1302,6 +1416,8 @@ local function testMenuSetup(pid)
     menu.toggle_loop(testMenu, "super weapon_stungun cheat", {}, "", function()
         util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
         local pos = players.get_position(pid)
+        local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+        -- TASK.CLEAR_PED_TASKS_IMMEDIATELY(playerped)
         MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 0, true,
             util.joaat("weapon_stungun"), players.user_ped(), false, true, 2147483647)
         if not players.exists(pid) then
@@ -1525,7 +1641,7 @@ local function testMenuSetup(pid)
     end)
 
     menu.toggle_loop(testMenu, "bad SOUND script_event", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
-        util.yield(50)
+        util.yield(1500)
         util.trigger_script_event(1 << pid, {-642704387, pid, 782258655, 0, 0, 0, 0, 0, 0, 0, pid, 0, 0, 0})
         if not players.exists(pid) then
             util.stop_thread()
@@ -1533,7 +1649,7 @@ local function testMenuSetup(pid)
     end)
 
     menu.toggle_loop(testMenu, "info spamm", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
-        util.yield(50)
+        util.yield(1500)
 
         util.trigger_script_event(1 << pid,
             {-642704387, pid, 782258655, 0, 0, 0, 0, 0, 0, 0, math.random(0, 32), 0, 0, 0})
@@ -1621,6 +1737,22 @@ local function testMenuSetup(pid)
             ENTITY.SET_ENTITY_COORDS(target, pos.x, pos.y, pos.z, false)
         end
     end)
+    menu.toggle_loop(testMenu, "loop tp peds", {""}, "", function()
+        local pos = players.get_position(pid)
+        for _, target in ipairs(entities.get_all_peds_as_handles()) do
+            if not entities.is_player_ped(target) then
+                ENTITY.SET_ENTITY_COORDS(target, pos.x, pos.y, pos.z, false)
+            end
+        end
+    end)
+    menu.toggle_loop(testMenu, "loop tp vehicles", {""}, "", function()
+        local pos = players.get_position(pid)
+        for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
+
+            ENTITY.SET_ENTITY_COORDS(target, pos.x, pos.y, pos.z, false)
+
+        end
+    end)
     menu.toggle_loop(testMenu, "loop tp", {""}, "", function()
         local pos = players.get_position(pid)
         ENTITY.SET_ENTITY_COORDS(players.user_ped(), pos.x, pos.y, pos.z, false)
@@ -1663,9 +1795,11 @@ menu.toggle_loop(test, "debugshot", {"latiaodebugshot"}, ("latiaobadpost"), func
         aim_info.health = entities.get_health(handle)
         aim_info.OWNER = entities.get_owner(handle)
         aim_info.OWNERName = PLAYER.GET_PLAYER_NAME(entities.get_owner(handle))
+        aim_info.ISNETWORKED = NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(handle)
         local text = "Hash=" .. aim_info.hash .. "," .. "Model=" .. aim_info.model .. "," .. "Health=" ..
                          aim_info.health .. "," .. "Owner=" .. aim_info.OWNER .. "," .. "OwnerName=" ..
-                         aim_info.OWNERName
+                         aim_info.OWNERName .. "," .. "NETWORKED=" .. aim_info.ISNETWORKED
+
         directx.draw_text(0.5, 0.25, text, 5, 0.5, {
             r = 255,
             g = 0,
@@ -1837,7 +1971,7 @@ menu.toggle_loop(test, "REFRESH_INTERIOR", {""}, "", function()
 end)
 
 menu.toggle_loop(test, "CLEAR_AREA", {""}, "", function()
-    MISC.CLEAR_AREA(0, 0, 0, 2147483647)
+    MISC.CLEAR_AREA(0, 0, 0, 2147483647, false, false, false, false)
 end)
 
 menu.toggle_loop(test, "CLEAR_AREA_OF_OBJECTS", {""}, "", function()
@@ -1880,7 +2014,7 @@ end)
 menu.toggle_loop(server, "bad SOUNDscript_event", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
     for k, pid in pairs(players.list()) do
         util.trigger_script_event(1 << pid, {-642704387, pid, 782258655, 0, 0, 0, 0, 0, 0, 0, pid, 0, 0, 0})
-        util.yield(50)
+        util.yield(1500)
     end
 end)
 
@@ -1888,7 +2022,7 @@ menu.toggle_loop(server, "info spamm", {"latiaobedsoundforall"}, "latiaobedsound
     for k, pid in pairs(players.list()) do
         util.trigger_script_event(1 << pid,
             {-642704387, pid, 782258655, 0, 0, 0, 0, 0, 0, 0, math.random(0, 32), 0, 0, 0})
-        util.yield(50)
+        util.yield(1500)
     end
 end)
 
@@ -1941,29 +2075,7 @@ menu.toggle_loop(world, "NOISE SET 0 FOR ALL PLAYER", {}, "", function()
     end
 end)
 
-menu.toggle_loop(world, "NETWORK_REGISTER_ENTITY_AS_NETWORKED", {""}, "", function()
-    local targets = {}
 
-    for _, ped in ipairs(entities.get_all_peds_as_handles()) do
-        table.insert(targets, ped)
-    end
-
-    for _, vehicle in ipairs(entities.get_all_vehicles_as_handles()) do
-        table.insert(targets, vehicle)
-    end
-
-    for _, object in ipairs(entities.get_all_objects_as_handles()) do
-        table.insert(targets, object)
-    end
-
-    for _, pickups in ipairs(entities.get_all_pickups_as_handles()) do
-        table.insert(targets, pickups)
-    end
-
-    for _, target in ipairs(targets) do
-        NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED(target)
-    end
-end)
 
 menu.toggle_loop(self, "SET_ENTITY_MAX_HEALTH 0", {""}, ".", function()
     ENTITY.SET_ENTITY_MAX_HEALTH(players.user_ped(), 0)
@@ -2057,6 +2169,10 @@ menu.action(test, "START_SCRIPTscript all", {""}, "", function()
     end
 end)
 
+menu.action(test, "START_SCRIPTscript freemode", {""}, "", function()
+    START_SCRIPT("freemode")
+end)
+
 menu.toggle_loop(self, "SET_PLAYER_LOCKON_RANGE_OVERRIDE", {"SET_PLAYER_LOCKON_RANGE_OVERRIDE"}, "", function()
     for k, pid in pairs(players.list()) do
         PLAYER.SET_PLAYER_LOCKON_RANGE_OVERRIDE(pid, 100000000)
@@ -2090,10 +2206,17 @@ end)
 menu.action(world, "LOAD_ALL_OBJECTS_NOW", {"LOAD_ALL_OBJECTS_NOW"}, "LOAD_ALL_OBJECTS_NOW", function()
     STREAMING.LOAD_ALL_OBJECTS_NOW()
 end)
+
 menu.action(dividends, "CREATE_VEHICLE polmav", {""}, "", function()
     util.request_model(util.joaat("polmav"))
     local pos = v3.new(579, 12, 103)
     entities.create_vehicle(util.joaat("polmav"), pos, 0)
+end)
+
+menu.action(dividends, "CREATE_VEHICLE asterope", {""}, "", function()
+    util.request_model(util.joaat("asterope"))
+    local pos = v3.new(905, -37, 78)
+    entities.create_vehicle(util.joaat("asterope"), pos, 0)
 end)
 
 menu.toggle_loop(test, "FIX_OBJECT_FRAGMENT all", {"latiaobadBBREAK_OBJECT_FRAGMENT_CHILDcrash"}, "", function()
@@ -2160,4 +2283,20 @@ menu.action(world, "TASK_SET_BLOCKING_OF_NON_TEMPORARY_EVENTS", {"latiaoTASK_SET
                 TASK.TASK_SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, true)
             end
         end
+    end)
+
+menu.action(test, "NETWORK_SESSION_HOST", {"NETWORK_SESSION_HOST"}, ("NETWORK_SESSION_HOST"), function()
+    NETWORK.NETWORK_SESSION_HOST(0, 100, false)
+end)
+menu.action(test, "NETWORK_SESSION_HOST_SINGLE_PLAYER", {"NETWORK_SESSION_HOST_SINGLE_PLAYER"},
+    ("NETWORK_SESSION_HOST_SINGLE_PLAYER"), function()
+        NETWORK.NETWORK_SESSION_HOST_SINGLE_PLAYER(2)
+    end)
+menu.action(test, "NETWORK_QUIT_MP_TO_DESKTOP", {"NETWORK_QUIT_MP_TO_DESKTOP"}, ("NETWORK_QUIT_MP_TO_DESKTOP"),
+    function()
+        NETWORK.NETWORK_QUIT_MP_TO_DESKTOP()
+    end)
+menu.action(test, "SET_WARNING_MESSAGE_WITH_HEADER", {"SET_WARNING_MESSAGE_WITH_HEADER"},
+    ("SET_WARNING_MESSAGE_WITH_HEADER"), function()
+        STATS.PLAYSTATS_BAN_ALERT(1)
     end)
