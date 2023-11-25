@@ -400,7 +400,10 @@ kill_aura_through_walls = false
 kill_aura_explosion = false
 kill_aura_nick_explosion = false
 kill_aura_F_Loop = false
-IS_ENTITY_DEAD = false
+killaura_random_player = false
+
+killaura_random_player_explosion = false
+
 menu.toggle(killaura, "kill_aura_peds", {}, "", function(on)
     kill_aura_peds = on
 end)
@@ -420,12 +423,19 @@ end)
 menu.toggle(killaura, "killaura_explosion", {}, "", function(on)
     kill_aura_explosion = on
 end)
+
 menu.toggle(killaura, "killaura_nick_explosion", {}, "", function(on)
     kill_aura_nick_explosion = on
 end)
+
 menu.toggle(killaura, "kill_aura_fire_Loop", {}, "", function(on)
     kill_aura_fire_Loop = on
 end)
+
+menu.toggle(killaura, "killaura_random_player", {}, "", function(on)
+    killaura_random_player = on
+end)
+
 menu.toggle(killaura, "killaura_random_player_explosion", {}, "", function(on)
     killaura_random_player_explosion = on
 end)
@@ -436,44 +446,33 @@ end)
 menu.toggle_loop(killaura, "killaura all", {"latiaokillaura"}, ("SHOOT ALL"), function()
     if kill_aura_peds or kill_aura_player or kill_aura_in_vehicle then
         for _, ped in pairs(entities.get_all_peds_as_handles()) do
-            if ENTITY.IS_ENTITY_DEAD(ped) or players.user_ped() == ped or
+            local list = players.list()
+            local index = math.random(#list)
+            local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(list[index])
 
+            if not (ENTITY.IS_ENTITY_DEAD(ped) or players.user_ped() == ped or
                 (PED.IS_PED_IN_ANY_VEHICLE(ped, false) and not kill_aura_in_vehicle) or
                 (entities.is_player_ped(ped) == false and not kill_aura_peds) or
                 (entities.is_player_ped(ped) == true and not kill_aura_player) or
-
-                (not ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(players.user_ped(), ped, 17) and not kill_aura_through_walls) then
-                goto continue
-            end
-
-            local pos = v3.new(ENTITY.GET_ENTITY_COORDS(ped))
-            if kill_aura_fire_Loop then
-                FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 12, 2147483647, false, true, 0.0)
-            else
-                if kill_aura_nick_explosion then
+                (not ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(players.user_ped(), ped, 17) and not kill_aura_through_walls)) then
+                local pos = v3.new(ENTITY.GET_ENTITY_COORDS(ped))
+                if kill_aura_fire_Loop then
+                    FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 12, 2147483647, false, true, 0.0)
+                elseif kill_aura_nick_explosion then
                     FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
+                elseif kill_aura_explosion then
+                    FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
+                elseif killaura_random_player_explosion then
+                    FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
+                elseif killaura_random_player then
+                    MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z, 2147483647,
+                        true, util.joaat("weapon_pistol"), randomPid, false, true, 1)
                 else
-                    if kill_aura_explosion then
-                        FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, 2147483647, false, true,
-                            0.0)
-                    else
-                        if killaura_random_player_explosion then
-                            local list = players.list()
-                            local index = math.random(#list)
-                            local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(list[index])
-                            FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
-
-                        else
-
-                            MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z,
-                                2147483647, true, util.joaat("weapon_pistol"), players.user_ped(), false, true, 1)
-                            util.yield(menu.get_value(time))
-                        end
-                    end
-
+                    MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z, 2147483647,
+                        true, util.joaat("weapon_pistol"), players.user_ped(), false, true, 1)
+                    util.yield(menu.get_value(time))
                 end
             end
-            ::continue::
         end
     end
 end)
@@ -1937,6 +1936,7 @@ menu.toggle_loop(test, "debugshot", {"latiaodebugshot"}, ("latiaobadpost"), func
     local aim_info = {
         handle = 0
     }
+    local last_text = ""
     if PLAYER.GET_ENTITY_PLAYER_IS_FREE_AIMING_AT(players.user(), outptr) then
         local handle = memory.read_int(outptr)
         aim_info.hash = ENTITY.GET_ENTITY_MODEL(handle)
@@ -1957,8 +1957,12 @@ menu.toggle_loop(test, "debugshot", {"latiaodebugshot"}, ("latiaobadpost"), func
             b = 0,
             a = 255
         }, true)
-        print(text)
+        if text ~= last_text then
+            print(text)
+            last_text = text
+        end
     end
+
 end)
 
 menu.toggle_loop(world, "del cctv_cam(pls use in solo if bug)", {""}, "", function()
@@ -2769,4 +2773,9 @@ menu.toggle_loop(world, "print random pid ", {""}, "", function()
     local index = math.random(#list)
     print(list[index])
 
+end)
+menu.action(server, "test players.dispatch_on_join()", {""}, "", function()
+    for k, pid in pairs(players.list()) do
+        players.send_sms(pid, "hi")
+    end
 end)
