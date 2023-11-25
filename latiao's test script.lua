@@ -423,9 +423,13 @@ end)
 menu.toggle(killaura, "killaura_nick_explosion", {}, "", function(on)
     kill_aura_nick_explosion = on
 end)
-menu.toggle(killaura, "kill_aura_F_Loop", {}, "", function(on)
-    kill_aura_F_Loop = on
+menu.toggle(killaura, "kill_aura_fire_Loop", {}, "", function(on)
+    kill_aura_fire_Loop = on
 end)
+menu.toggle(killaura, "killaura_random_player_explosion", {}, "", function(on)
+    killaura_random_player_explosion = on
+end)
+
 local time = menu.slider(killaura, "killauratime", {"killauratime"}, "", 0, 2147483647, 0, 1, function()
 end)
 
@@ -443,7 +447,7 @@ menu.toggle_loop(killaura, "killaura all", {"latiaokillaura"}, ("SHOOT ALL"), fu
             end
 
             local pos = v3.new(ENTITY.GET_ENTITY_COORDS(ped))
-            if kill_aura_F_Loop then
+            if kill_aura_fire_Loop then
                 FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 12, 2147483647, false, true, 0.0)
             else
                 if kill_aura_nick_explosion then
@@ -453,10 +457,20 @@ menu.toggle_loop(killaura, "killaura all", {"latiaokillaura"}, ("SHOOT ALL"), fu
                         FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, 2147483647, false, true,
                             0.0)
                     else
-                        MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z,
-                            2147483647, true, util.joaat("weapon_pistol"), players.user_ped(), false, true, 1)
-                        util.yield(menu.get_value(time))
+                        if killaura_random_player_explosion then
+                            local list = players.list()
+                            local index = math.random(#list)
+                            local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(list[index])
+                            FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
+
+                        else
+
+                            MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z,
+                                2147483647, true, util.joaat("weapon_pistol"), players.user_ped(), false, true, 1)
+                            util.yield(menu.get_value(time))
+                        end
                     end
+
                 end
             end
             ::continue::
@@ -482,24 +496,6 @@ menu.toggle_loop(world, "delallpeds", {"latiaodelallpeds"}, "delallpeds.", funct
         if not entities.is_player_ped(ent) then
             entities.delete(ent)
         end
-    end
-end)
-
-menu.toggle_loop(world, "unlock", {"latiaodelallvehicles"}, "delallvehicles.", function()
-    for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
-        VEHICLE.SET_VEHICLE_DOORS_LOCKED(ent, 0)
-    end
-end)
-
-menu.toggle_loop(world, "unlock1", {"latiaodelallvehicles"}, "delallvehicles.", function()
-    for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
-        VEHICLE.SET_VEHICLE_DOORS_LOCKED(ent, 1)
-    end
-end)
-
-menu.toggle_loop(world, "lock", {"latiaodelallvehicles"}, "delallvehicles.", function()
-    for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
-        VEHICLE.SET_VEHICLE_DOORS_LOCKED(ent, 2)
     end
 end)
 
@@ -570,6 +566,16 @@ menu.toggle_loop(world, "kick ped to vehicle", {"latiaokickpedvehicle"}, ("kickp
         if not entities.is_player_ped(ped) then
             if PED.IS_PED_IN_ANY_VEHICLE(ped, false) then
                 TASK.CLEAR_PED_TASKS_IMMEDIATELY(ped)
+            end
+        end
+    end
+end)
+
+menu.toggle_loop(world, "TASK_LEAVE_VEHICLE to ped", {""}, (""), function()
+    for _, ped in pairs(entities.get_all_peds_as_handles()) do
+        if not entities.is_player_ped(ped) then
+            if PED.IS_PED_IN_ANY_VEHICLE(ped, false) then
+                TASK.TASK_LEAVE_VEHICLE(ped, -1, 0)
             end
         end
     end
@@ -892,7 +898,11 @@ end)
 
 menu.toggle_loop(server, "RandomPlayerEXPLOSION", {"latiaoRandomPlayerEXPLOSION"}, "", function()
     for k, pid in pairs(players.list()) do
-        local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.list()[math.random(1, #players.list())])
+        local list = players.list()
+        local index = math.random(#list)
+
+        local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(list[index])
+
         local pos = v3.new(players.get_position(pid))
         FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
     end
@@ -1437,12 +1447,6 @@ local function testMenuSetup(pid)
         TASK.CLEAR_PED_TASKS_IMMEDIATELY(playerped)
     end)
 
-    menu.toggle_loop(testMenu, "kick vehicles", {"latiaokickvehicles"}, "latiaokickvehicles.", function()
-        util.trigger_script_event(1 << pid, {-2066493927, 1, 0, 1945620185100, 0, 0})
-        if not players.exists(pid) then
-            util.stop_thread()
-        end
-    end)
     menu.toggle_loop(testMenu, "super kill cheat", {}, "", function()
         local pos = v3.new(players.get_position(pid))
         local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
@@ -1466,7 +1470,10 @@ local function testMenuSetup(pid)
         end
     end)
     menu.toggle_loop(testMenu, "Super RandomPlayerEXPLOSION kill cheat", {"latiaoRandomPlayerEXPLOSION"}, "", function()
-        local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(math.random(0, 32))
+        local list = players.list()
+        local index = math.random(#list)
+
+        local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(list[index])
 
         local pos = players.get_position(pid)
         local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
@@ -1573,7 +1580,10 @@ local function testMenuSetup(pid)
     end)
 
     menu.toggle_loop(testMenu, "RandomPlayerEXPLOSION", {"latiaoRandomPlayerEXPLOSION"}, "", function()
-        local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.list()[math.random(1, #players.list())])
+        local list = players.list()
+        local index = math.random(#list)
+
+        local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(list[index])
 
         local pos = players.get_position(pid)
         FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
@@ -1643,7 +1653,7 @@ local function testMenuSetup(pid)
         local ped = util.joaat('cs_manuel')
         STREAMING.REQUEST_MODEL(ped)
         local pos = players.get_position(pid)
-        local createped = entities.create_ped(26, ped, pos, 0)
+        local createped = entities.create_ped(4, ped, pos, 0)
         WEAPON.GIVE_WEAPON_TO_PED(createped, util.joaat('WEAPON_HOMINGLAUNCHER'), 100, true, true)
         util.yield(1000)
         FIRE.ADD_EXPLOSION(pos, 0, 100.0, false, true, 100.0)
@@ -1886,6 +1896,24 @@ local function testMenuSetup(pid)
             util.stop_thread()
         end
     end)
+
+    menu.toggle_loop(testMenu, "use him name killall ped ", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
+        for _, ped in entities.get_all_peds_as_handles() do
+            if not entities.is_player_ped(ped) and ENTITY.IS_ENTITY_DEAD(ped) == false then
+
+                -- if not  then
+                local pos = v3.new(ENTITY.GET_ENTITY_COORDS(ped))
+                FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), pos.x, pos.y, pos.z, 0, 2147483647,
+                    false, true, 0.0)
+                -- end
+            end
+        end
+
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
 end
 
 for _, pid in ipairs(players.list()) do
@@ -1917,9 +1945,11 @@ menu.toggle_loop(test, "debugshot", {"latiaodebugshot"}, ("latiaobadpost"), func
         aim_info.OWNER = entities.get_owner(handle)
         aim_info.OWNERName = PLAYER.GET_PLAYER_NAME(entities.get_owner(handle))
         aim_info.ISNETWORKED = NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(handle)
+        aim_info.ISMISSION = ENTITY.IS_ENTITY_A_MISSION_ENTITY(handle)
         local text = "Hash=" .. aim_info.hash .. "," .. "Model=" .. aim_info.model .. "," .. "Health=" ..
                          aim_info.health .. "," .. "Owner=" .. aim_info.OWNER .. "," .. "OwnerName=" ..
-                         aim_info.OWNERName .. "," .. "NETWORKED=" .. aim_info.ISNETWORKED
+                         aim_info.OWNERName .. "," .. "NETWORKED=" .. aim_info.ISNETWORKED .. "," .. "MISSIONENTITY=" ..
+                         aim_info.ISMISSION
 
         directx.draw_text(0.5, 0.25, text, 5, 0.5, {
             r = 255,
@@ -2072,9 +2102,9 @@ menu.toggle_loop(admin, ("ez MC Club"), {""}, "(" .. ("") .. ")", function()
 end)
 
 menu.action(dividends, "Contract All Missions", {}, "", function()
-    -- STAT_SET_INT("FIXER_GENERAL_BS", -1)
+    STAT_SET_INT("FIXER_GENERAL_BS", -1)
     -- STAT_SET_INT("FIXER_COMPLETED_BS", -1)
-    STAT_SET_INT("FIXER_STORY_BS", -1)
+    -- STAT_SET_INT("FIXER_STORY_BS", -1)
 end)
 
 local ContractPayout = menu.slider(dividends, "ContractPayout", {"ContractPayout"}, "", 0, 2147483647, 0, 1, function()
@@ -2418,10 +2448,325 @@ end)
 --     end
 -- end)
 
-menu.action(server, "REQUES_ENTITY all ped", {"latiaoREQUES_ENTITYall"}, "latiaoREQUES_ENTITYall.", function()
-    for k, ent in pairs(entities.get_all_peds_as_handles()) do
-        if not entities.is_player_ped(ent) then
-            NETWORK.SET_NETWORK_ID_CAN_MIGRATE(ent, false)
+-- menu.action(server, "REQUES_ENTITY all ped", {"latiaoREQUES_ENTITYall"}, "latiaoREQUES_ENTITYall.", function()
+--     for k, ent in pairs(entities.get_all_peds_as_handles()) do
+--         if not entities.is_player_ped(ent) then
+--             NETWORK.SET_NETWORK_ID_CAN_MIGRATE(ent, false)
+--         end
+--     end
+-- end)
+
+menu.toggle_loop(test, "SET_ENTITY_AS_MISSION_ENTITY all ped", {}, "", function()
+
+    for _, ent in ipairs(entities.get_all_peds_as_handles()) do
+        -- if not entities.is_player_ped(ent) then
+        -- if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(ent) then
+        ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ent, false, false)
+        -- end
+        -- end
+    end
+
+end)
+
+menu.toggle_loop(test, "SET_ENTITY_AS_MISSION_ENTITY all vehicles", {}, "", function()
+
+    for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
+        -- if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(ent) then
+        ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ent, false, false)
+        -- end
+    end
+
+end)
+
+menu.toggle_loop(test, "SET_ENTITY_AS_MISSION_ENTITY all objects", {}, "", function()
+
+    for k, ent in pairs(entities.get_all_objects_as_handles()) do
+        -- if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(ent) then
+        ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ent, false, false)
+        -- end
+    end
+
+end)
+
+menu.toggle_loop(test, "SET_ENTITY_AS_MISSION_ENTITY all pickups", {}, "", function()
+
+    for k, ent in pairs(entities.get_all_pickups_as_handles()) do
+        -- if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(ent) then
+        ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ent, false, false)
+        -- end
+    end
+
+end)
+
+menu.toggle_loop(test, "SET_ENTITY_AS_NO_LONGER_NEEDED all ped", {}, "", function()
+
+    for _, ent in ipairs(entities.get_all_peds_as_handles()) do
+        -- if not entities.is_player_ped(ent) then
+        if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
+            ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(ent)
+        end
+        -- end
+    end
+
+end)
+
+menu.toggle_loop(test, "SET_ENTITY_AS_NO_LONGER_NEEDED all vehicles", {}, "", function()
+
+    for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
+        if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
+            ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(ent)
         end
     end
+
+end)
+
+menu.toggle_loop(test, "SET_ENTITY_AS_NO_LONGER_NEEDED all objects", {}, "", function()
+
+    for k, ent in pairs(entities.get_all_objects_as_handles()) do
+        if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
+            ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(ent)
+        end
+    end
+
+end)
+
+menu.toggle_loop(test, "SET_ENTITY_AS_NO_LONGER_NEEDED all pickups", {}, "", function()
+
+    for k, ent in pairs(entities.get_all_pickups_as_handles()) do
+        if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
+            ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(ent)
+        end
+    end
+
+end)
+
+menu.toggle_loop(test, "SET_ENTITY_INVINCIBLE all ped true", {}, "", function()
+
+    for _, ent in ipairs(entities.get_all_peds_as_handles()) do
+        if not entities.is_player_ped(ent) then
+            -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
+            ENTITY.SET_ENTITY_INVINCIBLE(ent, true)
+            -- end
+        end
+    end
+
+end)
+
+menu.toggle_loop(test, "SET_ENTITY_INVINCIBLE all vehicles true", {}, "", function()
+
+    for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
+        -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
+        ENTITY.SET_ENTITY_INVINCIBLE(ent, true)
+        -- end
+    end
+
+end)
+
+menu.toggle_loop(test, "SET_ENTITY_INVINCIBLE all objects true", {}, "", function()
+
+    for k, ent in pairs(entities.get_all_objects_as_handles()) do
+        -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
+        ENTITY.SET_ENTITY_INVINCIBLE(ent, true)
+        -- end
+    end
+
+end)
+
+menu.toggle_loop(test, "SET_ENTITY_INVINCIBLE all pickups true", {}, "", function()
+
+    for k, ent in pairs(entities.get_all_pickups_as_handles()) do
+        -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
+        ENTITY.SET_ENTITY_INVINCIBLE(ent, true)
+        -- end
+    end
+
+end)
+
+menu.toggle_loop(test, "SET_ENTITY_INVINCIBLE all ped false", {}, "", function()
+
+    for _, ent in ipairs(entities.get_all_peds_as_handles()) do
+        if not entities.is_player_ped(ent) then
+            -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
+            ENTITY.SET_ENTITY_INVINCIBLE(ent, false)
+            -- end
+        end
+    end
+
+end)
+
+menu.toggle_loop(test, "SET_ENTITY_INVINCIBLE all vehicles false", {}, "", function()
+
+    for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
+        -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
+        ENTITY.SET_ENTITY_INVINCIBLE(ent, false)
+        -- end
+    end
+
+end)
+
+menu.toggle_loop(test, "SET_ENTITY_INVINCIBLE all objects false", {}, "", function()
+
+    for k, ent in pairs(entities.get_all_objects_as_handles()) do
+        -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
+        ENTITY.SET_ENTITY_INVINCIBLE(ent, false)
+        -- end
+    end
+
+end)
+
+menu.toggle_loop(test, "SET_ENTITY_INVINCIBLE all pickups false", {}, "", function()
+
+    for k, ent in pairs(entities.get_all_pickups_as_handles()) do
+        -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
+        ENTITY.SET_ENTITY_INVINCIBLE(ent, false)
+        -- end
+    end
+
+end)
+
+menu.toggle_loop(world, "unlockallvehicles", {""}, ".", function()
+    for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
+        VEHICLE.SET_VEHICLE_DOORS_LOCKED(ent, 0)
+    end
+end)
+
+menu.toggle_loop(world, "lockallvehicles", {""}, ".", function()
+    for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
+        VEHICLE.SET_VEHICLE_DOORS_LOCKED(ent, 2)
+    end
+end)
+
+menu.toggle_loop(world, "ATTACH_ENTITY_TO_ENTITY all ped tp lonnggggg", {}, "", function()
+    -- local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+    for _, ent in ipairs(entities.get_all_peds_as_handles()) do
+        if not entities.is_player_ped(ent) then
+            if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(ent) then
+                ENTITY.ATTACH_ENTITY_TO_ENTITY(ent, players.user_ped(), 0, 0, 0, 1000, 0, 0, 0, false, false, false,
+                    false, 0, true, 0)
+            end
+        end
+    end
+
+end)
+
+menu.toggle_loop(test, "saveall", {""}, ".", function()
+    STATS.STAT_SAVE(0, 0, 3, 0);
+end)
+
+menu.toggle_loop(world, "test", {""}, "", function()
+    for _, ent in pairs(entities.get_all_objects_as_handles()) do
+        for _, targetModelHash in pairs(Models) do
+            if ENTITY.GET_ENTITY_MODEL(ent) == targetModelHash then
+                entities.delete(ent)
+                util.yield()
+                break
+            end
+        end
+    end
+end)
+
+-- menu.action(server, "task all", {"latiaotaskall"}, "latiaotaskall", function()
+--     for i = 1, 12 do
+--         for i2 = 1, 45 do
+--             for k, pid in pairs(players.list()) do
+--                 util.trigger_script_event(1 << pid, {770949062, pid, 16156, i2, i,0,1})
+--             end
+--         end
+--     end
+-- end)
+
+-- menu.action(server, "task all", {"latiaotaskall"}, "latiaotaskall", function()
+--     -- for i = 1, 8 do
+--     for i2 = 1, 45 do
+--         for k, pid in pairs(players.list()) do
+--             util.trigger_script_event(1 << pid, {1262194935, pid, 1962800054273, i2})
+--         end
+--     end
+--     -- end
+-- end)
+
+menu.toggle_loop(server, "if you host give Collectibles>All", {""}, "", function()
+
+    if NETWORK.NETWORK_IS_HOST() then
+        menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
+        util.yield(10000)
+    end
+end)
+
+menu.toggle_loop(server, "loop give Collectibles>All", {""}, "", function()
+
+    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
+    util.yield(10000)
+end)
+
+local MU = menu.slider_float(admin, "经验倍率", {"xpmu"}, "xpmu", -2147483647, 2147483647, 100, 1, function()
+end)
+
+menu.toggle_loop(admin, "xp", {""}, "", function()
+    SET_FLOAT_GLOBAL(262145 + 1, menu.get_value(MU) / 100)
+end)
+menu.toggle_loop(admin, "AP", {""}, "", function()
+    SET_FLOAT_GLOBAL(262145 + 26114, menu.get_value(MU) / 100)
+end)
+menu.toggle_loop(admin, "LS Car", {""}, "", function()
+    SET_FLOAT_GLOBAL(262145 + 31855, menu.get_value(MU) / 100)
+    SET_FLOAT_GLOBAL(262145 + 31856, menu.get_value(MU) / 100)
+    SET_FLOAT_GLOBAL(262145 + 31857, menu.get_value(MU) / 100)
+    SET_FLOAT_GLOBAL(262145 + 31858, menu.get_value(MU) / 100)
+
+    SET_FLOAT_GLOBAL(262145 + 31860, menu.get_value(MU) / 100)
+    SET_FLOAT_GLOBAL(262145 + 31861, menu.get_value(MU) / 100)
+    SET_FLOAT_GLOBAL(262145 + 31862, menu.get_value(MU) / 100)
+end)
+
+menu.action(admin, "RC Bandito", {""}, ".", function()
+    SET_INT_GLOBAL(2794162 + 6880, 1)
+end)
+
+menu.action(admin, "RC Tank", {""}, ".", function()
+    SET_INT_GLOBAL(2794162 + 6894, 1)
+end)
+
+menu.toggle_loop(server, "if you host 超级友好", {""}, "", function()
+
+    if NETWORK.NETWORK_IS_HOST() then
+        menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
+
+        menu.trigger_command(menu.ref_by_path("Players>All Players>Weapons>Give Weapons>Give All Weapons"))
+
+        menu.trigger_command(menu.ref_by_path("Players>All Players>Weapons>Give Ammo"))
+
+        menu.trigger_command(menu.ref_by_path("Players>All Players>Weapons>Give Parachute"))
+
+        util.yield(10000)
+    end
+end)
+
+menu.action(server, "test trigger_script_event", {""}, "", function()
+    for k, pid in pairs(players.list()) do
+        util.trigger_script_event(1 << pid, {1450115979, 0})
+    end
+end)
+
+menu.toggle_loop(world, "随机玩家击杀 ped ", {""}, "", function()
+    local list = players.list()
+    local index = math.random(#list)
+
+    local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(list[index])
+
+    for _, ped in entities.get_all_peds_as_handles() do
+        if not entities.is_player_ped(ped) and ENTITY.IS_ENTITY_DEAD(ped) == false then
+
+            local pos = v3.new(ENTITY.GET_ENTITY_COORDS(ped))
+            FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
+        end
+    end
+
+end)
+
+menu.toggle_loop(world, "print random pid ", {""}, "", function()
+    local list = players.list()
+    local index = math.random(#list)
+    print(list[index])
+
 end)
