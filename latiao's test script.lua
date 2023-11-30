@@ -420,23 +420,23 @@ menu.toggle(killaura, "killaura_attack_walls_back", {}, "", function(on)
     kill_aura_through_walls = on
 end)
 
-menu.toggle(killaura, "killaura_explosion", {}, "", function(on)
+menu.toggle(killaura, "killaura_use_explosion", {}, "", function(on)
     kill_aura_explosion = on
 end)
 
-menu.toggle(killaura, "killaura_nick_explosion", {}, "", function(on)
+menu.toggle(killaura, "killaura_use_nick_explosion", {}, "", function(on)
     kill_aura_nick_explosion = on
 end)
 
-menu.toggle(killaura, "kill_aura_fire_Loop", {}, "", function(on)
+menu.toggle(killaura, "kill_aura_use_fire_Loop", {}, "", function(on)
     kill_aura_fire_Loop = on
 end)
 
-menu.toggle(killaura, "killaura_random_player", {}, "", function(on)
+menu.toggle(killaura, "killaura_use_random_player", {}, "", function(on)
     killaura_random_player = on
 end)
 
-menu.toggle(killaura, "killaura_random_player_explosion", {}, "", function(on)
+menu.toggle(killaura, "killaura_use_random_player_explosion", {}, "", function(on)
     killaura_random_player_explosion = on
 end)
 
@@ -449,13 +449,14 @@ menu.toggle_loop(killaura, "killaura all", {"latiaokillaura"}, ("SHOOT ALL"), fu
             local list = players.list()
             local index = math.random(#list)
             local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(list[index])
+            local pos = v3.new(ENTITY.GET_ENTITY_COORDS(ped))
 
             if not (ENTITY.IS_ENTITY_DEAD(ped) or players.user_ped() == ped or
                 (PED.IS_PED_IN_ANY_VEHICLE(ped, false) and not kill_aura_in_vehicle) or
                 (entities.is_player_ped(ped) == false and not kill_aura_peds) or
                 (entities.is_player_ped(ped) == true and not kill_aura_player) or
                 (not ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(players.user_ped(), ped, 17) and not kill_aura_through_walls)) then
-                local pos = v3.new(ENTITY.GET_ENTITY_COORDS(ped))
+
                 if kill_aura_fire_Loop then
                     FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 12, 2147483647, false, true, 0.0)
                 elseif kill_aura_nick_explosion then
@@ -465,9 +466,11 @@ menu.toggle_loop(killaura, "killaura all", {"latiaokillaura"}, ("SHOOT ALL"), fu
                 elseif killaura_random_player_explosion then
                     FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
                 elseif killaura_random_player then
+                    -- print("killaura_random_player")
                     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z, 2147483647,
                         true, util.joaat("weapon_pistol"), randomPid, false, true, 1)
                 else
+                    -- print("killaura_none")
                     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z, 2147483647,
                         true, util.joaat("weapon_pistol"), players.user_ped(), false, true, 1)
                     util.yield(menu.get_value(time))
@@ -1946,10 +1949,12 @@ menu.toggle_loop(test, "debugshot", {"latiaodebugshot"}, ("latiaobadpost"), func
         aim_info.OWNERName = PLAYER.GET_PLAYER_NAME(entities.get_owner(handle))
         aim_info.ISNETWORKED = NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(handle)
         aim_info.ISMISSION = ENTITY.IS_ENTITY_A_MISSION_ENTITY(handle)
+        -- aim_info.NETWORKID = NETWORK_GET_NETWORK_ID_FROM_ENTITY(handle) //cfx natives haha
         local text = "Hash=" .. aim_info.hash .. "," .. "Model=" .. aim_info.model .. "," .. "Health=" ..
                          aim_info.health .. "," .. "Owner=" .. aim_info.OWNER .. "," .. "OwnerName=" ..
                          aim_info.OWNERName .. "," .. "NETWORKED=" .. aim_info.ISNETWORKED .. "," .. "MISSIONENTITY=" ..
                          aim_info.ISMISSION
+        --  .. "," .. "NETWORK_ID" 
 
         directx.draw_text(0.5, 0.25, text, 5, 0.5, {
             r = 255,
@@ -2117,12 +2122,6 @@ end)
 
 menu.toggle_loop(dividends, "ContractPayout", {""}, "", function()
     SET_INT_GLOBAL(262145 + 31955, menu.get_value(ContractPayout))
-end)
-
-menu.toggle_loop(test, "REFRESH_INTERIOR", {""}, "", function()
-    local pos = players.get_position(players.user())
-    local MyInterior = INTERIOR.GET_INTERIOR_AT_COORDS(0, 0, 0)
-    INTERIOR.REFRESH_INTERIOR(MyInterior)
 end)
 
 menu.toggle_loop(test, "CLEAR_AREA", {""}, "", function()
@@ -2748,7 +2747,7 @@ end)
 
 menu.action(server, "test trigger_script_event", {""}, "", function()
     for k, pid in pairs(players.list()) do
-        util.trigger_script_event(1 << pid, {1450115979, 0})
+        util.trigger_script_event(1 << pid, {-1906536929})
     end
 end)
 
@@ -2778,4 +2777,81 @@ menu.action(server, "test players.dispatch_on_join()", {""}, "", function()
     for k, pid in pairs(players.list()) do
         players.send_sms(pid, "hi")
     end
+end)
+
+menu.toggle_loop(world, "NETWORK_REGISTER_ENTITY_AS_NETWORKED", {"NETWORK_REGISTER_ENTITY_AS_NETWORKED"},
+    "NETWORK_REGISTER_ENTITY_AS_NETWORKED.", function()
+        local targets = {}
+
+        for _, ped in ipairs(entities.get_all_peds_as_handles()) do
+            table.insert(targets, ped)
+        end
+
+        for _, vehicle in ipairs(entities.get_all_vehicles_as_handles()) do
+            table.insert(targets, vehicle)
+        end
+
+        for _, object in ipairs(entities.get_all_objects_as_handles()) do
+            table.insert(targets, object)
+        end
+
+        for _, pickups in ipairs(entities.get_all_pickups_as_handles()) do
+            table.insert(targets, pickups)
+        end
+
+        for _, target in ipairs(targets) do
+            if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(target) == false then
+                NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED(target)
+            end
+
+        end
+    end)
+
+menu.action(world, "delallnotNETWORK", {"delallnotNETWORK"}, "delallnotNETWORK.", function()
+    local targets = {}
+
+    for _, ped in ipairs(entities.get_all_peds_as_handles()) do
+        table.insert(targets, ped)
+    end
+
+    for _, vehicle in ipairs(entities.get_all_vehicles_as_handles()) do
+        table.insert(targets, vehicle)
+    end
+
+    for _, object in ipairs(entities.get_all_objects_as_handles()) do
+        table.insert(targets, object)
+    end
+
+    for _, pickups in ipairs(entities.get_all_pickups_as_handles()) do
+        table.insert(targets, pickups)
+    end
+
+    for _, target in ipairs(targets) do
+        if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(target) == false then
+
+            entities.delete(target)
+            menu.trigger_commands("deleteropes")
+        end
+    end
+
+end)
+
+menu.action(world, "tp ch_prop_fingerprint_scanner", {"latiaotpch_prop_fingerprint_scanner_01a"}, "", function()
+    local Models = {util.joaat("ch_prop_fingerprint_scanner_01a"), util.joaat("ch_prop_fingerprint_scanner_01b"),
+                    util.joaat("ch_prop_fingerprint_scanner_01c"), util.joaat("ch_prop_fingerprint_scanner_01d")}
+
+    for _, ent in pairs(entities.get_all_objects_as_handles()) do
+        for _, targetModelHash in pairs(Models) do
+            if ENTITY.GET_ENTITY_MODEL(ent) == targetModelHash then
+                ENTITY.SET_ENTITY_COORDS(ent, players.get_position(players.user()), false)
+                util.yield()
+                break
+            end
+        end
+    end
+end)
+
+menu.action(world, "REFRESH_INTERIOR", {""}, "", function()
+    local myINTERIOR = INTERIOR.GET_INTERIOR_FROM_ENTITY((players.user_ped()))
+    INTERIOR.REFRESH_INTERIOR(myINTERIOR)
 end)
