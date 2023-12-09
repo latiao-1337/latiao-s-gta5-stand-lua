@@ -1,240 +1,225 @@
-local ALL_script_hosts = {"abigail1", "abigail2", "achievement_controller", "act_cinema",
-                          "activity_creator_prototype_launcher", "af_intro_t_sandy", "agency_heist1", "agency_heist2",
-                          "agency_heist3a", "agency_heist3b", "agency_prep1", "agency_prep2amb", "aicover_test",
-                          "ainewengland_test", "altruist_cult", "am_agency_suv", "am_airstrike", "am_ammo_drop",
-                          "am_arena_shp", "am_armwrestling_apartment", "am_armwrestling", "am_armybase",
-                          "am_backup_heli", "am_beach_washup_cinematic", "am_boat_taxi", "am_bru_box", "am_car_mod_tut",
-                          "am_casino_limo", "am_casino_luxury_car", "am_casino_peds", "am_challenges",
-                          "am_contact_requests", "am_cp_collection", "am_crate_drop", "am_criminal_damage",
-                          "am_darts_apartment", "am_darts", "am_dead_drop", "am_destroy_veh", "am_distract_cops",
-                          "am_doors", "am_ferriswheel", "am_ga_pickups", "am_gang_call", "am_heist_int", "am_heli_taxi",
-                          "am_hi_plane_land_cinematic", "am_hi_plane_take_off_cinematic", "am_hold_up",
-                          "am_hot_property", "am_hot_target", "am_hs4_isd_take_vel", "am_hs4_lsa_land_nimb_arrive",
-                          "am_hs4_lsa_land_vel", "am_hs4_lsa_take_vel", "am_hs4_nimb_isd_lsa_leave",
-                          "am_hs4_nimb_lsa_isd_arrive", "am_hs4_nimb_lsa_isd_leave", "am_hs4_vel_lsa_isd",
-                          "am_hunt_the_beast", "am_imp_exp", "am_island_backup_heli", "am_joyrider", "am_kill_list",
-                          "am_king_of_the_castle", "am_launcher", "am_lester_cut", "am_lowrider_int",
-                          "am_lsia_take_off_cinematic", "am_luxury_showroom", "am_mission_launch", "am_mp_acid_lab",
-                          "am_mp_arc_cab_manager", "am_mp_arcade_claw_crane", "am_mp_arcade_fortune_teller",
-                          "am_mp_arcade_love_meter", "am_mp_arcade_peds", "am_mp_arcade_strength_test", "am_mp_arcade",
-                          "am_mp_arena_box", "am_mp_arena_garage", "am_mp_armory_aircraft", "am_mp_armory_truck",
-                          "am_mp_auto_shop", "am_mp_biker_warehouse", "am_mp_boardroom_seating", "am_mp_bunker",
-                          "am_mp_business_hub", "am_mp_car_meet_property", "am_mp_car_meet_sandbox",
-                          "am_mp_carwash_launch", "am_mp_casino_apartment", "am_mp_casino_nightclub",
-                          "am_mp_casino_valet_garage", "am_mp_casino", "am_mp_creator_aircraft",
-                          "am_mp_creator_trailer", "am_mp_defunct_base", "am_mp_drone", "am_mp_fixer_hq",
-                          "am_mp_garage_control", "am_mp_hacker_truck", "am_mp_hangar", "am_mp_ie_warehouse",
-                          "am_mp_island", "am_mp_juggalo_hideout", "am_mp_multistorey_garage", "am_mp_music_studio",
-                          "am_mp_nightclub", "am_mp_orbital_cannon", "am_mp_peds", "am_mp_property_ext",
-                          "am_mp_property_int", "am_mp_rc_vehicle", "am_mp_shooting_range", "am_mp_simeon_showroom",
-                          "am_mp_smoking_activity", "am_mp_smpl_interior_ext", "am_mp_smpl_interior_int",
-                          "am_mp_social_club_garage", "am_mp_solomon_office", "am_mp_submarine", "am_mp_vehicle_reward",
-                          "am_mp_vehicle_weapon", "am_mp_warehouse", "am_mp_yacht", "am_npc_invites",
-                          "am_pass_the_parcel", "am_penned_in", "am_penthouse_peds", "am_pi_menu", "am_plane_takedown",
-                          "am_prison", "am_prostitute", "am_rollercoaster", "am_rontrevor_cut", "am_taxi",
-                          "am_vehicle_spawn", "ambient_diving", "ambient_mrsphilips", "ambient_solomon",
-                          "ambient_sonar", "ambient_tonya", "ambient_tonyacall2", "ambient_tonyacall5",
-                          "ambient_tonyacall", "ambient_ufos", "ambientblimp", "animal_controller",
-                          "apartment_minigame_launcher", "apparcadebusiness", "apparcadebusinesshub",
-                          "appavengeroperations", "appbikerbusiness", "appbroadcast", "appbunkerbusiness",
-                          "appbusinesshub", "appcamera", "appchecklist", "appcontacts", "appcovertops", "appemail",
-                          "appextraction", "appfixersecurity", "apphackertruck", "apphs_sleep", "appimportexport",
-                          "appinternet", "appjipmp", "appmedia", "appmpbossagency", "appmpemail", "appmpjoblistnew",
-                          "apporganiser", "appprogresshub", "apprepeatplay", "appsecurohack", "appsecuroserv",
-                          "appsettings", "appsidetask", "appsmuggler", "apptextmessage", "apptrackify", "appvlsi",
-                          "appzit", "arcade_seating", "arena_box_bench_seats", "arena_carmod", "arena_workshop_seats",
-                          "armenian1", "armenian2", "armenian3", "armory_aircraft_carmod", "assassin_bus",
-                          "assassin_construction", "assassin_hooker", "assassin_multi", "assassin_rankup",
-                          "assassin_valet", "atm_trigger", "audiotest", "auto_shop_seating", "autosave_controller",
-                          "bailbond1", "bailbond2", "bailbond3", "bailbond4", "bailbond_launcher", "barry1", "barry2",
-                          "barry3", "barry3a", "barry3c", "barry4", "base_carmod", "base_corridor_seats",
-                          "base_entrance_seats", "base_heist_seats", "base_lounge_seats", "base_quaters_seats",
-                          "base_reception_seats", "basic_creator", "beach_exterior_seating", "benchmark", "bigwheel",
-                          "bj", "blackjack", "blimptest", "blip_controller", "bootycall_debug_controller",
-                          "bootycallhandler", "buddydeathresponse", "bugstar_mission_export", "building_controller",
-                          "buildingsiteambience", "business_battles_defend", "business_battles_sell",
-                          "business_battles", "business_hub_carmod", "business_hub_garage_seats", "cablecar",
-                          "cam_coord_sender", "camera_test", "camhedz_arcade", "candidate_controller",
-                          "car_meet_carmod", "car_meet_exterior_seating", "car_meet_interior_seating", "car_roof_test",
-                          "carmod_shop", "carsteal1", "carsteal2", "carsteal3", "carsteal4", "carwash1", "carwash2",
-                          "casino_bar_seating", "casino_exterior_seating", "casino_interior_seating",
-                          "casino_lucky_wheel", "casino_main_lounge_seating", "casino_nightclub_seating",
-                          "casino_penthouse_seating", "casino_slots", "casinoroulette", "celebration_editor",
-                          "celebrations", "cellphone_controller", "cellphone_flashhand", "charactergoals",
-                          "charanimtest", "cheat_controller", "chinese1", "chinese2", "chop", "clothes_shop_mp",
-                          "clothes_shop_sp", "code_controller", "combat_test", "comms_controller",
-                          "completionpercentage_controller", "component_checker", "context_controller",
-                          "controller_ambientarea", "controller_races", "controller_taxi", "controller_towing",
-                          "controller_trafficking", "coordinate_recorder", "country_race_controller", "country_race",
-                          "creation_startup", "creator", "custom_config", "cutscene_test", "cutscenemetrics",
-                          "cutscenesamples", "darts", "debug_app_select_screen", "debug_clone_outfit_testing",
-                          "debug_launcher", "debug_ped_data", "debug", "degenatron_games", "density_test",
-                          "dialogue_handler", "director_mode", "docks2asubhandler", "docks_heista", "docks_heistb",
-                          "docks_prep1", "docks_prep2b", "docks_setup", "dont_cross_the_line", "dreyfuss1", "drf1",
-                          "drf2", "drf3", "drf4", "drf5", "drunk_controller", "drunk", "dynamixtest",
-                          "email_controller", "emergencycall", "emergencycalllauncher", "epscars", "epsdesert",
-                          "epsilon1", "epsilon2", "epsilon3", "epsilon4", "epsilon5", "epsilon6", "epsilon7",
-                          "epsilon8", "epsilontract", "epsrobes", "error_listener", "error_thrower", "event_controller",
-                          "exile1", "exile2", "exile3", "exile_city_denial", "extreme1", "extreme2", "extreme3",
-                          "extreme4", "fairgroundhub", "fake_interiors", "fame_or_shame_set", "fameorshame_eps_1",
-                          "fameorshame_eps", "family1", "family1taxi", "family2", "family3", "family4", "family5",
-                          "family6", "family_scene_f0", "family_scene_f1", "family_scene_m", "family_scene_t0",
-                          "family_scene_t1", "fanatic1", "fanatic2", "fanatic3", "fbi1", "fbi2", "fbi3", "fbi4_intro",
-                          "fbi4_prep1", "fbi4_prep2", "fbi4_prep3", "fbi4_prep3amb", "fbi4_prep4", "fbi4_prep5", "fbi4",
-                          "fbi5a", "finale_choice", "finale_credits", "finale_endgame", "finale_heist1",
-                          "finale_heist2_intro", "finale_heist2a", "finale_heist2b", "finale_heist_prepa",
-                          "finale_heist_prepb", "finale_heist_prepc", "finale_heist_prepd", "finale_heist_prepeamb",
-                          "finale_intro", "finalea", "finaleb", "finalec1", "finalec2", "fixer_hq_carmod",
-                          "fixer_hq_seating_op_floor", "fixer_hq_seating_pq", "fixer_hq_seating",
-                          "floating_help_controller", "flow_autoplay", "flow_controller", "flow_help", "flowintrotitle",
-                          "flowstartaccept", "flyunderbridges", "fm_bj_race_controler", "fm_capture_creator",
-                          "fm_content_acid_lab_sell", "fm_content_acid_lab_setup", "fm_content_acid_lab_source",
-                          "fm_content_ammunation", "fm_content_armoured_truck", "fm_content_auto_shop_delivery",
-                          "fm_content_bank_shootout", "fm_content_bar_resupply", "fm_content_bicycle_time_trial",
-                          "fm_content_bike_shop_delivery", "fm_content_business_battles", "fm_content_cargo",
-                          "fm_content_cerberus", "fm_content_club_management", "fm_content_club_odd_jobs",
-                          "fm_content_club_source", "fm_content_clubhouse_contracts", "fm_content_convoy",
-                          "fm_content_crime_scene", "fm_content_drug_lab_work", "fm_content_drug_vehicle",
-                          "fm_content_export_cargo", "fm_content_ghosthunt", "fm_content_golden_gun",
-                          "fm_content_gunrunning", "fm_content_hsw_setup", "fm_content_hsw_time_trial",
-                          "fm_content_island_dj", "fm_content_island_heist", "fm_content_metal_detector",
-                          "fm_content_movie_props", "fm_content_mp_intro", "fm_content_parachuter",
-                          "fm_content_payphone_hit", "fm_content_phantom_car", "fm_content_possessed_animals",
-                          "fm_content_robbery", "fm_content_security_contract", "fm_content_sightseeing",
-                          "fm_content_skydive", "fm_content_slasher", "fm_content_smuggler_ops",
-                          "fm_content_smuggler_plane", "fm_content_smuggler_resupply", "fm_content_smuggler_sell",
-                          "fm_content_smuggler_trail", "fm_content_source_research", "fm_content_stash_house",
-                          "fm_content_taxi_driver", "fm_content_test", "fm_content_tuner_robbery",
-                          "fm_content_vehicle_list", "fm_content_vip_contract_1", "fm_content_xmas_mugger",
-                          "fm_deathmatch_controler", "fm_deathmatch_creator", "fm_hideout_controler", "fm_hold_up_tut",
-                          "fm_horde_controler", "fm_impromptu_dm_controler", "fm_intro_cut_dev", "fm_intro",
-                          "fm_lts_creator", "fm_main_menu", "fm_maintain_cloud_header_data",
-                          "fm_maintain_transition_players", "fm_mission_controller_2020", "fm_mission_controller",
-                          "fm_mission_creator", "fm_race_controler", "fm_race_creator", "fm_street_dealer",
-                          "fm_survival_controller", "fm_survival_creator", "fmmc_contentquicklauncher", "fmmc_launcher",
-                          "fmmc_playlist_controller", "forsalesigns", "fps_test_mag", "fps_test", "franklin0",
-                          "franklin1", "franklin2", "freemode_clearglobals", "freemode_creator", "freemode_init",
-                          "freemode", "friendactivity", "friends_controller", "friends_debug_controller",
-                          "fullmap_test_flow", "fullmap_test", "game_server_test", "gb_airfreight",
-                          "gb_amphibious_assault", "gb_assault", "gb_bank_job", "gb_bellybeast", "gb_biker_bad_deal",
-                          "gb_biker_burn_assets", "gb_biker_contraband_defend", "gb_biker_contraband_sell",
-                          "gb_biker_contract_killing", "gb_biker_criminal_mischief", "gb_biker_destroy_vans",
-                          "gb_biker_driveby_assassin", "gb_biker_free_prisoner", "gb_biker_joust",
-                          "gb_biker_last_respects", "gb_biker_race_p2p", "gb_biker_rescue_contact",
-                          "gb_biker_rippin_it_up", "gb_biker_safecracker", "gb_biker_search_and_destroy",
-                          "gb_biker_shuttle", "gb_biker_stand_your_ground", "gb_biker_steal_bikes",
-                          "gb_biker_target_rival", "gb_biker_unload_weapons", "gb_biker_wheelie_rider", "gb_carjacking",
-                          "gb_cashing_out", "gb_casino_heist_planning", "gb_casino_heist", "gb_casino",
-                          "gb_collect_money", "gb_contraband_buy", "gb_contraband_defend", "gb_contraband_sell",
-                          "gb_data_hack", "gb_deathmatch", "gb_delivery", "gb_finderskeepers", "gb_fivestar",
-                          "gb_fortified", "gb_fragile_goods", "gb_fully_loaded", "gb_gang_ops_planning", "gb_gangops",
-                          "gb_gunrunning_defend", "gb_gunrunning_delivery", "gb_gunrunning", "gb_headhunter",
-                          "gb_hunt_the_boss", "gb_ie_delivery_cutscene", "gb_illicit_goods_resupply", "gb_infiltration",
-                          "gb_jewel_store_grab", "gb_ploughed", "gb_point_to_point", "gb_ramped_up", "gb_rob_shop",
-                          "gb_salvage", "gb_security_van", "gb_sightseer", "gb_smuggler", "gb_stockpiling",
-                          "gb_target_pursuit", "gb_terminate", "gb_transporter", "gb_vehicle_export", "gb_velocity",
-                          "gb_yacht_rob", "general_test", "ggsm_arcade", "globals_fmmc_struct_registration",
-                          "globals_fmmcstruct2_registration", "golf_ai_foursome_putting", "golf_ai_foursome", "golf_mp",
-                          "golf", "gpb_andymoon", "gpb_baygor", "gpb_billbinder", "gpb_clinton", "gpb_griff",
-                          "gpb_jane", "gpb_jerome", "gpb_jesse", "gpb_mani", "gpb_mime", "gpb_pameladrake",
-                          "gpb_superhero", "gpb_tonya", "gpb_zombie", "grid_arcade_cabinet", "gtest_airplane",
-                          "gtest_avoidance", "gtest_boat", "gtest_divingfromcar", "gtest_divingfromcarwhilefleeing",
-                          "gtest_helicopter", "gtest_nearlymissedbycar", "gunclub_shop", "gunfighttest",
-                          "gunslinger_arcade", "hacker_truck_carmod", "hairdo_shop_mp", "hairdo_shop_sp",
-                          "hangar_carmod", "hao1", "headertest", "heatmap_test_flow", "heatmap_test",
-                          "heist_ctrl_agency", "heist_ctrl_docks", "heist_ctrl_finale", "heist_ctrl_jewel",
-                          "heist_ctrl_rural", "heist_island_planning", "heli_gun", "heli_streaming", "hud_creator",
-                          "hunting1", "hunting2", "hunting_ambient", "idlewarper", "ingamehud", "initial",
-                          "item_ownership_output", "jewelry_heist", "jewelry_prep1a", "jewelry_prep1b",
-                          "jewelry_prep2a", "jewelry_setup1", "josh1", "josh2", "josh3", "josh4",
-                          "juggalo_hideout_carmod", "juggalo_hideout_seating", "lamar1", "landing_pre_startup",
-                          "laptop_trigger", "launcher_abigail", "launcher_barry", "launcher_basejumpheli",
-                          "launcher_basejumppack", "launcher_carwash", "launcher_darts", "launcher_dreyfuss",
-                          "launcher_epsilon", "launcher_extreme", "launcher_fanatic", "launcher_golf", "launcher_hao",
-                          "launcher_hunting_ambient", "launcher_hunting", "launcher_josh", "launcher_maude",
-                          "launcher_minute", "launcher_mrsphilips", "launcher_nigel", "launcher_offroadracing",
-                          "launcher_omega", "launcher_paparazzo", "launcher_pilotschool", "launcher_racing",
-                          "launcher_rampage", "launcher_range", "launcher_stunts", "launcher_tennis",
-                          "launcher_thelastone", "launcher_tonya", "launcher_triathlon", "launcher_yoga", "lester1",
-                          "lesterhandler", "letterscraps", "line_activation_test", "liverecorder", "locates_tester",
-                          "luxe_veh_activity", "magdemo2", "magdemo", "main_install", "main_persistent", "main",
-                          "maintransition", "martin1", "maude1", "maude_postbailbond", "me_amanda1", "me_jimmy1",
-                          "me_tracey1", "mg_race_to_point", "michael1", "michael2", "michael3", "michael4",
-                          "michael4leadout", "minigame_ending_stinger", "minigame_stats_tracker", "minute1", "minute2",
-                          "minute3", "mission_race", "mission_repeat_controller", "mission_stat_alerter",
-                          "mission_stat_watcher", "mission_triggerer_a", "mission_triggerer_b", "mission_triggerer_c",
-                          "mission_triggerer_d", "missioniaaturret", "mp_awards", "mp_bed_high", "mp_fm_registration",
-                          "mp_menuped", "mp_prop_global_block", "mp_prop_special_global_block", "mp_registration",
-                          "mp_save_game_global_block", "mp_unlocks", "mp_weapons", "mpstatsinit", "mptestbed",
-                          "mrsphilips1", "mrsphilips2", "multistorey_garage_ext_seating", "multistorey_garage_seating",
-                          "murdermystery", "music_studio_seating_external", "music_studio_seating",
-                          "music_studio_smoking", "navmeshtest", "net_activity_creator_ui",
-                          "net_apartment_activity_light", "net_apartment_activity", "net_bot_brain",
-                          "net_bot_simplebrain", "net_cloud_mission_loader", "net_combat_soaktest",
-                          "net_jacking_soaktest", "net_session_soaktest", "net_test_drive", "net_tunable_check",
-                          "nigel1", "nigel1a", "nigel1b", "nigel1c", "nigel1d", "nigel2", "nigel3",
-                          "nightclub_ground_floor_seats", "nightclub_office_seats", "nightclub_vip_seats",
-                          "nightclubpeds", "nodemenututorial", "nodeviewer", "ob_abatdoor", "ob_abattoircut",
-                          "ob_airdancer", "ob_bong", "ob_cashregister", "ob_drinking_shots", "ob_foundry_cauldron",
-                          "ob_franklin_beer", "ob_franklin_tv", "ob_franklin_wine", "ob_huffing_gas", "ob_jukebox",
-                          "ob_mp_bed_high", "ob_mp_bed_low", "ob_mp_bed_med", "ob_mp_shower_med", "ob_mp_stripper",
-                          "ob_mr_raspberry_jam", "ob_poledancer", "ob_sofa_franklin", "ob_sofa_michael", "ob_telescope",
-                          "ob_tv", "ob_vend1", "ob_vend2", "ob_wheatgrass", "offroad_races", "omega1", "omega2",
-                          "paparazzo1", "paparazzo2", "paparazzo3", "paparazzo3a", "paparazzo3b", "paparazzo4",
-                          "paradise2", "paradise", "pausemenu_example", "pausemenu_map", "pausemenu_multiplayer",
-                          "pausemenu_sp_repeat", "pausemenu", "pausemenucareerhublaunch", "pb_busker", "pb_homeless",
-                          "pb_preacher", "pb_prostitute", "personal_carmod_shop", "photographymonkey",
-                          "photographywildlife", "physics_perf_test_launcher", "physics_perf_test", "pi_menu",
-                          "pickup_controller", "pickuptest", "pickupvehicles", "pilot_school_mp", "pilot_school",
-                          "placeholdermission", "placementtest", "planewarptest", "player_controller_b",
-                          "player_controller", "player_scene_f_lamgraff", "player_scene_f_lamtaunt",
-                          "player_scene_f_taxi", "player_scene_ft_franklin1", "player_scene_m_cinema",
-                          "player_scene_m_fbi2", "player_scene_m_kids", "player_scene_m_shopping",
-                          "player_scene_mf_traffic", "player_scene_t_bbfight", "player_scene_t_chasecar",
-                          "player_scene_t_insult", "player_scene_t_park", "player_scene_t_tie",
-                          "player_timetable_scene", "playthrough_builder", "pm_defend", "pm_delivery", "pm_gang_attack",
-                          "pm_plane_promotion", "pm_recover_stolen", "postkilled_bailbond2", "postrc_barry1and2",
-                          "postrc_barry4", "postrc_epsilon4", "postrc_nigel3", "profiler_registration", "prologue1",
-                          "prop_drop", "puzzle", "racetest", "rampage1", "rampage2", "rampage3", "rampage4", "rampage5",
-                          "rampage_controller", "randomchar_controller", "range_modern_mp", "range_modern",
-                          "re_abandonedcar", "re_accident", "re_armybase", "re_arrests", "re_atmrobbery",
-                          "re_bikethief", "re_border", "re_burials", "re_bus_tours", "re_cartheft", "re_chasethieves",
-                          "re_crashrescue", "re_cultshootout", "re_dealgonewrong", "re_domestic", "re_drunkdriver",
-                          "re_duel", "re_gang_intimidation", "re_gangfight", "re_getaway_driver", "re_hitch_lift",
-                          "re_homeland_security", "re_lossantosintl", "re_lured", "re_monkey", "re_mountdance",
-                          "re_muggings", "re_paparazzi", "re_prison", "re_prisonerlift", "re_prisonvanbreak",
-                          "re_rescuehostage", "re_seaplane", "re_securityvan", "re_shoprobbery", "re_snatched",
-                          "re_stag_do", "re_yetarian", "replay_controller", "rerecord_recording", "respawn_controller",
-                          "restrictedareas", "rng_output", "road_arcade", "rollercoaster", "rural_bank_heist",
-                          "rural_bank_prep1", "rural_bank_setup", "save_anywhere", "savegame_bed", "sc_lb_global_block",
-                          "scaleformgraphictest", "scaleformminigametest", "scaleformprofiling", "scaleformtest",
-                          "scene_builder", "sclub_front_bouncer", "script_metrics", "scripted_cam_editor",
-                          "scriptplayground", "scripttest1", "scripttest2", "scripttest3", "scripttest4",
-                          "scroll_arcade_cabinet", "sctv", "selector_example", "selector", "selling_short_1",
-                          "selling_short_2", "sh_intro_f_hills", "sh_intro_m_home", "shooting_camera",
-                          "shop_controller", "shoprobberies", "shot_bikejump", "shrinkletter",
-                          "simeon_showroom_seating", "smoketest", "social_controller", "solomon1", "solomon2",
-                          "solomon3", "sp_dlc_registration", "sp_editor_mission_instance", "sp_menuped",
-                          "sp_pilotschool_reg", "spaceshipparts", "spawn_activities", "speech_reverb_tracker",
-                          "spmc_instancer", "spmc_preloader", "standard_global_init", "standard_global_reg",
-                          "startup_install", "startup_locationtest", "startup_positioning", "startup_smoketest",
-                          "startup", "stats_controller", "stock_controller", "streaming", "stripclub_drinking",
-                          "stripclub_mp", "stripclub", "stripperhome", "stunt_plane_races", "tasklist_1", "tattoo_shop",
-                          "taxi_clowncar", "taxi_cutyouin", "taxi_deadline", "taxi_followcar", "taxi_gotyounow",
-                          "taxi_gotyourback", "taxi_needexcitement", "taxi_procedural", "taxi_takeiteasy",
-                          "taxi_taketobest", "taxilauncher", "taxiservice", "taxitutorial", "tempalpha", "temptest",
-                          "tennis_ambient", "tennis_family", "tennis_network_mp", "tennis", "test_startup",
-                          "thelastone", "three_card_poker", "timershud", "title_update_registration_2",
-                          "title_update_registration", "tonya1", "tonya2", "tonya3", "tonya4", "tonya5", "towing",
-                          "traffick_air", "traffick_ground", "traffickingsettings", "traffickingteleport",
-                          "train_create_widget", "train_tester", "trevor1", "trevor2", "trevor3", "trevor4",
-                          "triathlonsp", "tunables_registration", "tuneables_processing", "tuner_planning",
-                          "tuner_property_carmod", "tuner_sandbox_activity", "turret_cam_script", "ufo",
-                          "ugc_global_registration_2", "ugc_global_registration", "underwaterpickups", "utvc",
-                          "valentinerpreward2", "veh_play_widget", "vehicle_ai_test", "vehicle_force_widget",
-                          "vehicle_gen_controller", "vehicle_plate", "vehicle_stealth_mode", "vehiclespawning",
-                          "walking_ped", "wardrobe_mp", "wardrobe_sp", "weapon_audio_widget", "wizard_arcade",
-                          "wp_partyboombox", "xml_menus", "yoga"}
+local INT_MAX = 2147483647
+local INT_MIN = -2147483647
+local ALL_script = {"abigail1", "abigail2", "achievement_controller", "act_cinema",
+                    "activity_creator_prototype_launcher", "af_intro_t_sandy", "agency_heist1", "agency_heist2",
+                    "agency_heist3a", "agency_heist3b", "agency_prep1", "agency_prep2amb", "aicover_test",
+                    "ainewengland_test", "altruist_cult", "am_agency_suv", "am_airstrike", "am_ammo_drop",
+                    "am_arena_shp", "am_armwrestling_apartment", "am_armwrestling", "am_armybase", "am_backup_heli",
+                    "am_beach_washup_cinematic", "am_boat_taxi", "am_bru_box", "am_car_mod_tut", "am_casino_limo",
+                    "am_casino_luxury_car", "am_casino_peds", "am_challenges", "am_contact_requests",
+                    "am_cp_collection", "am_crate_drop", "am_criminal_damage", "am_darts_apartment", "am_darts",
+                    "am_dead_drop", "am_destroy_veh", "am_distract_cops", "am_doors", "am_ferriswheel", "am_ga_pickups",
+                    "am_gang_call", "am_heist_int", "am_heli_taxi", "am_hi_plane_land_cinematic",
+                    "am_hi_plane_take_off_cinematic", "am_hold_up", "am_hot_property", "am_hot_target",
+                    "am_hs4_isd_take_vel", "am_hs4_lsa_land_nimb_arrive", "am_hs4_lsa_land_vel", "am_hs4_lsa_take_vel",
+                    "am_hs4_nimb_isd_lsa_leave", "am_hs4_nimb_lsa_isd_arrive", "am_hs4_nimb_lsa_isd_leave",
+                    "am_hs4_vel_lsa_isd", "am_hunt_the_beast", "am_imp_exp", "am_island_backup_heli", "am_joyrider",
+                    "am_kill_list", "am_king_of_the_castle", "am_launcher", "am_lester_cut", "am_lowrider_int",
+                    "am_lsia_take_off_cinematic", "am_luxury_showroom", "am_mission_launch", "am_mp_acid_lab",
+                    "am_mp_arc_cab_manager", "am_mp_arcade_claw_crane", "am_mp_arcade_fortune_teller",
+                    "am_mp_arcade_love_meter", "am_mp_arcade_peds", "am_mp_arcade_strength_test", "am_mp_arcade",
+                    "am_mp_arena_box", "am_mp_arena_garage", "am_mp_armory_aircraft", "am_mp_armory_truck",
+                    "am_mp_auto_shop", "am_mp_biker_warehouse", "am_mp_boardroom_seating", "am_mp_bunker",
+                    "am_mp_business_hub", "am_mp_car_meet_property", "am_mp_car_meet_sandbox", "am_mp_carwash_launch",
+                    "am_mp_casino_apartment", "am_mp_casino_nightclub", "am_mp_casino_valet_garage", "am_mp_casino",
+                    "am_mp_creator_aircraft", "am_mp_creator_trailer", "am_mp_defunct_base", "am_mp_drone",
+                    "am_mp_fixer_hq", "am_mp_garage_control", "am_mp_hacker_truck", "am_mp_hangar",
+                    "am_mp_ie_warehouse", "am_mp_island", "am_mp_juggalo_hideout", "am_mp_multistorey_garage",
+                    "am_mp_music_studio", "am_mp_nightclub", "am_mp_orbital_cannon", "am_mp_peds", "am_mp_property_ext",
+                    "am_mp_property_int", "am_mp_rc_vehicle", "am_mp_shooting_range", "am_mp_simeon_showroom",
+                    "am_mp_smoking_activity", "am_mp_smpl_interior_ext", "am_mp_smpl_interior_int",
+                    "am_mp_social_club_garage", "am_mp_solomon_office", "am_mp_submarine", "am_mp_vehicle_reward",
+                    "am_mp_vehicle_weapon", "am_mp_warehouse", "am_mp_yacht", "am_npc_invites", "am_pass_the_parcel",
+                    "am_penned_in", "am_penthouse_peds", "am_pi_menu", "am_plane_takedown", "am_prison",
+                    "am_prostitute", "am_rollercoaster", "am_rontrevor_cut", "am_taxi", "am_vehicle_spawn",
+                    "ambient_diving", "ambient_mrsphilips", "ambient_solomon", "ambient_sonar", "ambient_tonya",
+                    "ambient_tonyacall2", "ambient_tonyacall5", "ambient_tonyacall", "ambient_ufos", "ambientblimp",
+                    "animal_controller", "apartment_minigame_launcher", "apparcadebusiness", "apparcadebusinesshub",
+                    "appavengeroperations", "appbikerbusiness", "appbroadcast", "appbunkerbusiness", "appbusinesshub",
+                    "appcamera", "appchecklist", "appcontacts", "appcovertops", "appemail", "appextraction",
+                    "appfixersecurity", "apphackertruck", "apphs_sleep", "appimportexport", "appinternet", "appjipmp",
+                    "appmedia", "appmpbossagency", "appmpemail", "appmpjoblistnew", "apporganiser", "appprogresshub",
+                    "apprepeatplay", "appsecurohack", "appsecuroserv", "appsettings", "appsidetask", "appsmuggler",
+                    "apptextmessage", "apptrackify", "appvlsi", "appzit", "arcade_seating", "arena_box_bench_seats",
+                    "arena_carmod", "arena_workshop_seats", "armenian1", "armenian2", "armenian3",
+                    "armory_aircraft_carmod", "assassin_bus", "assassin_construction", "assassin_hooker",
+                    "assassin_multi", "assassin_rankup", "assassin_valet", "atm_trigger", "audiotest",
+                    "auto_shop_seating", "autosave_controller", "bailbond1", "bailbond2", "bailbond3", "bailbond4",
+                    "bailbond_launcher", "barry1", "barry2", "barry3", "barry3a", "barry3c", "barry4", "base_carmod",
+                    "base_corridor_seats", "base_entrance_seats", "base_heist_seats", "base_lounge_seats",
+                    "base_quaters_seats", "base_reception_seats", "basic_creator", "beach_exterior_seating",
+                    "benchmark", "bigwheel", "bj", "blackjack", "blimptest", "blip_controller",
+                    "bootycall_debug_controller", "bootycallhandler", "buddydeathresponse", "bugstar_mission_export",
+                    "building_controller", "buildingsiteambience", "business_battles_defend", "business_battles_sell",
+                    "business_battles", "business_hub_carmod", "business_hub_garage_seats", "cablecar",
+                    "cam_coord_sender", "camera_test", "camhedz_arcade", "candidate_controller", "car_meet_carmod",
+                    "car_meet_exterior_seating", "car_meet_interior_seating", "car_roof_test", "carmod_shop",
+                    "carsteal1", "carsteal2", "carsteal3", "carsteal4", "carwash1", "carwash2", "casino_bar_seating",
+                    "casino_exterior_seating", "casino_interior_seating", "casino_lucky_wheel",
+                    "casino_main_lounge_seating", "casino_nightclub_seating", "casino_penthouse_seating",
+                    "casino_slots", "casinoroulette", "celebration_editor", "celebrations", "cellphone_controller",
+                    "cellphone_flashhand", "charactergoals", "charanimtest", "cheat_controller", "chinese1", "chinese2",
+                    "chop", "clothes_shop_mp", "clothes_shop_sp", "code_controller", "combat_test", "comms_controller",
+                    "completionpercentage_controller", "component_checker", "context_controller",
+                    "controller_ambientarea", "controller_races", "controller_taxi", "controller_towing",
+                    "controller_trafficking", "coordinate_recorder", "country_race_controller", "country_race",
+                    "creation_startup", "creator", "custom_config", "cutscene_test", "cutscenemetrics",
+                    "cutscenesamples", "darts", "debug_app_select_screen", "debug_clone_outfit_testing",
+                    "debug_launcher", "debug_ped_data", "debug", "degenatron_games", "density_test", "dialogue_handler",
+                    "director_mode", "docks2asubhandler", "docks_heista", "docks_heistb", "docks_prep1", "docks_prep2b",
+                    "docks_setup", "dont_cross_the_line", "dreyfuss1", "drf1", "drf2", "drf3", "drf4", "drf5",
+                    "drunk_controller", "drunk", "dynamixtest", "email_controller", "emergencycall",
+                    "emergencycalllauncher", "epscars", "epsdesert", "epsilon1", "epsilon2", "epsilon3", "epsilon4",
+                    "epsilon5", "epsilon6", "epsilon7", "epsilon8", "epsilontract", "epsrobes", "error_listener",
+                    "error_thrower", "event_controller", "exile1", "exile2", "exile3", "exile_city_denial", "extreme1",
+                    "extreme2", "extreme3", "extreme4", "fairgroundhub", "fake_interiors", "fame_or_shame_set",
+                    "fameorshame_eps_1", "fameorshame_eps", "family1", "family1taxi", "family2", "family3", "family4",
+                    "family5", "family6", "family_scene_f0", "family_scene_f1", "family_scene_m", "family_scene_t0",
+                    "family_scene_t1", "fanatic1", "fanatic2", "fanatic3", "fbi1", "fbi2", "fbi3", "fbi4_intro",
+                    "fbi4_prep1", "fbi4_prep2", "fbi4_prep3", "fbi4_prep3amb", "fbi4_prep4", "fbi4_prep5", "fbi4",
+                    "fbi5a", "finale_choice", "finale_credits", "finale_endgame", "finale_heist1",
+                    "finale_heist2_intro", "finale_heist2a", "finale_heist2b", "finale_heist_prepa",
+                    "finale_heist_prepb", "finale_heist_prepc", "finale_heist_prepd", "finale_heist_prepeamb",
+                    "finale_intro", "finalea", "finaleb", "finalec1", "finalec2", "fixer_hq_carmod",
+                    "fixer_hq_seating_op_floor", "fixer_hq_seating_pq", "fixer_hq_seating", "floating_help_controller",
+                    "flow_autoplay", "flow_controller", "flow_help", "flowintrotitle", "flowstartaccept",
+                    "flyunderbridges", "fm_bj_race_controler", "fm_capture_creator", "fm_content_acid_lab_sell",
+                    "fm_content_acid_lab_setup", "fm_content_acid_lab_source", "fm_content_ammunation",
+                    "fm_content_armoured_truck", "fm_content_auto_shop_delivery", "fm_content_bank_shootout",
+                    "fm_content_bar_resupply", "fm_content_bicycle_time_trial", "fm_content_bike_shop_delivery",
+                    "fm_content_business_battles", "fm_content_cargo", "fm_content_cerberus",
+                    "fm_content_club_management", "fm_content_club_odd_jobs", "fm_content_club_source",
+                    "fm_content_clubhouse_contracts", "fm_content_convoy", "fm_content_crime_scene",
+                    "fm_content_drug_lab_work", "fm_content_drug_vehicle", "fm_content_export_cargo",
+                    "fm_content_ghosthunt", "fm_content_golden_gun", "fm_content_gunrunning", "fm_content_hsw_setup",
+                    "fm_content_hsw_time_trial", "fm_content_island_dj", "fm_content_island_heist",
+                    "fm_content_metal_detector", "fm_content_movie_props", "fm_content_mp_intro",
+                    "fm_content_parachuter", "fm_content_payphone_hit", "fm_content_phantom_car",
+                    "fm_content_possessed_animals", "fm_content_robbery", "fm_content_security_contract",
+                    "fm_content_sightseeing", "fm_content_skydive", "fm_content_slasher", "fm_content_smuggler_ops",
+                    "fm_content_smuggler_plane", "fm_content_smuggler_resupply", "fm_content_smuggler_sell",
+                    "fm_content_smuggler_trail", "fm_content_source_research", "fm_content_stash_house",
+                    "fm_content_taxi_driver", "fm_content_test", "fm_content_tuner_robbery", "fm_content_vehicle_list",
+                    "fm_content_vip_contract_1", "fm_content_xmas_mugger", "fm_deathmatch_controler",
+                    "fm_deathmatch_creator", "fm_hideout_controler", "fm_hold_up_tut", "fm_horde_controler",
+                    "fm_impromptu_dm_controler", "fm_intro_cut_dev", "fm_intro", "fm_lts_creator", "fm_main_menu",
+                    "fm_maintain_cloud_header_data", "fm_maintain_transition_players", "fm_mission_controller_2020",
+                    "fm_mission_controller", "fm_mission_creator", "fm_race_controler", "fm_race_creator",
+                    "fm_street_dealer", "fm_survival_controller", "fm_survival_creator", "fmmc_contentquicklauncher",
+                    "fmmc_launcher", "fmmc_playlist_controller", "forsalesigns", "fps_test_mag", "fps_test",
+                    "franklin0", "franklin1", "franklin2", "freemode_clearglobals", "freemode_creator", "freemode_init",
+                    "freemode", "friendactivity", "friends_controller", "friends_debug_controller", "fullmap_test_flow",
+                    "fullmap_test", "game_server_test", "gb_airfreight", "gb_amphibious_assault", "gb_assault",
+                    "gb_bank_job", "gb_bellybeast", "gb_biker_bad_deal", "gb_biker_burn_assets",
+                    "gb_biker_contraband_defend", "gb_biker_contraband_sell", "gb_biker_contract_killing",
+                    "gb_biker_criminal_mischief", "gb_biker_destroy_vans", "gb_biker_driveby_assassin",
+                    "gb_biker_free_prisoner", "gb_biker_joust", "gb_biker_last_respects", "gb_biker_race_p2p",
+                    "gb_biker_rescue_contact", "gb_biker_rippin_it_up", "gb_biker_safecracker",
+                    "gb_biker_search_and_destroy", "gb_biker_shuttle", "gb_biker_stand_your_ground",
+                    "gb_biker_steal_bikes", "gb_biker_target_rival", "gb_biker_unload_weapons",
+                    "gb_biker_wheelie_rider", "gb_carjacking", "gb_cashing_out", "gb_casino_heist_planning",
+                    "gb_casino_heist", "gb_casino", "gb_collect_money", "gb_contraband_buy", "gb_contraband_defend",
+                    "gb_contraband_sell", "gb_data_hack", "gb_deathmatch", "gb_delivery", "gb_finderskeepers",
+                    "gb_fivestar", "gb_fortified", "gb_fragile_goods", "gb_fully_loaded", "gb_gang_ops_planning",
+                    "gb_gangops", "gb_gunrunning_defend", "gb_gunrunning_delivery", "gb_gunrunning", "gb_headhunter",
+                    "gb_hunt_the_boss", "gb_ie_delivery_cutscene", "gb_illicit_goods_resupply", "gb_infiltration",
+                    "gb_jewel_store_grab", "gb_ploughed", "gb_point_to_point", "gb_ramped_up", "gb_rob_shop",
+                    "gb_salvage", "gb_security_van", "gb_sightseer", "gb_smuggler", "gb_stockpiling",
+                    "gb_target_pursuit", "gb_terminate", "gb_transporter", "gb_vehicle_export", "gb_velocity",
+                    "gb_yacht_rob", "general_test", "ggsm_arcade", "globals_fmmc_struct_registration",
+                    "globals_fmmcstruct2_registration", "golf_ai_foursome_putting", "golf_ai_foursome", "golf_mp",
+                    "golf", "gpb_andymoon", "gpb_baygor", "gpb_billbinder", "gpb_clinton", "gpb_griff", "gpb_jane",
+                    "gpb_jerome", "gpb_jesse", "gpb_mani", "gpb_mime", "gpb_pameladrake", "gpb_superhero", "gpb_tonya",
+                    "gpb_zombie", "grid_arcade_cabinet", "gtest_airplane", "gtest_avoidance", "gtest_boat",
+                    "gtest_divingfromcar", "gtest_divingfromcarwhilefleeing", "gtest_helicopter",
+                    "gtest_nearlymissedbycar", "gunclub_shop", "gunfighttest", "gunslinger_arcade",
+                    "hacker_truck_carmod", "hairdo_shop_mp", "hairdo_shop_sp", "hangar_carmod", "hao1", "headertest",
+                    "heatmap_test_flow", "heatmap_test", "heist_ctrl_agency", "heist_ctrl_docks", "heist_ctrl_finale",
+                    "heist_ctrl_jewel", "heist_ctrl_rural", "heist_island_planning", "heli_gun", "heli_streaming",
+                    "hud_creator", "hunting1", "hunting2", "hunting_ambient", "idlewarper", "ingamehud", "initial",
+                    "item_ownership_output", "jewelry_heist", "jewelry_prep1a", "jewelry_prep1b", "jewelry_prep2a",
+                    "jewelry_setup1", "josh1", "josh2", "josh3", "josh4", "juggalo_hideout_carmod",
+                    "juggalo_hideout_seating", "lamar1", "landing_pre_startup", "laptop_trigger", "launcher_abigail",
+                    "launcher_barry", "launcher_basejumpheli", "launcher_basejumppack", "launcher_carwash",
+                    "launcher_darts", "launcher_dreyfuss", "launcher_epsilon", "launcher_extreme", "launcher_fanatic",
+                    "launcher_golf", "launcher_hao", "launcher_hunting_ambient", "launcher_hunting", "launcher_josh",
+                    "launcher_maude", "launcher_minute", "launcher_mrsphilips", "launcher_nigel",
+                    "launcher_offroadracing", "launcher_omega", "launcher_paparazzo", "launcher_pilotschool",
+                    "launcher_racing", "launcher_rampage", "launcher_range", "launcher_stunts", "launcher_tennis",
+                    "launcher_thelastone", "launcher_tonya", "launcher_triathlon", "launcher_yoga", "lester1",
+                    "lesterhandler", "letterscraps", "line_activation_test", "liverecorder", "locates_tester",
+                    "luxe_veh_activity", "magdemo2", "magdemo", "main_install", "main_persistent", "main",
+                    "maintransition", "martin1", "maude1", "maude_postbailbond", "me_amanda1", "me_jimmy1",
+                    "me_tracey1", "mg_race_to_point", "michael1", "michael2", "michael3", "michael4", "michael4leadout",
+                    "minigame_ending_stinger", "minigame_stats_tracker", "minute1", "minute2", "minute3",
+                    "mission_race", "mission_repeat_controller", "mission_stat_alerter", "mission_stat_watcher",
+                    "mission_triggerer_a", "mission_triggerer_b", "mission_triggerer_c", "mission_triggerer_d",
+                    "missioniaaturret", "mp_awards", "mp_bed_high", "mp_fm_registration", "mp_menuped",
+                    "mp_prop_global_block", "mp_prop_special_global_block", "mp_registration",
+                    "mp_save_game_global_block", "mp_unlocks", "mp_weapons", "mpstatsinit", "mptestbed", "mrsphilips1",
+                    "mrsphilips2", "multistorey_garage_ext_seating", "multistorey_garage_seating", "murdermystery",
+                    "music_studio_seating_external", "music_studio_seating", "music_studio_smoking", "navmeshtest",
+                    "net_activity_creator_ui", "net_apartment_activity_light", "net_apartment_activity",
+                    "net_bot_brain", "net_bot_simplebrain", "net_cloud_mission_loader", "net_combat_soaktest",
+                    "net_jacking_soaktest", "net_session_soaktest", "net_test_drive", "net_tunable_check", "nigel1",
+                    "nigel1a", "nigel1b", "nigel1c", "nigel1d", "nigel2", "nigel3", "nightclub_ground_floor_seats",
+                    "nightclub_office_seats", "nightclub_vip_seats", "nightclubpeds", "nodemenututorial", "nodeviewer",
+                    "ob_abatdoor", "ob_abattoircut", "ob_airdancer", "ob_bong", "ob_cashregister", "ob_drinking_shots",
+                    "ob_foundry_cauldron", "ob_franklin_beer", "ob_franklin_tv", "ob_franklin_wine", "ob_huffing_gas",
+                    "ob_jukebox", "ob_mp_bed_high", "ob_mp_bed_low", "ob_mp_bed_med", "ob_mp_shower_med",
+                    "ob_mp_stripper", "ob_mr_raspberry_jam", "ob_poledancer", "ob_sofa_franklin", "ob_sofa_michael",
+                    "ob_telescope", "ob_tv", "ob_vend1", "ob_vend2", "ob_wheatgrass", "offroad_races", "omega1",
+                    "omega2", "paparazzo1", "paparazzo2", "paparazzo3", "paparazzo3a", "paparazzo3b", "paparazzo4",
+                    "paradise2", "paradise", "pausemenu_example", "pausemenu_map", "pausemenu_multiplayer",
+                    "pausemenu_sp_repeat", "pausemenu", "pausemenucareerhublaunch", "pb_busker", "pb_homeless",
+                    "pb_preacher", "pb_prostitute", "personal_carmod_shop", "photographymonkey", "photographywildlife",
+                    "physics_perf_test_launcher", "physics_perf_test", "pi_menu", "pickup_controller", "pickuptest",
+                    "pickupvehicles", "pilot_school_mp", "pilot_school", "placeholdermission", "placementtest",
+                    "planewarptest", "player_controller_b", "player_controller", "player_scene_f_lamgraff",
+                    "player_scene_f_lamtaunt", "player_scene_f_taxi", "player_scene_ft_franklin1",
+                    "player_scene_m_cinema", "player_scene_m_fbi2", "player_scene_m_kids", "player_scene_m_shopping",
+                    "player_scene_mf_traffic", "player_scene_t_bbfight", "player_scene_t_chasecar",
+                    "player_scene_t_insult", "player_scene_t_park", "player_scene_t_tie", "player_timetable_scene",
+                    "playthrough_builder", "pm_defend", "pm_delivery", "pm_gang_attack", "pm_plane_promotion",
+                    "pm_recover_stolen", "postkilled_bailbond2", "postrc_barry1and2", "postrc_barry4",
+                    "postrc_epsilon4", "postrc_nigel3", "profiler_registration", "prologue1", "prop_drop", "puzzle",
+                    "racetest", "rampage1", "rampage2", "rampage3", "rampage4", "rampage5", "rampage_controller",
+                    "randomchar_controller", "range_modern_mp", "range_modern", "re_abandonedcar", "re_accident",
+                    "re_armybase", "re_arrests", "re_atmrobbery", "re_bikethief", "re_border", "re_burials",
+                    "re_bus_tours", "re_cartheft", "re_chasethieves", "re_crashrescue", "re_cultshootout",
+                    "re_dealgonewrong", "re_domestic", "re_drunkdriver", "re_duel", "re_gang_intimidation",
+                    "re_gangfight", "re_getaway_driver", "re_hitch_lift", "re_homeland_security", "re_lossantosintl",
+                    "re_lured", "re_monkey", "re_mountdance", "re_muggings", "re_paparazzi", "re_prison",
+                    "re_prisonerlift", "re_prisonvanbreak", "re_rescuehostage", "re_seaplane", "re_securityvan",
+                    "re_shoprobbery", "re_snatched", "re_stag_do", "re_yetarian", "replay_controller",
+                    "rerecord_recording", "respawn_controller", "restrictedareas", "rng_output", "road_arcade",
+                    "rollercoaster", "rural_bank_heist", "rural_bank_prep1", "rural_bank_setup", "save_anywhere",
+                    "savegame_bed", "sc_lb_global_block", "scaleformgraphictest", "scaleformminigametest",
+                    "scaleformprofiling", "scaleformtest", "scene_builder", "sclub_front_bouncer", "script_metrics",
+                    "scripted_cam_editor", "scriptplayground", "scripttest1", "scripttest2", "scripttest3",
+                    "scripttest4", "scroll_arcade_cabinet", "sctv", "selector_example", "selector", "selling_short_1",
+                    "selling_short_2", "sh_intro_f_hills", "sh_intro_m_home", "shooting_camera", "shop_controller",
+                    "shoprobberies", "shot_bikejump", "shrinkletter", "simeon_showroom_seating", "smoketest",
+                    "social_controller", "solomon1", "solomon2", "solomon3", "sp_dlc_registration",
+                    "sp_editor_mission_instance", "sp_menuped", "sp_pilotschool_reg", "spaceshipparts",
+                    "spawn_activities", "speech_reverb_tracker", "spmc_instancer", "spmc_preloader",
+                    "standard_global_init", "standard_global_reg", "startup_install", "startup_locationtest",
+                    "startup_positioning", "startup_smoketest", "startup", "stats_controller", "stock_controller",
+                    "streaming", "stripclub_drinking", "stripclub_mp", "stripclub", "stripperhome", "stunt_plane_races",
+                    "tasklist_1", "tattoo_shop", "taxi_clowncar", "taxi_cutyouin", "taxi_deadline", "taxi_followcar",
+                    "taxi_gotyounow", "taxi_gotyourback", "taxi_needexcitement", "taxi_procedural", "taxi_takeiteasy",
+                    "taxi_taketobest", "taxilauncher", "taxiservice", "taxitutorial", "tempalpha", "temptest",
+                    "tennis_ambient", "tennis_family", "tennis_network_mp", "tennis", "test_startup", "thelastone",
+                    "three_card_poker", "timershud", "title_update_registration_2", "title_update_registration",
+                    "tonya1", "tonya2", "tonya3", "tonya4", "tonya5", "towing", "traffick_air", "traffick_ground",
+                    "traffickingsettings", "traffickingteleport", "train_create_widget", "train_tester", "trevor1",
+                    "trevor2", "trevor3", "trevor4", "triathlonsp", "tunables_registration", "tuneables_processing",
+                    "tuner_planning", "tuner_property_carmod", "tuner_sandbox_activity", "turret_cam_script", "ufo",
+                    "ugc_global_registration_2", "ugc_global_registration", "underwaterpickups", "utvc",
+                    "valentinerpreward2", "veh_play_widget", "vehicle_ai_test", "vehicle_force_widget",
+                    "vehicle_gen_controller", "vehicle_plate", "vehicle_stealth_mode", "vehiclespawning", "walking_ped",
+                    "wardrobe_mp", "wardrobe_sp", "weapon_audio_widget", "wizard_arcade", "wp_partyboombox",
+                    "xml_menus", "yoga"}
 
 function ADD_MP_INDEX(stat)
     local Exceptions = {"MP_CHAR_STAT_RALLY_ANIM", "MP_CHAR_ARMOUR_1_COUNT", "MP_CHAR_ARMOUR_2_COUNT",
@@ -440,7 +425,7 @@ menu.toggle(killaura, "killaura_use_random_player_explosion", {}, "", function(o
     killaura_random_player_explosion = on
 end)
 
-local time = menu.slider(killaura, "killauratime", {"killauratime"}, "", 0, 2147483647, 0, 1, function()
+local time = menu.slider(killaura, "killauratime", {"killauratime"}, "", 0, INT_MAX, 0, 1, function()
 end)
 
 menu.toggle_loop(killaura, "killaura all", {"latiaokillaura"}, ("SHOOT ALL"), function()
@@ -458,20 +443,20 @@ menu.toggle_loop(killaura, "killaura all", {"latiaokillaura"}, ("SHOOT ALL"), fu
                 (not ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(players.user_ped(), ped, 17) and not kill_aura_through_walls)) then
 
                 if kill_aura_fire_Loop then
-                    FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 12, 2147483647, false, true, 0.0)
+                    FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 12, INT_MAX, false, true, 0.0)
                 elseif kill_aura_nick_explosion then
-                    FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
+                    FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
                 elseif kill_aura_explosion then
-                    FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
+                    FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
                 elseif killaura_random_player_explosion then
-                    FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
+                    FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
                 elseif killaura_random_player then
                     -- print("killaura_random_player")
-                    MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z, 2147483647,
+                    MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z, INT_MAX,
                         true, util.joaat("weapon_pistol"), randomPid, false, true, 1)
                 else
                     -- print("killaura_none")
-                    MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z, 2147483647,
+                    MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z, INT_MAX,
                         true, util.joaat("weapon_pistol"), players.user_ped(), false, true, 1)
                     util.yield(menu.get_value(time))
                 end
@@ -730,7 +715,8 @@ menu.action(server, "kickall exclude hosts and cheat", {"latiaokickallexcludehos
             if pid == players.get_host() or pid == players.user() or players.is_marked_as_modder(pid) then
                 goto out
             end
-            util.trigger_script_event(1 << pid, {-1544003568, pid})
+            util.trigger_script_event(1 << pid, {-1321657966, pid, INT_MAX, 0, 0, 1})
+
             ::out::
         end
     end)
@@ -881,19 +867,19 @@ menu.toggle_loop(server, "report all no host", {"latiaofackhackattackall"}, "rep
 end)
 
 menu.toggle_loop(server, "bad TIMER_STOP SOUND for all", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
-    AUDIO.PLAY_SOUND_FROM_COORD(-1, "TIMER_STOP", 0, 0, 0, "HUD_MINI_GAME_SOUNDSET", true, 2147483647, true)
+    AUDIO.PLAY_SOUND_FROM_COORD(-1, "TIMER_STOP", 0, 0, 0, "HUD_MINI_GAME_SOUNDSET", true, INT_MAX, true)
 
     -- util.yield(50)
 end)
 
 menu.toggle_loop(server, "bad WastedSounds SOUND for all", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
-    AUDIO.PLAY_SOUND_FROM_COORD(-1, "MP_Flash", 0, 0, 0, "WastedSounds", true, 2147483647, true)
+    AUDIO.PLAY_SOUND_FROM_COORD(-1, "MP_Flash", 0, 0, 0, "WastedSounds", true, INT_MAX, true)
 
     -- util.yield(50)
 end)
 
 menu.toggle_loop(server, "bad Camera_Shoot SOUND for all", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
-    AUDIO.PLAY_SOUND_FROM_COORD(-1, "Camera_Shoot", 0, 0, 0, "Phone_Soundset_Franklin", true, 2147483647, true)
+    AUDIO.PLAY_SOUND_FROM_COORD(-1, "Camera_Shoot", 0, 0, 0, "Phone_Soundset_Franklin", true, INT_MAX, true)
 
     -- util.yield(50)
 end)
@@ -906,7 +892,7 @@ menu.toggle_loop(server, "RandomPlayerEXPLOSION", {"latiaoRandomPlayerEXPLOSION"
         local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(list[index])
 
         local pos = v3.new(players.get_position(pid))
-        FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
+        FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
     end
 end)
 
@@ -964,7 +950,7 @@ menu.toggle_loop(server, "REQUES_ENTITY vehicles2", {"latiaoREQUES_ENTITYvehicle
 menu.toggle_loop(server, "REQUES_ENTITY vehicles no player", {""}, ".", function()
     for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
         for k, pid in pairs(players.list()) do
-            local v1 = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), true)
+            local v1 = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false)
             if target == v1 then
                 goto out
             end
@@ -977,7 +963,7 @@ end)
 menu.toggle_loop(server, "REQUES_ENTITY vehicles no player2", {""}, ".", function()
     for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
         for k, pid in pairs(players.list()) do
-            local v1 = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), true)
+            local v1 = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false)
             if target == v1 then
                 goto out
             end
@@ -1079,14 +1065,6 @@ menu.action(world, "stopautoDRIVE", {"latiaostopautoDRIVE"}, "stopautoDRIVE.", f
     TASK.CLEAR_PED_TASKS(players.user_ped())
 end)
 
-menu.action(test, "GetAllPlayerInfo", {"latiaoGetAllPlayerInfo"}, "latiaoGetAllPlayerInfo.", function()
-    for k, pid in pairs(players.list()) do
-        local playerPED = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        local playerNAME = PLAYER.GET_PLAYER_NAME(pid)
-        local gameLANGUAGE = players.get_language(pid)
-        print("player:" .. playerNAME .. " pid:" .. pid .. " PlayerPed:" .. playerPED .. " gameLANGUAGE" .. gameLANGUAGE)
-    end
-end)
 menu.toggle_loop(test, "clean chat", {"latiaocleanchat"}, "latiaocleanchat.", function()
     chat.send_message("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", false, true, true)
 end)
@@ -1167,8 +1145,8 @@ end)
 menu.action(dividends, "RefreshBoards", {"latiaoRefreshBoards"}, "", function()
     local Board1 = STAT_GET_INT("H3OPT_BITSET0")
     local Board2 = STAT_GET_INT("H3OPT_BITSET1")
-    STAT_SET_INT("H3OPT_BITSET0", math.random(2147483647))
-    STAT_SET_INT("H3OPT_BITSET1", math.random(2147483647))
+    STAT_SET_INT("H3OPT_BITSET0", math.random(INT_MAX))
+    STAT_SET_INT("H3OPT_BITSET1", math.random(INT_MAX))
     util.yield_once()
     STAT_SET_INT("H3OPT_BITSET0", Board1)
     STAT_SET_INT("H3OPT_BITSET1", Board2)
@@ -1201,7 +1179,7 @@ menu.action(dividends, "load Perico", {}, "", function()
 
 end)
 
-local Perico = menu.slider(dividends, "Perico", {"Perico"}, "2550000", -2147483647, 2147483647, 100, 5, function()
+local Perico = menu.slider(dividends, "Perico", {"Perico"}, "2550000", INT_MIN, INT_MAX, 100, 5, function()
 end)
 
 menu.toggle_loop(dividends, "Perico all (you host)", {""}, "latiaoPericoallyouhost.", function()
@@ -1210,7 +1188,7 @@ menu.toggle_loop(dividends, "Perico all (you host)", {""}, "latiaoPericoallyouho
     SET_INT_GLOBAL(1978495 + 825 + 56 + 3, menu.get_value(Perico))
     SET_INT_GLOBAL(1978495 + 825 + 56 + 4, menu.get_value(Perico))
 end)
-local Pericotarget = menu.slider(dividends, "Pericotarget", {"Pericotarget"}, "", -2147483647, 2147483647, 1000, 100000,
+local Pericotarget = menu.slider(dividends, "Pericotarget", {"Pericotarget"}, "", INT_MIN, INT_MAX, 1000, 100000,
     function()
     end)
 menu.action(dividends, "Pericotarget_money ", {"latiaoPericotarget_money"}, ".", function()
@@ -1240,9 +1218,8 @@ menu.action(dividends, "load Apartment", {""}, "H3OPT_BITSET1.", function()
     STAT_SET_INT("HEIST_PLANNING_STAGE", -1)
 end)
 
-local Apartment = menu.slider(dividends, "Apartment", {"Apartment"}, "15000000", -2147483647, 2147483647, 100, 100,
-    function()
-    end)
+local Apartment = menu.slider(dividends, "Apartment", {"Apartment"}, "15000000", INT_MIN, INT_MAX, 100, 100, function()
+end)
 
 menu.toggle_loop(dividends, "Apartment all (you host)", {"latiaoApartmentallyouhost"}, "latiaoApartmentallyouhost.",
     function()
@@ -1326,7 +1303,7 @@ menu.action(dividends, "fin fm_mission_controller_2020 2 ", {"fin fm_mission_con
         SET_INT_LOCAL("fm_mission_controller_2020", 45450 + 1378 + 1, 2000)
     end)
 local money = menu.slider(dividends, "fm_mission_controller money", {"fm_mission_controllermoney"},
-    "fm_mission_controllermoney", -2147483647, 2147483647, 3000000, 100000, function()
+    "fm_mission_controllermoney", INT_MIN, INT_MAX, 3000000, 100000, function()
     end)
 menu.action(dividends, "moneyfm_mission_controller", {"moneyfm_mission_controller"}, "moneyfinfm_mission_controller",
     function()
@@ -1340,10 +1317,10 @@ menu.action(dividends, "finfm_mission_controller", {"finfmc"}, "finfm_mission_co
 end)
 
 local test1 = menu.slider(dividends, "28331 + 1 fm_mission_controller", {"fm_mission_controllertest1"},
-    "fm_mission_controllermoney", 0, 2147483647, 0, 1, function()
+    "fm_mission_controllermoney", 0, INT_MAX, 0, 1, function()
     end)
 local test2 = menu.slider(dividends, "31587 + 69 fm_mission_controlle", {"fm_mission_controllertest2"},
-    "fm_mission_controllermoney", 0, 2147483647, 0, 1, function()
+    "fm_mission_controllermoney", 0, INT_MAX, 0, 1, function()
     end)
 
 menu.toggle_loop(dividends, "debugfm_mission_controller", {"finfmc"}, "finfm_mission_controller", function()
@@ -1371,6 +1348,10 @@ local function testMenuSetup(pid)
     menu.divider(menu.player_root(pid), "test")
 
     local testMenu = menu.list(menu.player_root(pid), "test", {}, "")
+    menu.action(testMenu, "get_language", {}, "", function()
+        print(players.get_language(pid))
+
+    end)
 
     menu.toggle_loop(testMenu, "ATTACH_ENTITY_TO_ENTITY all ped", {}, "", function()
         local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
@@ -1455,7 +1436,10 @@ local function testMenuSetup(pid)
         TASK.CLEAR_PED_TASKS_IMMEDIATELY(playerped)
         util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
         menu.trigger_commands("kill" .. players.get_name(pid))
-        FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
+        FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
+        MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, INT_MAX, true,
+            util.joaat("weapon_stungun"), players.user_ped(), false, true, INT_MAX)
+
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1466,7 +1450,7 @@ local function testMenuSetup(pid)
         local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
         TASK.CLEAR_PED_TASKS_IMMEDIATELY(playerped)
         util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
-        FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
+        FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1481,7 +1465,7 @@ local function testMenuSetup(pid)
         local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
         TASK.CLEAR_PED_TASKS_IMMEDIATELY(playerped)
         util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
-        FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
+        FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1492,7 +1476,7 @@ local function testMenuSetup(pid)
         local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
         -- TASK.CLEAR_PED_TASKS_IMMEDIATELY(playerped)
         MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 0, true,
-            util.joaat("weapon_stungun"), players.user_ped(), false, true, 2147483647)
+            util.joaat("weapon_stungun"), players.user_ped(), false, true, INT_MAX)
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1518,7 +1502,7 @@ local function testMenuSetup(pid)
     menu.toggle_loop(testMenu, "weapon_pistol SHOOT", {}, "", function()
         local pos = players.get_position(pid)
         MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 100, true,
-            util.joaat("weapon_pistol"), players.user_ped(), false, true, 2147483647.0)
+            util.joaat("weapon_pistol"), players.user_ped(), false, true, INT_MAX)
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1527,7 +1511,7 @@ local function testMenuSetup(pid)
     menu.toggle_loop(testMenu, "weapon_stungun SHOOT", {}, "", function()
         local pos = players.get_position(pid)
         MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 0, true,
-            util.joaat("weapon_stungun"), players.user_ped(), false, true, 2147483647)
+            util.joaat("weapon_stungun"), players.user_ped(), false, true, INT_MAX)
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1535,16 +1519,16 @@ local function testMenuSetup(pid)
 
     menu.toggle_loop(testMenu, "weapon_bzgas SHOOT", {}, "", function()
         local pos = players.get_position(pid)
-        MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 2147483647, true,
-            util.joaat("weapon_bzgas"), players.user_ped(), false, true, 2147483647)
+        MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, INT_MAX, true,
+            util.joaat("weapon_bzgas"), players.user_ped(), false, true, INT_MAX)
         if not players.exists(pid) then
             util.stop_thread()
         end
     end)
     menu.toggle_loop(testMenu, "weapon_molotov SHOOT", {}, "", function()
         local pos = players.get_position(pid)
-        MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 2147483647, true,
-            util.joaat("weapon_molotov"), players.user_ped(), false, true, 2147483647)
+        MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, INT_MAX, true,
+            util.joaat("weapon_molotov"), players.user_ped(), false, true, INT_MAX)
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1562,7 +1546,7 @@ local function testMenuSetup(pid)
         GRAPHICS.USE_PARTICLE_FX_ASSET("scr_as_trans")
         local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
         GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY("scr_as_trans_smoke", ped, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-            10, false, false, false, 0, 0, 0, 255)
+            5, false, false, false, 0, 0, 0, 255)
     end)
     menu.action(testMenu, "scr_as_trans_smoke 100", {"latiaoscr_as_trans_smoke"}, "", function()
         STREAMING.REQUEST_NAMED_PTFX_ASSET("scr_as_trans")
@@ -1574,7 +1558,7 @@ local function testMenuSetup(pid)
 
     menu.toggle_loop(testMenu, "NickEXPLOSION", {"latiaoNickEXPLOSION"}, "", function()
         local pos = players.get_position(pid)
-        FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
+        FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1588,7 +1572,7 @@ local function testMenuSetup(pid)
         local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(list[index])
 
         local pos = players.get_position(pid)
-        FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
+        FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1596,7 +1580,7 @@ local function testMenuSetup(pid)
 
     menu.toggle_loop(testMenu, "MEEXPLOSION", {"latiaoMEEXPLOSION"}, "", function()
         local pos = players.get_position(pid)
-        FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
+        FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1605,7 +1589,7 @@ local function testMenuSetup(pid)
 
     menu.toggle_loop(testMenu, "NickFlameLoop", {"latiaoFlameLoop"}, "", function()
         local pos = players.get_position(pid)
-        FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 12, 2147483647, false, true, 0.0)
+        FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 12, INT_MAX, false, true, 0.0)
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1678,6 +1662,21 @@ local function testMenuSetup(pid)
         end
     end)
 
+    menu.action(testMenu, "传送佩里克岛", {"latiaoscriptkick"}, "", function()
+        util.trigger_script_event(1 << pid, {373376135, pid, 1})
+
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+    menu.action(testMenu, "人间蒸发", {"latiaoscriptkick"}, "", function()
+        util.trigger_script_event(1 << pid, {57493695, pid, INT_MAX, INT_MAX})
+
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
     menu.action(testMenu, "NETWORK_SESSION_KICK_PLAYER", {"latiaoNETWORK_SESSION_KICK_PLAYER"}, "", function()
         NETWORK.NETWORK_SESSION_KICK_PLAYER(pid)
     end)
@@ -1735,8 +1734,25 @@ local function testMenuSetup(pid)
             util.stop_thread()
         end
     end)
+
+    menu.toggle_loop(testMenu, "host freeze2", {""}, ".", function()
+        util.trigger_script_event(1 << pid, {-1321657966, pid, pid, 0, 0, 1})
+
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
+    menu.action(testMenu, "test kick", {""}, ".", function()
+        util.trigger_script_event(1 << pid, {-1321657966, pid, INT_MAX, 0, 0, 1})
+
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
     menu.toggle_loop(testMenu, "wok freeze", {""}, ".", function()
-        util.yield(1000)
+        -- util.yield(1000)
 
         util.trigger_script_event(1 << pid, {259469385})
 
@@ -1744,14 +1760,8 @@ local function testMenuSetup(pid)
             util.stop_thread()
         end
     end)
-    menu.action(testMenu, "bad SOUND script_event2", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
 
-        if not players.exists(pid) then
-            util.stop_thread()
-        end
-    end)
-
-    menu.toggle_loop(testMenu, "bad SOUND script_event", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
+    menu.toggle_loop(testMenu, "bad SOUND script_event", {""}, "", function()
         -- util.yield(1500)
         util.trigger_script_event(1 << pid, {-642704387, pid, 782258655, 0, 0, 0, 0, 0, 0, 0, pid, 0, 0, 0})
         if not players.exists(pid) then
@@ -1759,7 +1769,7 @@ local function testMenuSetup(pid)
         end
     end)
 
-    menu.toggle_loop(testMenu, "info spamm", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
+    menu.toggle_loop(testMenu, "info spamm", {"test1"}, "tet2", function()
         -- util.yield(1500)
 
         util.trigger_script_event(1 << pid,
@@ -1769,14 +1779,16 @@ local function testMenuSetup(pid)
         end
     end)
 
-    menu.action(testMenu, "give_script_host fm_mission_controller", {"give_script_host"}, "give_script_host.",
-        function()
-            util.request_script_host("fm_mission_controller_2020")
-            util.request_script_host("fm_mission_controller")
-            util.yield(5000)
-            util.give_script_host("fm_mission_controller_2020", pid)
-            util.give_script_host("fm_mission_controller", pid)
-        end)
+    -- menu.action(testMenu, "give_script_host all", {"give_script_host"}, "give_script_host.", function()
+    --     for _, script in ipairs(ALL_script) do
+    --         util.request_script_host(script)
+    --         util.yield(1000)
+
+    --         util.give_script_host(script, pid)
+
+    --     end
+
+    -- end)
 
     menu.action(testMenu, "latiaoGHOSTModetrue", {"latiaoGHOSTMode"}, "", function()
         NETWORK.SET_REMOTE_PLAYER_AS_GHOST(pid, true)
@@ -1787,7 +1799,7 @@ local function testMenuSetup(pid)
     end)
 
     menu.action(testMenu, "casino TP", {""}, ".", function()
-        util.trigger_script_event(1 << pid, {-1638522928, pid, 123, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2147483647, 0, 0})
+        util.trigger_script_event(1 << pid, {-1638522928, pid, 123, 0, 0, 0, 0, 0, 0, 0, 0, 1, INT_MAX, 0, 0})
     end)
 
     menu.toggle_loop(testMenu, "loop report", {""}, ".", function()
@@ -1840,14 +1852,14 @@ local function testMenuSetup(pid)
 
     menu.toggle_loop(testMenu, "EXPLOSIONLoop", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
         local pos = players.get_position(pid)
-        FIRE.ADD_EXPLOSION(pos, 0, 2147483647, true, false, 2147483647.0)
+        FIRE.ADD_EXPLOSION(pos, 0, INT_MAX, true, false, INT_MAX)
         if not players.exists(pid) then
             util.stop_thread()
         end
     end)
     menu.toggle_loop(testMenu, "FlameLoop", {"latiaoFlameLoop"}, "", function()
         local pos = players.get_position(pid)
-        FIRE.ADD_EXPLOSION(pos, 12, 2147483647, true, false, 2147483647.0)
+        FIRE.ADD_EXPLOSION(pos, 12, INT_MAX, true, false, INT_MAX)
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1855,7 +1867,9 @@ local function testMenuSetup(pid)
     menu.toggle_loop(testMenu, "loop tp objects", {""}, "", function()
         local pos = players.get_position(pid)
         for _, target in ipairs(entities.get_all_objects_as_handles()) do
-            ENTITY.SET_ENTITY_COORDS(target, pos.x, pos.y, pos.z, false)
+            if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(target) then
+                ENTITY.SET_ENTITY_COORDS(target, pos.x, pos.y, pos.z, false)
+            end
         end
         if not players.exists(pid) then
             util.stop_thread()
@@ -1864,8 +1878,10 @@ local function testMenuSetup(pid)
     menu.toggle_loop(testMenu, "loop tp peds", {""}, "", function()
         local pos = players.get_position(pid)
         for _, target in ipairs(entities.get_all_peds_as_handles()) do
-            if not entities.is_player_ped(target) then
-                ENTITY.SET_ENTITY_COORDS(target, pos.x, pos.y, pos.z, false)
+            if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(target) then
+                if not entities.is_player_ped(target) then
+                    ENTITY.SET_ENTITY_COORDS(target, pos.x, pos.y, pos.z, false)
+                end
             end
         end
         if not players.exists(pid) then
@@ -1875,8 +1891,9 @@ local function testMenuSetup(pid)
     menu.toggle_loop(testMenu, "loop tp vehicles", {""}, "", function()
         local pos = players.get_position(pid)
         for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
-
-            ENTITY.SET_ENTITY_COORDS(target, pos.x, pos.y, pos.z, false)
+            if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(target) then
+                ENTITY.SET_ENTITY_COORDS(target, pos.x, pos.y, pos.z, false)
+            end
 
         end
         if not players.exists(pid) then
@@ -1892,8 +1909,8 @@ local function testMenuSetup(pid)
     end)
 
     menu.toggle_loop(testMenu, "bounty script spamm", {"latiaoscriptbountyspamm"}, "", function()
-        util.trigger_script_event(1 << pid, {1517551547, pid, pid, 0, math.random(-2147483647, 2147483647), 0, 0, 0, 0,
-                                             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1})
+        util.trigger_script_event(1 << pid, {1517551547, pid, pid, 0, math.random(INT_MIN, INT_MAX), 0, 0, 0, 0, 0, 0,
+                                             0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1})
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1905,7 +1922,7 @@ local function testMenuSetup(pid)
 
                 -- if not  then
                 local pos = v3.new(ENTITY.GET_ENTITY_COORDS(ped))
-                FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), pos.x, pos.y, pos.z, 0, 2147483647,
+                FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), pos.x, pos.y, pos.z, 0, INT_MAX,
                     false, true, 0.0)
                 -- end
             end
@@ -2048,8 +2065,8 @@ menu.toggle_loop(world, "SET_ENTITY_HEALTH 0 ch_prop_ch_mobile_jammer_01x", {""}
     end
 end)
 
-local HEALTH = menu.slider(world, "SET_ENTITY_HEALTH up", {"SET_ENTITY_HEALTH"}, "SET_ENTITY_HEALTH", -2147483647,
-    2147483647, 100, 1, function()
+local HEALTH = menu.slider(world, "SET_ENTITY_HEALTH up", {"SET_ENTITY_HEALTH"}, "SET_ENTITY_HEALTH", INT_MIN, INT_MAX,
+    100, 1, function()
     end)
 
 menu.toggle_loop(world, "SET_ENTITY_HEALTH for get_all_objects_as_handles", {""}, "", function()
@@ -2113,10 +2130,10 @@ end)
 menu.action(dividends, "Contract All Missions", {}, "", function()
     STAT_SET_INT("FIXER_GENERAL_BS", -1)
     -- STAT_SET_INT("FIXER_COMPLETED_BS", -1)
-    -- STAT_SET_INT("FIXER_STORY_BS", -1)
+    STAT_SET_INT("FIXER_STORY_BS", -1)
 end)
 
-local ContractPayout = menu.slider(dividends, "ContractPayout", {"ContractPayout"}, "", 0, 2147483647, 0, 1, function()
+local ContractPayout = menu.slider(dividends, "ContractPayout", {"ContractPayout"}, "", 0, INT_MAX, 0, 1, function()
 
 end)
 
@@ -2125,21 +2142,21 @@ menu.toggle_loop(dividends, "ContractPayout", {""}, "", function()
 end)
 
 menu.toggle_loop(test, "CLEAR_AREA", {""}, "", function()
-    MISC.CLEAR_AREA(0, 0, 0, 2147483647, false, false, false, false)
+    MISC.CLEAR_AREA(0, 0, 0, INT_MAX, false, false, false, false)
 end)
 
 menu.toggle_loop(test, "CLEAR_AREA_OF_OBJECTS", {""}, "", function()
-    MISC.CLEAR_AREA_OF_OBJECTS(0, 0, 0, 2147483647, 0)
+    MISC.CLEAR_AREA_OF_OBJECTS(0, 0, 0, INT_MAX, 0)
 end)
 
 menu.toggle_loop(test, "CLEAR_AREA_OF_PEDS", {""}, "", function()
-    MISC.CLEAR_AREA_OF_PEDS(0, 0, 0, 2147483647, 0)
+    MISC.CLEAR_AREA_OF_PEDS(0, 0, 0, INT_MAX, 0)
 end)
 menu.toggle_loop(test, "CLEAR_AREA_OF_VEHICLES", {""}, "", function()
-    MISC.CLEAR_AREA_OF_VEHICLES(0, 0, 0, 2147483647, false, false, false, false, false, false, 0)
+    MISC.CLEAR_AREA_OF_VEHICLES(0, 0, 0, INT_MAX, false, false, false, false, false, false, 0)
 end)
 menu.toggle_loop(test, "CLEAR_AREA_OF_COPS", {""}, "", function()
-    MISC.CLEAR_AREA_OF_COPS(0, 0, 0, 2147483647, 0)
+    MISC.CLEAR_AREA_OF_COPS(0, 0, 0, INT_MAX, 0)
 end)
 
 menu.toggle_loop(test, "NETWORK_DO_TRANSITION_TO_NEW_FREEMODE", {}, "", function()
@@ -2203,7 +2220,7 @@ menu.action(admin, "Ballistic Armor", {""}, ".", function()
 end)
 
 menu.toggle_loop(world, "STOP_FIRE_IN_RANGE", {""}, ".", function()
-    FIRE.STOP_FIRE_IN_RANGE(0, 0, 0, 2147483647)
+    FIRE.STOP_FIRE_IN_RANGE(0, 0, 0, INT_MAX)
 end)
 
 menu.toggle_loop(world, "EVERYONE IGNORE ALL PLAYER", {}, "", function()
@@ -2231,7 +2248,7 @@ end)
 
 menu.action(server, "super request_script_host for all ", {"request_script_hostall"}, "latiaoNrequest_script_host.",
     function()
-        for _, script in ipairs(ALL_script_hosts) do
+        for _, script in ipairs(ALL_script) do
             util.request_script_host(script)
         end
     end)
@@ -2304,13 +2321,13 @@ menu.action(about, "github:latiao-1337", {""}, "", function()
 end)
 
 menu.action(test, "TERMINATE_ALL_SCRIPTS_WITH_THIS_NAME ALL", {""}, "", function()
-    for _, script in ipairs(ALL_script_hosts) do
+    for _, script in ipairs(ALL_script) do
         MISC.TERMINATE_ALL_SCRIPTS_WITH_THIS_NAME(script)
     end
 end)
 
 menu.action(test, "START_SCRIPTscript all", {""}, "", function()
-    for _, script in ipairs(ALL_script_hosts) do
+    for _, script in ipairs(ALL_script) do
         START_SCRIPT(script)
     end
 end)
@@ -2345,7 +2362,7 @@ menu.action(world, "tp ch_prop_fingerprint_scanner", {"latiaotpch_prop_fingerpri
 end)
 
 menu.toggle_loop(server, "EXPLOSION sound spamm", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
-    FIRE.ADD_EXPLOSION(0, 0, 2500, 0, 2147483647.0, true, false, 2147483647.0)
+    FIRE.ADD_EXPLOSION(0, 0, 2500, 0, INT_MAX, true, false, INT_MAX)
 end)
 menu.action(world, "LOAD_ALL_OBJECTS_NOW", {"LOAD_ALL_OBJECTS_NOW"}, "LOAD_ALL_OBJECTS_NOW", function()
     STREAMING.LOAD_ALL_OBJECTS_NOW()
@@ -2383,33 +2400,32 @@ menu.toggle_loop(server, "bounty script spamm for all", {"latiaobounty script sp
         if pid == players.user() then
             goto out
         end
-        util.trigger_script_event(1 << pid, {1517551547, pid, pid, 0, math.random(-2147483647, 2147483647), 0, 0, 0, 0,
-                                             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1})
+        util.trigger_script_event(1 << pid, {1517551547, pid, pid, 0, math.random(INT_MIN, INT_MAX), 0, 0, 0, 0, 0, 0,
+                                             0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1})
         ::out::
     end
 end)
 
-menu.action(server, "latiaoALL_script_hosts_test host test", {"latiaoALL_script_hosts_test"},
-    "latiaoALL_script_hosts_test.", function()
-        for _, script in ipairs(ALL_script_hosts) do
-            local host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, 0, 0)
-            local host2 = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, -1, 0)
+menu.action(server, "latiaoALL_script_test host test", {"latiaoALL_script_test"}, "latiaoALL_script_test.", function()
+    for _, script in ipairs(ALL_script) do
+        local host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, 0, 0)
+        local host2 = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, -1, 0)
 
-            if host ~= -1 then
-                local name = PLAYER.GET_PLAYER_NAME(host)
-                print(script .. ",0,0=" .. name)
-            end
-
-            if host2 ~= -1 then
-                local name = PLAYER.GET_PLAYER_NAME(host2)
-                print(script .. ",-1,0=" .. name)
-            end
+        if host ~= -1 then
+            local name = PLAYER.GET_PLAYER_NAME(host)
+            print(script .. ",0,0=" .. name)
         end
-    end)
+
+        if host2 ~= -1 then
+            local name = PLAYER.GET_PLAYER_NAME(host2)
+            print(script .. ",-1,0=" .. name)
+        end
+    end
+end)
 
 menu.toggle_loop(server, "auto super request_script_host for all ", {"autorequest_script_hostall"},
     "autorequest_script_hostall.", function()
-        for _, script in ipairs(ALL_script_hosts) do
+        for _, script in ipairs(ALL_script) do
             local host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, 0, 0)
             local host2 = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, -1, 0)
             if host ~= -1 and not (host == players.user()) then
@@ -2696,13 +2712,28 @@ menu.toggle_loop(server, "if you host give Collectibles>All", {""}, "", function
     end
 end)
 
+menu.toggle_loop(server, "if you host give Collectibles>All NO TIME", {""}, "", function()
+
+    if NETWORK.NETWORK_IS_HOST() then
+        menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
+
+    end
+end)
+
 menu.toggle_loop(server, "loop give Collectibles>All", {""}, "", function()
 
     menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
     util.yield(10000)
+
 end)
 
-local MU = menu.slider_float(admin, "经验倍率", {"xpmu"}, "xpmu", -2147483647, 2147483647, 100, 1, function()
+menu.toggle_loop(server, "loop give Collectibles>All2", {""}, "", function()
+
+    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
+
+end)
+
+local MU = menu.slider_float(admin, "经验倍率", {"xpmu"}, "xpmu", INT_MIN, INT_MAX, 100, 1, function()
 end)
 
 menu.toggle_loop(admin, "xp", {""}, "", function()
@@ -2730,7 +2761,7 @@ menu.action(admin, "RC Tank", {""}, ".", function()
     SET_INT_GLOBAL(2794162 + 6894, 1)
 end)
 
-menu.toggle_loop(server, "if you host 超级友好", {""}, "", function()
+menu.toggle_loop(server, "是主机 超级友好事件", {""}, "", function()
 
     if NETWORK.NETWORK_IS_HOST() then
         menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
@@ -2741,8 +2772,9 @@ menu.toggle_loop(server, "if you host 超级友好", {""}, "", function()
 
         menu.trigger_command(menu.ref_by_path("Players>All Players>Weapons>Give Parachute"))
 
-        util.yield(10000)
     end
+    util.yield(10000)
+
 end)
 
 menu.action(server, "test trigger_script_event", {""}, "", function()
@@ -2761,7 +2793,7 @@ menu.toggle_loop(world, "随机玩家击杀 ped ", {""}, "", function()
         if not entities.is_player_ped(ped) and ENTITY.IS_ENTITY_DEAD(ped) == false then
 
             local pos = v3.new(ENTITY.GET_ENTITY_COORDS(ped))
-            FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, 2147483647, false, true, 0.0)
+            FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
         end
     end
 
@@ -2854,4 +2886,9 @@ end)
 menu.action(world, "REFRESH_INTERIOR", {""}, "", function()
     local myINTERIOR = INTERIOR.GET_INTERIOR_FROM_ENTITY((players.user_ped()))
     INTERIOR.REFRESH_INTERIOR(myINTERIOR)
+end)
+menu.toggle_loop(server, "clean chat", {"latiaocleanchat"}, "latiaocleanchat.", function()
+    local chatt = math.random(100000000)
+
+    chat.send_message(chatt, false, true, true)
 end)
