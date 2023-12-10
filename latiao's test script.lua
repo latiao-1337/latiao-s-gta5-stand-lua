@@ -378,16 +378,23 @@ local dividends = menu.list(menu.my_root(), "dividends", {}, "")
 local admin = menu.list(menu.my_root(), "admin", {}, "")
 local about = menu.list(menu.my_root(), "about", {}, "")
 
-kill_aura_peds = false
-kill_aura_player = false
-kill_aura_in_vehicle = false
-kill_aura_through_walls = false
-kill_aura_explosion = false
-kill_aura_nick_explosion = false
-kill_aura_F_Loop = false
-killaura_random_player = false
+-- kill_aura_peds = false
+-- kill_aura_player = false
+-- kill_aura_in_vehicle = false
+-- kill_aura_through_walls = false
+-- kill_aura_explosion = false
+-- kill_aura_nick_explosion = false
+-- kill_aura_F_Loop = false
+-- killaura_random_player = false
 
-killaura_random_player_explosion = false
+-- killaura_random_player_explosion = false
+
+-- menu.toggle(killaura, "not IS_PED_IN_COMBAT", {}, "", function(on)
+--     IS_PED_IN_COMBAT = on
+-- end)
+menu.toggle(killaura, "IS_ENTITY_DEAD", {}, "", function(on)
+    IS_ENTITY_DEAD = on
+end)
 
 menu.toggle(killaura, "kill_aura_peds", {}, "", function(on)
     kill_aura_peds = on
@@ -427,42 +434,56 @@ end)
 
 local time = menu.slider(killaura, "killauratime", {"killauratime"}, "", 0, INT_MAX, 0, 1, function()
 end)
+-- menu.toggle(killaura, "kick ped to vehicle", {}, "", function(on)
+--     kill_aura_kick_vehicle = on
+
+-- end)
 
 menu.toggle_loop(killaura, "killaura all", {"latiaokillaura"}, ("SHOOT ALL"), function()
-    if kill_aura_peds or kill_aura_player or kill_aura_in_vehicle then
-        for _, ped in pairs(entities.get_all_peds_as_handles()) do
-            local list = players.list()
-            local index = math.random(#list)
-            local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(list[index])
-            local pos = v3.new(ENTITY.GET_ENTITY_COORDS(ped))
+    -- if kill_aura_peds or kill_aura_player or kill_aura_in_vehicle then
+    for _, ped in pairs(entities.get_all_peds_as_handles()) do
+        local list = players.list()
+        local index = math.random(#list)
+        local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(list[index])
+        local pos = v3.new(ENTITY.GET_ENTITY_COORDS(ped))
+        -- if kill_aura_kick_vehicle then
+        -- for _, ped in pairs(entities.get_all_peds_as_handles()) do
+        -- if not entities.is_player_ped(ped) then
+        --     if PED.IS_PED_IN_ANY_VEHICLE(ped, false) then
+        --         TASK.CLEAR_PED_TASKS_IMMEDIATELY(ped)
+        --     end
+        if not (players.user_ped() == ped or (ENTITY.IS_ENTITY_DEAD(ped) and not IS_ENTITY_DEAD) or
+            (PED.IS_PED_IN_ANY_VEHICLE(ped, false) and not kill_aura_in_vehicle) or
+            (entities.is_player_ped(ped) == false and not kill_aura_peds) or
+            (entities.is_player_ped(ped) == true and not kill_aura_player) or
+            -- (PED.IS_PED_IN_COMBAT(ped, players.user_ped()) and not IS_PED_IN_COMBAT) or
+            (ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(players.user_ped(), ped, 17) == false and not kill_aura_through_walls)) then
 
-            if not (ENTITY.IS_ENTITY_DEAD(ped) or players.user_ped() == ped or
-                (PED.IS_PED_IN_ANY_VEHICLE(ped, false) and not kill_aura_in_vehicle) or
-                (entities.is_player_ped(ped) == false and not kill_aura_peds) or
-                (entities.is_player_ped(ped) == true and not kill_aura_player) or
-                (not ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(players.user_ped(), ped, 17) and not kill_aura_through_walls)) then
-
-                if kill_aura_fire_Loop then
-                    FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 12, INT_MAX, false, true, 0.0)
-                elseif kill_aura_nick_explosion then
-                    FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
-                elseif kill_aura_explosion then
-                    FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
-                elseif killaura_random_player_explosion then
-                    FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
-                elseif killaura_random_player then
-                    -- print("killaura_random_player")
-                    MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z, INT_MAX,
-                        true, util.joaat("weapon_pistol"), randomPid, false, true, 1)
-                else
-                    -- print("killaura_none")
-                    MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z, INT_MAX,
-                        true, util.joaat("weapon_pistol"), players.user_ped(), false, true, 1)
-                    util.yield(menu.get_value(time))
-                end
+            if kill_aura_fire_Loop then
+                FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 12, INT_MAX, false, true, 0.0)
+            elseif kill_aura_nick_explosion then
+                FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
+            elseif kill_aura_explosion then
+                FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
+            elseif killaura_random_player_explosion then
+                FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
+            elseif killaura_random_player then
+                -- print("killaura_random_player")
+                MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z, INT_MAX, true,
+                    util.joaat("weapon_pistol"), randomPid, false, true, 1)
+            else
+                -- print("killaura_none")
+                MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z, INT_MAX, true,
+                    util.joaat("weapon_pistol"), players.user_ped(), false, true, 1)
+                util.yield(menu.get_value(time))
             end
         end
     end
+    -- end
+    -- end
+    -- end
+    -- end
+
 end)
 
 menu.toggle_loop(self, "heal/armour", {}, "", function()
@@ -1628,8 +1649,8 @@ local function testMenuSetup(pid)
         local object = entities.create_object(util.joaat("prop_tall_grass_ba"), pos)
         ENTITY.SET_ENTITY_COORDS_NO_OFFSET(object, pos, false, true, true)
 
-        util.yield(100)
-        entities.delete(object)
+        -- util.yield(100)
+        -- entities.delete(object)
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -2891,4 +2912,44 @@ menu.toggle_loop(server, "clean chat", {"latiaocleanchat"}, "latiaocleanchat.", 
     local chatt = math.random(100000000)
 
     chat.send_message(chatt, false, true, true)
+end)
+
+menu.toggle_loop(world, "IS_PED_IN_COMBAT", {"IS_PED_IN_COMBAT"}, "IS_PED_IN_COMBAT.", function()
+    for k, ent in pairs(entities.get_all_peds_as_handles()) do
+        if not entities.is_player_ped(ent) then
+            if PED.IS_PED_IN_COMBAT(ent, players.user_ped()) then
+
+                ENTITY.SET_ENTITY_COORDS(ent, players.get_position(players.user()), false)
+            end
+        end
+    end
+end)
+
+menu.toggle_loop(world, "自动送温暖", {"IS_PED_IN_COMBAT"}, "IS_PED_IN_COMBAT.", function()
+
+    if players.get_script_host() == players.user() then
+        util.yield(5000)
+        -- print("give")
+
+        menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
+
+        menu.trigger_command(menu.ref_by_path("Players>All Players>Weapons>Give Weapons>Give All Weapons"))
+
+        menu.trigger_command(menu.ref_by_path("Players>All Players>Weapons>Give Ammo"))
+
+        menu.trigger_command(menu.ref_by_path("Players>All Players>Weapons>Give Parachute"))
+        -- print("give end")
+
+        util.yield(10000)
+        -- print("go")
+
+        menu.trigger_command(menu.ref_by_path("Online>New Session>Find Public Session"))
+
+    else
+        -- print("request_script_host")
+
+        util.request_script_host("freemode")
+
+    end
+
 end)
