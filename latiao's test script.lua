@@ -724,11 +724,11 @@ menu.toggle_loop(server, "auto host", {"latiaoautohost"}, ("autohost"), function
         menu.trigger_commands("kick" .. PLAYER.GET_PLAYER_NAME(players.get_host()))
     end
 end)
--- menu.toggle_loop(server, "auto Script host", {"latiaoautoScripthost"}, ("autoScripthost"), function()
---     if not (players.get_script_host() == players.user()) then
---         util.request_script_host("freemode")
---     end
--- end)
+menu.toggle_loop(server, "auto freemode Script host", {"latiaoautoScripthost"}, ("autoScripthost"), function()
+    if not (players.get_script_host() == players.user()) then
+        util.request_script_host("freemode")
+    end
+end)
 
 menu.action(server, "kickall exclude hosts and cheat", {"latiaokickallexcludehost"}, "latiaokickallexcludehost",
     function()
@@ -861,7 +861,7 @@ menu.action(server, "kick me", {"latiaokickme"}, "latiaokickme.", function()
 end)
 
 menu.toggle_loop(server, "if you host reportall", {"latiaoreportall"}, "reportall.", function()
-    util.yield(1000)
+    -- util.yield(1000)
     if NETWORK.NETWORK_IS_HOST() then
         menu.trigger_command(menu.ref_by_path("Players>All Players>Increment Commend/Report Stats>Cheating or Modding"))
     end
@@ -1095,41 +1095,23 @@ menu.action(test, "CLEAR_ALL_HELP_MESSAGES", {"latiaoCLEAR_ALL_HELP_MESSAGES"}, 
 end)
 
 menu.toggle_loop(dividends, "jump hack", {"latiaojumphack"}, "latiaojumphack.", function()
-    SET_INT_LOCAL("fm_mission_controller_2020", 23669, 5)
-    SET_FLOAT_LOCAL("fm_mission_controller_2020", 29685 + 3, 100)
-    SET_INT_LOCAL("fm_mission_controller_2020", 1718, GET_INT_LOCAL("fm_mission_controller_2020", 1719))
-    SET_INT_LOCAL("fm_mission_controller", 52964, 5)
-    SET_INT_LOCAL("fm_mission_controller", 54026, 5)
-    SET_INT_LOCAL("fm_mission_controller", 10101 + 7, GET_INT_LOCAL("fm_mission_controller", 10101 + 37))
-    SET_INT_LOCAL("fm_mission_controller", 1509, 3)
-    SET_INT_LOCAL("fm_mission_controller", 1540, 2)
-    SET_INT_LOCAL("fm_mission_controller", 1266 + 135, 3)
-    SET_INT_LOCAL("fm_mission_controller", 11760 + 24, 7)
-    SET_FLOAT_LOCAL("fm_mission_controller", 10061 + 11, 100)
-    SET_INT_LOCAL("fm_mission_controller_2020", 975 + 135, 3)
+    SET_INT_LOCAL("fm_mission_controller_2020", 24333, 5)
+    SET_FLOAT_LOCAL("fm_mission_controller_2020", 30357 + 3, 100)
+    SET_INT_LOCAL("fm_mission_controller_2020", 1721, GET_INT_LOCAL("fm_mission_controller_2020", 1722))
+    SET_INT_LOCAL("fm_mission_controller_2020", 978 + 135, 3)
+    SET_INT_LOCAL("fm_mission_controller", 52985, 5)
+    SET_INT_LOCAL("fm_mission_controller", 54047, 5)
+    SET_INT_LOCAL("fm_mission_controller", 10107 + 7, GET_INT_LOCAL("fm_mission_controller", 10107 + 37))
+    SET_INT_LOCAL("fm_mission_controller", 1512, 3) -- For ACT I, Setup: Server Farm (Lester), https://www.unknowncheats.me/forum/3687245-post112.html
+    SET_INT_LOCAL("fm_mission_controller", 1543, 2)
+    SET_INT_LOCAL("fm_mission_controller", 1269 + 135, 3) -- For ACT III, https://www.unknowncheats.me/forum/3455828-post8.html
+    -- SET_INT_LOCAL("fm_mission_controller", 11776 + 24, 7)
+    -- SET_FLOAT_LOCAL("fm_mission_controller", 10067 + 11, 100)
+
 end)
 menu.action(dividends, "MPPLY_H3_COOLDOWN", {""}, "MPPLY_H3_COOLDOWN.", function()
     STAT_SET_INT("MPPLY_H3_COOLDOWN", -1)
 end)
-
-menu.action(dividends, "load casino Boards H3OPT_BITSET", {""}, "H3OPT_BITSET1.", function()
-    STAT_SET_INT("H3OPT_ACCESSPOINTS", -1)
-    STAT_SET_INT("H3OPT_POI", -1)
-    STAT_SET_INT("H3OPT_BITSET1", -1)
-    STAT_SET_INT("H3OPT_BITSET0", -1)
-    STAT_SET_INT("H3OPT_KEYLEVELS", 2)
-    STAT_SET_INT("H3OPT_DISRUPTSHIP", 3)
-end)
-
-local lataiocasinoTARGET = menu.slider(dividends, "casino TARGET", {"lataiocasinoTARGET"}, "0=钱 1=金 2=画 3=钻",
-    -100000, 100000, 0, 1, function()
-
-    end)
-
-menu.action(dividends, "set casino TARGET", {""}, "H3OPT_BITSET1.", function()
-    STAT_SET_INT("H3OPT_TARGET", menu.get_value(lataiocasinoTARGET))
-end)
-
 local nohostalldividends = menu.slider(dividends, "nohostalldividends", {"nohostcasino"}, "", -100000, 100000, 100, 5,
     function()
 
@@ -1138,32 +1120,55 @@ local nohostalldividends = menu.slider(dividends, "nohostalldividends", {"nohost
 menu.toggle_loop(dividends, "casino and Perico and Doomsday for you(you not host)", {""}, "latiaonohost.", function()
     SET_INT_GLOBAL(2684820 + 6606, menu.get_value(nohostalldividends))
 end)
-
-local casino = menu.slider(dividends, "casino", {"casino"}, "max 3600000", -100000, 100000, 100, 5, function()
-end)
-menu.toggle_loop(dividends, "casino all (you host)", {"latiaocasinoallhost"}, "latiaocasinoallhost.", function()
-    SET_INT_GLOBAL(1971696 + 1497 + 736 + 92 + 1, menu.get_value(casino))
-
-    SET_INT_GLOBAL(1971696 + 1497 + 736 + 92 + 2, menu.get_value(casino))
-
-    SET_INT_GLOBAL(1971696 + 1497 + 736 + 92 + 3, menu.get_value(casino))
-
-    SET_INT_GLOBAL(1971696 + 1497 + 736 + 92 + 4, menu.get_value(casino))
+menu.action(dividends, "完成赌场前置", {""}, "", function()
+    STAT_SET_INT("H3OPT_ACCESSPOINTS", -1)
+    STAT_SET_INT("H3OPT_POI", -1)
+    STAT_SET_INT("H3OPT_BITSET1", -1)
+    STAT_SET_INT("H3OPT_BITSET0", -1)
+    STAT_SET_INT("H3OPT_KEYLEVELS", 2)
+    STAT_SET_INT("H3OPT_DISRUPTSHIP", 3)
 end)
 
-menu.action(dividends, "casino Forced Launch", {""}, "latiaonohost.", function()
-    SET_INT_GLOBAL(1971696 + 1497 + 736 + 87 + 0, -1)
-    SET_INT_GLOBAL(1971696 + 1497 + 736 + 87 + 1, -1)
-    SET_INT_GLOBAL(1971696 + 1497 + 736 + 87 + 2, -1)
-    SET_INT_GLOBAL(1971696 + 1497 + 736 + 87 + 3, -1)
+
+menu.action(dividends, "设置赌场抢劫npc为最高级", {""}, "    .", function()
+    STAT_SET_INT("H3OPT_CREWWEAP", 4)
+    STAT_SET_INT("H3OPT_CREWDRIVER", 5)
+    STAT_SET_INT("H3OPT_CREWHACKER", 4)
 end)
-menu.action(dividends, "casino Board3", {"latiaoBoard3"}, "latiaoBoard3.", function()
-    SET_INT_GLOBAL(1971696 + 1497 + 1017, -1)
-    SET_INT_GLOBAL(1971696 + 1497 + 1018, -1)
-    SET_INT_GLOBAL(1971696 + 1497 + 1019, 0)
-    SET_INT_GLOBAL(1971696 + 1497 + 1020, -1)
+
+local casino = menu.slider(dividends, "赌场抢劫分红", {""}, "", -100000, 100000, 100, 5, function()
 end)
-menu.action(dividends, "RefreshBoards", {"latiaoRefreshBoards"}, "", function()
+menu.toggle_loop(dividends, "设置赌场抢劫分红", {""}, "    .", function()
+    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 1, menu.get_value(casino))
+
+    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 2, menu.get_value(casino))
+
+    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 3, menu.get_value(casino))
+
+    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 4, menu.get_value(casino))
+end)
+
+menu.toggle_loop(dividends, "删除赌场npc分红", {""}, ".", function()
+    SET_INT_GLOBAL(262145 + 29068  , 0)
+    SET_INT_GLOBAL(262145 + 29093  + 1, 0)
+    SET_INT_GLOBAL(262145 + 29093  + 2, 0)
+    SET_INT_GLOBAL(262145 + 29093  + 3, 0)
+    SET_INT_GLOBAL(262145 + 29093  + 4, 0)
+    SET_INT_GLOBAL(262145 + 29093  + 5, 0)
+    SET_INT_GLOBAL(262145 + 29093  + 6, 0)
+    SET_INT_GLOBAL(262145 + 29093  + 7, 0)
+    SET_INT_GLOBAL(262145 + 29093  + 8, 0)
+    SET_INT_GLOBAL(262145 + 29093  + 9, 0)
+    SET_INT_GLOBAL(262145 + 29093  + 10, 0)
+    SET_INT_GLOBAL(262145 + 29093  + 11, 0)
+    SET_INT_GLOBAL(262145 + 29093  + 12, 0)
+    SET_INT_GLOBAL(262145 + 29093  + 13, 0)
+    SET_INT_GLOBAL(262145 + 29093  + 14, 0)
+    SET_INT_GLOBAL(262145 + 29093  + 15, 0)
+    
+end)
+
+menu.action(dividends, "刷新赌场面板", {""}, "", function()
     local Board1 = STAT_GET_INT("H3OPT_BITSET0")
     local Board2 = STAT_GET_INT("H3OPT_BITSET1")
     STAT_SET_INT("H3OPT_BITSET0", math.random(INT_MAX))
@@ -1173,25 +1178,25 @@ menu.action(dividends, "RefreshBoards", {"latiaoRefreshBoards"}, "", function()
     STAT_SET_INT("H3OPT_BITSET1", Board2)
 end)
 
-menu.action(dividends, "load Doomsday", {}, "", function()
+menu.action(dividends, "完成末日前置", {}, "", function()
     STAT_SET_INT("GANGOPS_FLOW_MISSION_PROG", -1)
 end)
 
-local Doomsday = menu.slider(dividends, "Doomsday", {"Doomsday"}, "2400000", -100000, 100000, 100, 5, function()
+local Doomsday = menu.slider(dividends, "末日分红", {""}, "2400000", -100000, 100000, 100, 5, function()
 end)
 
-menu.toggle_loop(dividends, "Doomsday all (you host)", {"latiaoDoomsdayallyouhost"}, "latiaoDoomsdayallyouhost.",
+menu.toggle_loop(dividends, "设置末日分红", {"设置末日分红"}, "设置末日分红.",
     function()
-        SET_INT_GLOBAL(1967630 + 812 + 50 + 1, menu.get_value(Doomsday))
+        SET_INT_GLOBAL(1959865 + 812 + 50 + 1, menu.get_value(Doomsday))
 
-        SET_INT_GLOBAL(1967630 + 812 + 50 + 2, menu.get_value(Doomsday))
+        SET_INT_GLOBAL(1959865 + 812 + 50 + 2, menu.get_value(Doomsday))
 
-        SET_INT_GLOBAL(1967630 + 812 + 50 + 3, menu.get_value(Doomsday))
+        SET_INT_GLOBAL(1959865 + 812 + 50 + 3, menu.get_value(Doomsday))
 
-        SET_INT_GLOBAL(1967630 + 812 + 50 + 4, menu.get_value(Doomsday))
+        SET_INT_GLOBAL(1959865 + 812 + 50 + 4, menu.get_value(Doomsday))
     end)
 
-menu.action(dividends, "load Perico", {}, "", function()
+menu.action(dividends, "完成小岛前置", {}, "", function()
     STAT_SET_INT("H4CNF_BS_ENTR", -1)
     STAT_SET_INT("H4CNF_BS_GEN", -1)
     STAT_SET_INT("H4CNF_BS_ABIL", -1)
@@ -1200,54 +1205,63 @@ menu.action(dividends, "load Perico", {}, "", function()
 
 end)
 
-local Perico = menu.slider(dividends, "Perico", {"Perico"}, "2550000", INT_MIN, INT_MAX, 100, 5, function()
+local Perico = menu.slider(dividends, "小岛分红", {""}, "", INT_MIN, INT_MAX, 100, 5, function()
 end)
 
-menu.toggle_loop(dividends, "Perico all (you host)", {""}, "latiaoPericoallyouhost.", function()
-    SET_INT_GLOBAL(1978495 + 825 + 56 + 1, menu.get_value(Perico))
-    SET_INT_GLOBAL(1978495 + 825 + 56 + 2, menu.get_value(Perico))
-    SET_INT_GLOBAL(1978495 + 825 + 56 + 3, menu.get_value(Perico))
-    SET_INT_GLOBAL(1978495 + 825 + 56 + 4, menu.get_value(Perico))
+menu.toggle_loop(dividends, "设置小岛分红", {""}, ".", function()
+    SET_INT_GLOBAL(1970744 + 831 + 56 + 1, menu.get_value(Perico))
+    SET_INT_GLOBAL(1970744 + 831 + 56 + 2, menu.get_value(Perico))
+    SET_INT_GLOBAL(1970744 + 831 + 56 + 3, menu.get_value(Perico))
+    SET_INT_GLOBAL(1970744 + 831 + 56 + 4, menu.get_value(Perico))
 end)
-local Pericotarget = menu.slider(dividends, "Pericotarget", {"Pericotarget"}, "", INT_MIN, INT_MAX, 1000, 100000,
+menu.toggle_loop(dividends, "删除小岛npc分红", {""}, ".", function()
+    SET_INT_GLOBAL(1970744 + 831 + 56 + 9, 0)
+    SET_INT_GLOBAL(1970744 + 831 + 56 + 10 ,0)
+
+end)
+local Pericotarget = menu.slider(dividends, "小岛目标价值", {""}, "", INT_MIN, INT_MAX, 1000, 100000,
     function()
     end)
-menu.action(dividends, "Pericotarget_money ", {"latiaoPericotarget_money"}, ".", function()
-    SET_INT_GLOBAL(262145 + 30189 + 0, menu.get_value(Pericotarget))
-    SET_INT_GLOBAL(262145 + 30189 + 1, menu.get_value(Pericotarget))
-    SET_INT_GLOBAL(262145 + 30189 + 2, menu.get_value(Pericotarget))
-    SET_INT_GLOBAL(262145 + 30189 + 3, menu.get_value(Pericotarget))
-    SET_INT_GLOBAL(262145 + 30189 + 4, menu.get_value(Pericotarget))
-    SET_INT_GLOBAL(262145 + 30189 + 5, menu.get_value(Pericotarget))
+menu.action(dividends, "设置小岛目标价值", {""}, ".", function()
+    SET_INT_GLOBAL(262145 + 30259 + 0, menu.get_value(Pericotarget))
+    SET_INT_GLOBAL(262145 + 30259 + 1, menu.get_value(Pericotarget))
+    SET_INT_GLOBAL(262145 + 30259 + 2, menu.get_value(Pericotarget))
+    SET_INT_GLOBAL(262145 + 30259 + 3, menu.get_value(Pericotarget))
+    SET_INT_GLOBAL(262145 + 30259 + 4, menu.get_value(Pericotarget))
+    SET_INT_GLOBAL(262145 + 30259 + 5, menu.get_value(Pericotarget))
 end)
-menu.action(dividends, "Pericoinfinite bag_size", {"latiaoPericoinfinitebag_size"}, "latiaoPericoinfinitebag_size.",
+menu.action(dividends, "小岛无限背包 ", {""}, ".",
     function()
-        SET_INT_GLOBAL(262145 + 29939, 100000000)
+        SET_INT_GLOBAL(262145 + 30009, 100000000)
     end)
 
-menu.action(dividends, "del prop_chem_grill_bit", {"latiaodelprop_chem_grill_bit"}, "latiaodelprop_chem_grill_bit.",
-    function()
-        for k, ent in pairs(entities.get_all_objects_as_handles()) do
-            if ENTITY.GET_ENTITY_MODEL(ent) == util.joaat("prop_chem_grill_bit") then
-                entities.delete(ent)
-                break
-            end
-        end
-    end)
 
-menu.action(dividends, "load Apartment", {""}, "H3OPT_BITSET1.", function()
+
+
+    
+
+menu.action(dividends, "完成公寓抢劫", {""}, "", function()
     STAT_SET_INT("HEIST_PLANNING_STAGE", -1)
 end)
 
-local Apartment = menu.slider(dividends, "Apartment", {"Apartment"}, "15000000", INT_MIN, INT_MAX, 100, 100, function()
-end)
 
-menu.toggle_loop(dividends, "Apartment all (you host)", {"latiaoApartmentallyouhost"}, "latiaoApartmentallyouhost.",
+
+menu.toggle_loop(dividends, "公寓抢劫总价值14500000 (you host)", {""}, ".",
     function()
-        SET_INT_GLOBAL(1938365 + 3008 + 1, menu.get_value(Apartment))
-        SET_INT_GLOBAL(1938365 + 3008 + 2, menu.get_value(Apartment))
-        SET_INT_GLOBAL(1938365 + 3008 + 3, menu.get_value(Apartment))
-        SET_INT_GLOBAL(1938365 + 3008 + 4, menu.get_value(Apartment))
+        SET_INT_GLOBAL(262145 + 9314 + 1, 14500000)
+        SET_INT_GLOBAL(262145 + 9314 + 2, 14500000)
+        SET_INT_GLOBAL(262145 + 9314 + 3, 14500000)
+        SET_INT_GLOBAL(262145 + 9314 + 4, 14500000)
+    end)
+
+    local Apartment = menu.slider(dividends, "公寓抢劫分红", {""}, "15000000", INT_MIN, INT_MAX, 100, 100, function()
+    end)
+menu.toggle_loop(dividends, "设置公寓抢劫分红 (you host)", {""}, ".",
+    function()
+        SET_INT_GLOBAL(1930201 + 3008 + 1, menu.get_value(Apartment))
+        SET_INT_GLOBAL(1930201 + 3008 + 2, menu.get_value(Apartment))
+        SET_INT_GLOBAL(1930201 + 3008 + 3, menu.get_value(Apartment))
+        SET_INT_GLOBAL(1930201 + 3008 + 4, menu.get_value(Apartment))
     end)
 
 menu.toggle_loop(server, "fm_mission_controller host test", {"latiaofm_mission_controllertest"},
@@ -1268,43 +1282,7 @@ menu.toggle_loop(server, "freemode host test", {"latiaofreemodetest"}, "latiaofr
     util.draw_debug_text("freemode host is: " .. name)
 end)
 
-menu.toggle_loop(dividends, "fm_mission_controller GET_INT_LOCAL", {"latiaofm_mission_controllertest"},
-    "latiaofm_mission_controllertest.", function()
-        local function safe_get_int_local(variable, value)
-            local result = GET_INT_LOCAL(variable, value)
-            if result ~= nil then
-                return result
-            else
-                return "error"
-            end
-        end
 
-        local value2 = safe_get_int_local("fm_mission_controller", 28331 + 1)
-        util.draw_debug_text("fm_mission_controller 28331 + 1 = " .. value2)
-
-        local value3 = safe_get_int_local("fm_mission_controller", 31587 + 69)
-        util.draw_debug_text("fm_mission_controller 31587 + 69 = " .. value3)
-    end)
-
-menu.toggle_loop(dividends, "fm_mission_controller_2020 GET_INT_LOCAL", {"latiaofm_mission_controllertest"},
-    "latiaofm_mission_controllertest.", function()
-        local function safe_get_int_local(variable, value)
-            local result = GET_INT_LOCAL(variable, value)
-            if result ~= nil then
-                return result
-            else
-                return "error"
-            end
-        end
-
-        local value1 = safe_get_int_local("fm_mission_controller_2020", 45450 + 1)
-        util.draw_debug_text("fm_mission_controller_2020 45450 + 1 = " .. value1)
-        print("fm_mission_controller_2020 45450 + 1 = " .. value1)
-
-        local value2 = safe_get_int_local("fm_mission_controller_2020", 45450 + 1378 + 1)
-        util.draw_debug_text("fm_mission_controller_2020 45450 + 1378 + 1 = " .. value2)
-        print("fm_mission_controller_2020 31587 + 45450 + 1378 + 1 = " .. value2)
-    end)
 
 menu.action(dividends, "request_script_host fm_mission_controller", {"latiaoNrequest_script_host"},
     "latiaoNrequest_script_host.", function()
@@ -1314,39 +1292,27 @@ menu.action(dividends, "request_script_host fm_mission_controller", {"latiaoNreq
 
 menu.action(dividends, "fin fm_mission_controller_2020 ", {"fin fm_mission_controller_2020"},
     "finfm_mission_controller_2020", function()
-        SET_INT_LOCAL("fm_mission_controller_2020", 45450 + 1, 17784544)
-        SET_INT_LOCAL("fm_mission_controller_2020", 45450 + 1378 + 1, 2000)
+        SET_INT_LOCAL("fm_mission_controller_2020", 48513 + 1, 17784544)
+        SET_INT_LOCAL("fm_mission_controller_2020", 48513 + 1765 + 1, 2000)
     end)
 
 menu.action(dividends, "fin fm_mission_controller_2020 2 ", {"fin fm_mission_controller_2020"},
     "finfm_mission_controller_2020", function()
         SET_INT_LOCAL("fm_mission_controller_2020", 45450 + 1, 51338752)
-        SET_INT_LOCAL("fm_mission_controller_2020", 45450 + 1378 + 1, 2000)
+        SET_INT_LOCAL("fm_mission_controller_2020", 45450 + 1765 + 1, 50)
     end)
 local money = menu.slider(dividends, "fm_mission_controller money", {"fm_mission_controllermoney"},
     "fm_mission_controllermoney", INT_MIN, INT_MAX, 3000000, 100000, function()
     end)
 menu.action(dividends, "moneyfm_mission_controller", {"moneyfm_mission_controller"}, "moneyfinfm_mission_controller",
     function()
-        SET_INT_LOCAL("fm_mission_controller", 19710 + 2686, menu.get_value(money))
+        SET_INT_LOCAL("fm_mission_controller", 19728 + 2686, menu.get_value(money))
     end)
 
 menu.action(dividends, "finfm_mission_controller", {"finfmc"}, "finfm_mission_controller", function()
-    SET_INT_LOCAL("fm_mission_controller", 19710 + 2686, menu.get_value(money))
-    SET_INT_LOCAL("fm_mission_controller", 28331 + 1, 100000000)
-    SET_INT_LOCAL("fm_mission_controller", 31587 + 69, 100000000)
-end)
-
-local test1 = menu.slider(dividends, "28331 + 1 fm_mission_controller", {"fm_mission_controllertest1"},
-    "fm_mission_controllermoney", 0, INT_MAX, 0, 1, function()
-    end)
-local test2 = menu.slider(dividends, "31587 + 69 fm_mission_controlle", {"fm_mission_controllertest2"},
-    "fm_mission_controllermoney", 0, INT_MAX, 0, 1, function()
-    end)
-
-menu.toggle_loop(dividends, "debugfm_mission_controller", {"finfmc"}, "finfm_mission_controller", function()
-    SET_INT_LOCAL("fm_mission_controller", 28331 + 1, menu.get_value(test1))
-    SET_INT_LOCAL("fm_mission_controller", 31587 + 69, menu.get_value(test2))
+    SET_INT_LOCAL("fm_mission_controller", 19728 + 2686, menu.get_value(money))
+    SET_INT_LOCAL("fm_mission_controller", 27489 + 859, 100000000)
+    SET_INT_LOCAL("fm_mission_controller", 31603 + 69, 100000000)
 end)
 
 menu.action(server, "if you host block ad bot join", {}, "", function()
@@ -1454,7 +1420,6 @@ local function testMenuSetup(pid)
     menu.toggle_loop(testMenu, "super kill cheat", {}, "", function()
         local pos = v3.new(players.get_position(pid))
         local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        TASK.CLEAR_PED_TASKS_IMMEDIATELY(playerped)
         util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
         menu.trigger_commands("kill" .. players.get_name(pid))
         FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
@@ -1469,28 +1434,13 @@ local function testMenuSetup(pid)
     menu.toggle_loop(testMenu, "super nick kill cheat", {}, "", function()
         local pos = v3.new(players.get_position(pid))
         local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        TASK.CLEAR_PED_TASKS_IMMEDIATELY(playerped)
         util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
         FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
         if not players.exists(pid) then
             util.stop_thread()
         end
     end)
-    menu.toggle_loop(testMenu, "Super RandomPlayerEXPLOSION kill cheat", {"latiaoRandomPlayerEXPLOSION"}, "", function()
-        local list = players.list()
-        local index = math.random(#list)
 
-        local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(list[index])
-
-        local pos = players.get_position(pid)
-        local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        TASK.CLEAR_PED_TASKS_IMMEDIATELY(playerped)
-        util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
-        FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
-        if not players.exists(pid) then
-            util.stop_thread()
-        end
-    end)
     menu.toggle_loop(testMenu, "super weapon_stungun cheat", {}, "", function()
         util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
         local pos = players.get_position(pid)
@@ -1772,11 +1722,27 @@ local function testMenuSetup(pid)
         end
     end)
 
+    menu.action(testMenu, "test kick2", {""}, ".", function()
+        util.trigger_script_event(1 << pid, {1613825825, pid, 939521535})
+
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
     menu.toggle_loop(testMenu, "wok freeze", {""}, ".", function()
         -- util.yield(1000)
 
         util.trigger_script_event(1 << pid, {259469385})
 
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
+    menu.toggle_loop(testMenu, "bad SOUND script_event2", {""}, "", function()
+        -- util.yield(1500)
+        util.trigger_script_event(1 << pid, {996099702, pid})
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1824,7 +1790,7 @@ local function testMenuSetup(pid)
     end)
 
     menu.toggle_loop(testMenu, "loop report", {""}, ".", function()
-        util.yield(1000)
+        -- util.yield(1000)
         local player = players.get_name(pid)
         menu.trigger_commands("reportgriefing" .. player)
         menu.trigger_commands("reportexploits" .. player)
@@ -2008,7 +1974,7 @@ menu.toggle_loop(test, "debugshot", {"latiaodebugshot"}, ("latiaobadpost"), func
 
 end)
 
-menu.toggle_loop(world, "del cctv_cam(pls use in solo if bug)", {""}, "", function()
+menu.action(world, "del cctv_cam(pls use in solo if bug)", {""}, "", function()
     local Models = {util.joaat("prop_cctv_pole_04"), util.joaat("xm_prop_x17_server_farm_cctv_01"),
                     util.joaat("ch_prop_ch_cctv_cam_02a"), util.joaat("prop_cctv_cam_05a")}
 
@@ -2150,7 +2116,7 @@ end)
 
 menu.action(dividends, "Contract All Missions", {}, "", function()
     STAT_SET_INT("FIXER_GENERAL_BS", -1)
-    -- STAT_SET_INT("FIXER_COMPLETED_BS", -1)
+    STAT_SET_INT("FIXER_COMPLETED_BS", -1)
     STAT_SET_INT("FIXER_STORY_BS", -1)
 end)
 
@@ -2203,18 +2169,28 @@ menu.action(test, "tp and back", {"latiaotpback"}, "", function()
     -- )
 end)
 
-menu.toggle_loop(server, "bad SOUNDscript_event", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
+menu.toggle_loop(test, "bad SOUND script_event2", {""}, "", function()
+    -- util.yield(1500)
     for k, pid in pairs(players.list()) do
-        util.trigger_script_event(1 << pid, {-642704387, pid, 782258655, 0, 0, 0, 0, 0, 0, 0, pid, 0, 0, 0})
-        -- util.yield(1500)
+        util.trigger_script_event(1 << pid, {996099702, pid})
+
     end
 end)
 
-menu.toggle_loop(server, "info spamm", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
+menu.toggle_loop(test, "bad SOUND script_event", {""}, "", function()
+    -- util.yield(1500)
+    for k, pid in pairs(players.list()) do
+        util.trigger_script_event(1 << pid, {-642704387, pid, 782258655, 0, 0, 0, 0, 0, 0, 0, pid, 0, 0, 0})
+
+    end
+end)
+
+menu.toggle_loop(test, "info spamm", {"test1"}, "tet2", function()
+    -- util.yield(1500)
     for k, pid in pairs(players.list()) do
         util.trigger_script_event(1 << pid,
             {-642704387, pid, 782258655, 0, 0, 0, 0, 0, 0, 0, math.random(0, 32), 0, 0, 0})
-        -- util.yield(1500)
+
     end
 end)
 
@@ -2435,11 +2411,14 @@ menu.action(server, "latiaoALL_script_test host test", {"latiaoALL_script_test"}
         if host ~= -1 then
             local name = PLAYER.GET_PLAYER_NAME(host)
             print(script .. ",0,0=" .. name)
+            -- chat.send_message(script .. name)
         end
 
         if host2 ~= -1 then
             local name = PLAYER.GET_PLAYER_NAME(host2)
             print(script .. ",-1,0=" .. name)
+            -- chat.send_message(script .. name)
+
         end
     end
 end)
@@ -2451,9 +2430,11 @@ menu.toggle_loop(server, "auto super request_script_host for all ", {"autoreques
             local host2 = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, -1, 0)
             if host ~= -1 and not (host == players.user()) then
                 util.request_script_host(script)
+                print(script)
             end
             if host2 ~= -1 and not (host2 == players.user()) then
                 util.request_script_host(script)
+                print(script)
             end
         end
     end)
@@ -2826,11 +2807,6 @@ menu.toggle_loop(world, "print random pid ", {""}, "", function()
     print(list[index])
 
 end)
-menu.action(server, "test players.dispatch_on_join()", {""}, "", function()
-    for k, pid in pairs(players.list()) do
-        players.send_sms(pid, "hi")
-    end
-end)
 
 menu.toggle_loop(world, "NETWORK_REGISTER_ENTITY_AS_NETWORKED", {"NETWORK_REGISTER_ENTITY_AS_NETWORKED"},
     "NETWORK_REGISTER_ENTITY_AS_NETWORKED.", function()
@@ -2940,7 +2916,7 @@ menu.toggle_loop(world, "自动送温暖", {"IS_PED_IN_COMBAT"}, "IS_PED_IN_COMB
         menu.trigger_command(menu.ref_by_path("Players>All Players>Weapons>Give Parachute"))
         -- print("give end")
 
-        util.yield(10000)
+        util.yield(15000)
         -- print("go")
 
         menu.trigger_command(menu.ref_by_path("Online>New Session>Find Public Session"))
@@ -2953,3 +2929,4 @@ menu.toggle_loop(world, "自动送温暖", {"IS_PED_IN_COMBAT"}, "IS_PED_IN_COMB
     end
 
 end)
+
