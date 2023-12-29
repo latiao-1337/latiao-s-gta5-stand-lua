@@ -1,5 +1,31 @@
+local success, error_message = pcall(function()
+    
+local function ALL_Entities()
+    local targets = {}
+
+    for _, ped in ipairs(entities.get_all_peds_as_pointers()) do
+        if not entities.is_player_ped(ped) then
+            table.insert(targets, ped)
+        end
+    end
+
+    for _, vehicle in ipairs(entities.get_all_vehicles_as_pointers()) do
+        table.insert(targets, vehicle)
+    end
+
+    for _, object in ipairs(entities.get_all_objects_as_pointers()) do
+        table.insert(targets, object)
+    end
+
+    for _, pickups in ipairs(entities.get_all_pickups_as_pointers()) do
+        table.insert(targets, pickups)
+    end
+
+    return targets
+end
 local INT_MAX = 2147483647
 local INT_MIN = -2147483647
+
 local ALL_script = {"abigail1", "abigail2", "achievement_controller", "act_cinema",
                     "activity_creator_prototype_launcher", "af_intro_t_sandy", "agency_heist1", "agency_heist2",
                     "agency_heist3a", "agency_heist3b", "agency_prep1", "agency_prep2amb", "aicover_test",
@@ -445,18 +471,13 @@ menu.toggle_loop(killaura, "killaura all", {"latiaokillaura"}, ("SHOOT ALL"), fu
         local list = players.list()
         local index = math.random(#list)
         local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(list[index])
-        
+
         if randomPid == players.user() then
-            continue
+            goto out
         end
-        
+
         local pos = v3.new(ENTITY.GET_ENTITY_COORDS(ped))
-        -- if kill_aura_kick_vehicle then
-        -- for _, ped in pairs(entities.get_all_peds_as_handles()) do
-        -- if not entities.is_player_ped(ped) then
-        --     if PED.IS_PED_IN_ANY_VEHICLE(ped, false) then
-        --         TASK.CLEAR_PED_TASKS_IMMEDIATELY(ped)
-        --     end
+
         if not (players.user_ped() == ped or (ENTITY.IS_ENTITY_DEAD(ped) and not IS_ENTITY_DEAD) or
             (PED.IS_PED_IN_ANY_VEHICLE(ped, false) and not kill_aura_in_vehicle) or
             (entities.is_player_ped(ped) == false and not kill_aura_peds) or
@@ -488,7 +509,7 @@ menu.toggle_loop(killaura, "killaura all", {"latiaokillaura"}, ("SHOOT ALL"), fu
     -- end
     -- end
     -- end
-
+    ::out::
 end)
 
 menu.toggle_loop(self, "heal/armour", {}, "", function()
@@ -501,11 +522,12 @@ end)
 menu.toggle_loop(world, "delallobjects", {"latiaodelallobjects"}, "delallobjects.", function()
     for k, ent in pairs(entities.get_all_objects_as_pointers()) do
         local success, error_message = pcall(function()
-            local require = entities.delete(ent)
+            entities.delete(ent)
         end)
-        
         if not success then
+            print("Error deleting entity: " .. error_message)
         end
+
     end
 end)
 
@@ -513,76 +535,63 @@ menu.toggle_loop(world, "delallpeds", {"latiaodelallpeds"}, "delallpeds.", funct
     for k, ent in pairs(entities.get_all_peds_as_pointers()) do
         if not entities.is_player_ped(ent) then
             local success, error_message = pcall(function()
-                local require = entities.delete(ent)
+                entities.delete(ent)
             end)
+            if not success then
+                print("Error deleting entity: " .. error_message)
+            end
         end
+
     end
 end)
 
 menu.toggle_loop(world, "delallvehicles", {"latiaodelallvehicles"}, "delallvehicles.", function()
     for k, ent in pairs(entities.get_all_vehicles_as_pointers()) do
         local success, error_message = pcall(function()
-            local require = entities.delete(ent)
+            entities.delete(ent)
         end)
+        if not success then
+            print("Error deleting entity: " .. error_message)
+        end
+
     end
 end)
 
 menu.toggle_loop(world, "delallpickups", {"latiaodelallvehicles"}, "delallvehicles.", function()
     for k, ent in pairs(entities.get_all_pickups_as_pointers()) do
         local success, error_message = pcall(function()
-            local require = entities.delete(ent)
+            entities.delete(ent)
         end)
+        if not success then
+            print("Error deleting entity: " .. error_message)
+        end
+
     end
 end)
 
-menu.action(world, "delall", {"latiaodelall"}, "delall.", function()
-    local targets = {}
+menu.toggle_loop(world, "delall", {"latiaodelall"}, "delall.", function()
 
-    for _, ped in ipairs(entities.get_all_peds_as_pointers()) do
-        table.insert(targets, ped)
-    end
-
-    for _, vehicle in ipairs(entities.get_all_vehicles_as_pointers()) do
-        table.insert(targets, vehicle)
-    end
-
-    for _, object in ipairs(entities.get_all_objects_as_pointers()) do
-        table.insert(targets, object)
-    end
-
-    for _, pickups in ipairs(entities.get_all_pickups_as_pointers()) do
-        table.insert(targets, pickups)
-    end
-
-    for _, target in ipairs(targets) do
+    for _, entity in ipairs(ALL_Entities()) do
         local success, error_message = pcall(function()
-            local require = entities.delete(target)
+            entities.delete(entity)
         end)
+
+        if not success then
+            print("Error deleting entity: " .. error_message)
+        end
     end
 end)
 
 menu.toggle_loop(world, "TPALL 0 0 0", {"latiaodelallvehicles"}, "delallvehicles.", function()
-    local targets = {}
 
-    for _, ped in ipairs(entities.get_all_peds_as_handles()) do
-        if not entities.is_player_ped(ped) then
-            table.insert(targets, ped)
+    for _, entity in ipairs(ALL_Entities()) do
+        local success, error_message = pcall(function()
+            ENTITY.SET_ENTITY_COORDS(entity, 0, 0, 2600, false)
+        end)
+
+        if not success then
+            print("Error teleporting entity: " .. error_message)
         end
-    end
-
-    for _, vehicle in ipairs(entities.get_all_vehicles_as_handles()) do
-        table.insert(targets, vehicle)
-    end
-    for _, object in ipairs(entities.get_all_objects_as_handles()) do
-        table.insert(targets, object)
-    end
-
-    for _, pickups in ipairs(entities.get_all_pickups_as_handles()) do
-        table.insert(targets, pickups)
-    end
-
-    for _, target in ipairs(targets) do
-        ENTITY.SET_ENTITY_COORDS(target, 0, 0, 2600, false)
     end
 end)
 
@@ -596,31 +605,11 @@ menu.toggle_loop(world, "kick ped to vehicle", {"latiaokickpedvehicle"}, ("kickp
     end
 end)
 
-menu.toggle_loop(world, "TASK_LEAVE_VEHICLE to ped", {""}, (""), function()
-    for _, ped in pairs(entities.get_all_peds_as_handles()) do
-        if not entities.is_player_ped(ped) then
-            if PED.IS_PED_IN_ANY_VEHICLE(ped, false) then
-                TASK.TASK_LEAVE_VEHICLE(ped, -1, 0)
-            end
-        end
-    end
-end)
-
 menu.toggle_loop(world, "remove DEAD(ped)", {"latiaoremoveDEADped"}, ("latiaoremoveDEADped"), function()
     for _, ped in pairs(entities.get_all_peds_as_handles()) do
         if ENTITY.IS_ENTITY_DEAD(ped) then
             entities.delete(ped)
-            util.yield()
-        end
-    end
-end)
 
-menu.toggle_loop(world, "tp DEAD(ped) to me down", {"latiaoremoveDEADped"}, ("latiaoremoveDEADped"), function()
-    local pos = players.get_position(players.user())
-    for _, ped in pairs(entities.get_all_peds_as_handles()) do
-        if ENTITY.IS_ENTITY_DEAD(ped) then
-            ENTITY.SET_ENTITY_COORDS(ped, pos.x, pos.y, pos.z - 10, false)
-            util.yield()
         end
     end
 end)
@@ -755,30 +744,30 @@ end)
 
 menu.toggle_loop(server, "auto freemode Script host2", {"latiaoautoScripthost"}, ("autoScripthost"), function()
 
-        util.request_script_host("freemode")
+    util.request_script_host("freemode")
     -- end
 end)
 menu.action(server, "kickall exclude hosts and cheat", {"latiaokickallexcludehost"}, "latiaokickallexcludehost",
     function()
         for k, pid in pairs(players.list()) do
             if pid == players.get_host() or pid == players.user() or players.is_marked_as_modder(pid) then
-                continue
+                goto out
             end
             util.trigger_script_event(1 << pid, {-1321657966, pid, INT_MAX, 0, 0, 1})
 
-            
         end
+        ::out::
     end)
 
 menu.toggle_loop(server, "LOVEkick + report all moder", {"latiaocrashkickmod"}, "crash and kickmod.", function()
     for k, pid in pairs(players.list()) do
         if pid == players.get_host() or pid == players.user() then
-            continue
+            goto out
         end
         if players.is_marked_as_modder(pid) then
             local attack = PLAYER.GET_PLAYER_NAME(pid)
             if pid == players.user() then
-                continue
+                goto out
             end
             menu.trigger_commands("reportgriefing" .. attack)
             menu.trigger_commands("reportexploits" .. attack)
@@ -786,24 +775,26 @@ menu.toggle_loop(server, "LOVEkick + report all moder", {"latiaocrashkickmod"}, 
             util.yield(500)
             menu.trigger_commands("loveletterkick" .. attack)
         end
-        
+
     end
+    ::out::
 end)
 
 menu.toggle_loop(server, "LOVEkick all moder", {""}, ".", function()
     for k, pid in pairs(players.list()) do
         if pid == players.get_host() or pid == players.user() then
-            continue
+            goto out
         end
         if players.is_marked_as_modder(pid) then
             local attack = PLAYER.GET_PLAYER_NAME(pid)
             if pid == players.user() then
-                continue
+                goto out
             end
             menu.trigger_commands("loveletterkick" .. attack)
         end
-        
+
     end
+    ::out::
 end)
 
 menu.toggle_loop(server, "if you host kick chinese", {"latiaocrashall"}, "", function()
@@ -813,21 +804,22 @@ menu.toggle_loop(server, "if you host kick chinese", {"latiaocrashall"}, "", fun
             if language == 12 then
                 local attack = PLAYER.GET_PLAYER_NAME(pid)
                 if pid == players.user() then
-                    continue
+                    goto out
                 end
                 menu.trigger_commands("loveletterkick" .. attack)
                 -- util.log(attack)
             end
-            
+
         end
     end
+    ::out::
 end)
 
 menu.toggle_loop(server, "if you host ban all moder", {"latiaobankallmoder"}, "latiaobankallmoder.", function()
     if NETWORK.NETWORK_IS_HOST() then
         for k, pid in pairs(players.list()) do
             if pid == players.user() then
-                continue
+                goto out
             end
             if players.is_marked_as_modder(pid) then
                 local attack = PLAYER.GET_PLAYER_NAME(pid)
@@ -836,9 +828,10 @@ menu.toggle_loop(server, "if you host ban all moder", {"latiaobankallmoder"}, "l
                 util.yield(100)
                 menu.trigger_commands("ban" .. attack)
             end
-            
+
         end
     end
+    ::out::
 end)
 
 menu.toggle_loop(server, "if you no host kick for kick you cheat", {"raidallplayer"}, "", function()
@@ -852,36 +845,39 @@ end)
 menu.action(server, "love letter kick all", {"latiaoloveletterkickall"}, "loveletter kick all.", function()
     for k, pid in pairs(players.list()) do
         if pid == players.user() then
-            continue
+            goto out
         end
         local player = PLAYER.GET_PLAYER_NAME(pid)
 
         menu.trigger_commands("loveletterkick" .. player)
-        
+
     end
+    ::out::
 end)
 
 menu.action(server, "hostkickall", {"latiaohostkickall"}, "latiaohostkickall.", function()
     if NETWORK.NETWORK_IS_HOST() then
         for k, pid in pairs(players.list()) do
             if pid == players.user() then
-                continue
+                goto out
             end
             NETWORK.NETWORK_SESSION_KICK_PLAYER(pid)
-            
+
         end
     end
+    ::out::
 end)
 
 menu.action(server, "timeoutall", {"latiaotimeout"}, "latiaotimeout.", function()
     for k, pid in pairs(players.list()) do
         if pid == players.user() then
-            continue
+            goto out
         end
         local player = PLAYER.GET_PLAYER_NAME(pid)
         menu.trigger_commands("timeout" .. player)
-        
+
     end
+    ::out::
 end)
 
 menu.action(server, "kick me", {"latiaokickme"}, "latiaokickme.", function()
@@ -905,14 +901,15 @@ menu.toggle_loop(server, "report all no host", {"latiaofackhackattackall"}, "rep
     util.yield(500)
     for k, pid in pairs(players.list()) do
         if pid == players.get_host() or pid == players.user() then
-            continue
+            goto out
         end
         local player = PLAYER.GET_PLAYER_NAME(pid)
         menu.trigger_commands("reportgriefing" .. player)
         menu.trigger_commands("reportexploits" .. player)
         menu.trigger_commands("reportbugabuse" .. player)
-        
+
     end
+    ::out::
 end)
 
 menu.toggle_loop(server, "bad TIMER_STOP SOUND for all", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
@@ -933,19 +930,14 @@ menu.toggle_loop(server, "bad Camera_Shoot SOUND for all", {"latiaobedsoundforal
     -- util.yield(50)
 end)
 
-
-
 menu.action(test, "test", {"test"}, "test.", function()
 
 end)
 
-
 -- menu.toggle_loop(server, "REQUES_ENTITY pedtest", {"latiaoREQUES_ENTITYped"}, "latiaoREQUES_ENTITYped.", function()
-    
 
 -- for _, target in ipairs(entities.get_all_peds_as_handles()) do
 --     local success = NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
-
 
 -- end
 
@@ -958,7 +950,7 @@ menu.toggle_loop(server, "REQUES_ENTITY ped2", {"latiaoREQUES_ENTITYped"}, "lati
             local success, error_message = pcall(function()
                 local require = NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
             end)
-            
+
             if not success then
                 -- print(success,error_message)
             end
@@ -967,20 +959,20 @@ menu.toggle_loop(server, "REQUES_ENTITY ped2", {"latiaoREQUES_ENTITYped"}, "lati
 
 end)
 
-
 menu.toggle_loop(server, "REQUES_ENTITY objects2", {"latiaoREQUES_ENTITYobjects"}, "REQUES_ENTITYobjects.", function()
-for _, target in ipairs(entities.get_all_objects_as_pointers()) do
-    local owner = entities.get_owner(target)
-    if owner ~= players.user() then
-        local success, error_message = pcall(function()
-            local require = NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
-        end)
-        
-        if not success then
-            -- print(success,error_message)
+    for k, ent in pairs(entities.get_all_objects_as_pointers()) do
+        local owner = entities.get_owner(ent)
+        if owner ~= players.user() then
+            local success, error_message = pcall(function()
+                NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(ent)
+
+            end)
+
+            if not success then
+                print("Error deleting entity: " .. error_message)
+            end
         end
     end
-end
 
 end)
 
@@ -989,59 +981,39 @@ menu.toggle_loop(server, "REQUES_ENTITY vehicles2", {"latiaoREQUES_ENTITYvehicle
         for _, target in ipairs(entities.get_all_vehicles_as_pointers()) do
             local owner = entities.get_owner(target)
             if owner ~= players.user() then
-                local success, error_message = pcall(function()
-                    local require = NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
-                end)
-                
-                if not success then
-                    -- print(success,error_message)
-                end
+                NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
+
+            end
         end
-    end
     end)
-
-
 
 menu.toggle_loop(server, "REQUES_ENTITY vehicles no player2", {""}, ".", function()
     for _, target in ipairs(entities.get_all_vehicles_as_pointers()) do
         for k, pid in pairs(players.list()) do
             local v1 = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false)
             if target == v1 then
-                continue
+                goto out
             end
             local owner = entities.get_owner(target)
             if owner ~= players.user() then
-                local success, error_message = pcall(function()
-                    local require = NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
-                end)
-                
-                if not success then
-                    -- print(success,error_message)
-                end
+                NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
+
             end
         end
     end
-    
+    ::out::
 end)
 
 menu.toggle_loop(server, "REQUES_ENTITY pickups2", {""}, "", function()
     for k, target in pairs(entities.get_all_pickups_as_pointers()) do
         local owner = entities.get_owner(target)
         if owner ~= players.user() then
-            local success, error_message = pcall(function()
-                local require = NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
-            end)
-            
-            if not success then
-            
-                -- print(success,error_message)
-            end
+
+            NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
+
+        end
     end
-end
 end)
-
-
-
 
 menu.action(test, "NETWORK_SESSION_END", {"latiaoNETWORK_SESSION_END"}, "NETWORK_SESSION_END.", function()
     NETWORK.NETWORK_SESSION_END(0, 0);
@@ -1239,7 +1211,7 @@ menu.toggle_loop(server, "fm_mission_controller host test", {"latiaofm_mission_c
 
         local name = PLAYER.GET_PLAYER_NAME(host)
         if name ~= "**Invalid**" then
-        util.draw_debug_text("fm_mission_controller host is:" .. name)
+            util.draw_debug_text("fm_mission_controller host is:" .. name)
         end
 
     end)
@@ -1252,13 +1224,13 @@ menu.toggle_loop(server, "fm_mission_controller_2020 host test", {"latiaofm_miss
         if name ~= "**Invalid**" then
             util.draw_debug_text("fm_mission_controller_2020 host is: " .. name)
         end
- 
+
     end)
 menu.toggle_loop(server, "freemode host test", {"latiaofreemodetest"}, "latiaofreemodetest.", function()
     local host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("freemode", -1, 0)
     local name = PLAYER.GET_PLAYER_NAME(host)
     if name ~= "**Invalid**" then
-    util.draw_debug_text("freemode host is: " .. name)
+        util.draw_debug_text("freemode host is: " .. name)
     end
 end)
 
@@ -1317,64 +1289,6 @@ local function testMenuSetup(pid)
     menu.action(testMenu, "get_language", {}, "", function()
         util.log(players.get_language(pid))
 
-    end)
-
-    menu.toggle_loop(testMenu, "ATTACH_ENTITY_TO_ENTITY all ped", {}, "", function()
-        local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        for _, ent in ipairs(entities.get_all_peds_as_handles()) do
-            if not entities.is_player_ped(ent) then
-                if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(ent) then
-                    ENTITY.ATTACH_ENTITY_TO_ENTITY(ent, playerped, 0, 0, 0, 0, 0, 0, 0, false, false, false, false, 0,
-                        true, 0)
-                end
-            end
-        end
-
-        if not players.exists(pid) then
-            util.stop_thread()
-        end
-    end)
-
-    menu.toggle_loop(testMenu, "ATTACH_ENTITY_TO_ENTITY all vehicles", {}, "", function()
-        local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
-            if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(ent) then
-                ENTITY.ATTACH_ENTITY_TO_ENTITY(ent, playerped, 0, 0, 0, 0, 0, 0, 0, false, false, false, false, 0, true,
-                    0)
-            end
-        end
-
-        if not players.exists(pid) then
-            util.stop_thread()
-        end
-    end)
-
-    menu.toggle_loop(testMenu, "ATTACH_ENTITY_TO_ENTITY all objects", {}, "", function()
-        local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        for k, ent in pairs(entities.get_all_objects_as_handles()) do
-            if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(ent) then
-                ENTITY.ATTACH_ENTITY_TO_ENTITY(ent, playerped, 0, 0, 0, 0, 0, 0, 0, false, false, false, false, 0, true,
-                    0)
-            end
-        end
-
-        if not players.exists(pid) then
-            util.stop_thread()
-        end
-    end)
-
-    menu.toggle_loop(testMenu, "ATTACH_ENTITY_TO_ENTITY all pickups", {}, "", function()
-        local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        for k, ent in pairs(entities.get_all_pickups_as_handles()) do
-            if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(ent) then
-                ENTITY.ATTACH_ENTITY_TO_ENTITY(ent, playerped, 0, 0, 0, 0, 0, 0, 0, false, false, false, false, 0, true,
-                    0)
-            end
-        end
-
-        if not players.exists(pid) then
-            util.stop_thread()
-        end
     end)
 
     menu.toggle_loop(testMenu, "disabler godmode", {}, "", function()
@@ -1971,8 +1885,8 @@ menu.toggle_loop(test, "debugshot", {"latiaodebugshot"}, ("latiaobadpost"), func
             b = 0,
             a = 255
         }, true)
-            util.log(text)
-        end
+        util.log(text)
+    end
 
 end)
 
@@ -1980,17 +1894,23 @@ menu.toggle_loop(world, "del cctv_cam(pls use in solo if bug)", {""}, "", functi
     local Models = {util.joaat("prop_cctv_pole_04"), util.joaat("xm_prop_x17_server_farm_cctv_01"),
                     util.joaat("ch_prop_ch_cctv_cam_02a"), util.joaat("prop_cctv_cam_05a")}
 
+    -- 定义删除实体的函数
+    local function deleteEntity(entity)
+        local success, error_message = pcall(entities.delete, entity)
+        if not success then
+            print("Error deleting entity: " .. error_message)
+        end
+    end
+
+    -- 遍历所有对象
     for _, ent in pairs(entities.get_all_objects_as_pointers()) do
-        for _, targetModelHash in pairs(Models) do
+        for _, targetModelHash in ipairs(Models) do
             if ENTITY.GET_ENTITY_MODEL(ent) == targetModelHash then
-                local success, error_message = pcall(function()
-                    local require = entities.delete(ent)
-                    if not success then
-                    end
-                end)
+                deleteEntity(ent)
             end
         end
     end
+
 end)
 
 menu.action(test, "latiaoQUIT_GAME", {"latiaoQUIT_GAME"}, "", function()
@@ -2045,16 +1965,6 @@ menu.action(server, "NETWORK_END_TUTORIAL_SESSION", {"latiaoNETWORK_END_TUTORIAL
     "NETWORK_END_TUTORIAL_SESSION", function()
         NETWORK.NETWORK_END_TUTORIAL_SESSION()
     end)
-
-menu.toggle_loop(world, "SET_ENTITY_HEALTH 0 ch_prop_ch_mobile_jammer_01x", {""}, "", function()
-    for _, ent in pairs(entities.get_all_objects_as_handles()) do
-        if ENTITY.GET_ENTITY_MODEL(ent) == util.joaat("ch_prop_ch_mobile_jammer_01x") then
-            ENTITY.SET_ENTITY_HEALTH(ent, 0, -1)
-            util.yield()
-            break
-        end
-    end
-end)
 
 local HEALTH = menu.slider(world, "SET_ENTITY_HEALTH up", {"SET_ENTITY_HEALTH"}, "SET_ENTITY_HEALTH", INT_MIN, INT_MAX,
     100, 1, function()
@@ -2201,7 +2111,6 @@ menu.toggle_loop(test, "info spamm", {"test1"}, "tet2", function()
     end
 end)
 
-
 menu.toggle_loop(world, "STOP_FIRE_IN_RANGE", {""}, ".", function()
     FIRE.STOP_FIRE_IN_RANGE(0, 0, 0, INT_MAX)
 end)
@@ -2236,62 +2145,6 @@ menu.action(server, "super request_script_host for all ", {"request_script_hosta
         end
     end)
 
-menu.toggle_loop(world, "SET_ENTITY_INVINCIBLE true", {""}, "", function()
-    local targets = {}
-
-    for _, ped in ipairs(entities.get_all_peds_as_handles()) do
-        table.insert(targets, ped)
-    end
-
-    for _, vehicle in ipairs(entities.get_all_vehicles_as_handles()) do
-        table.insert(targets, vehicle)
-    end
-
-    for _, object in ipairs(entities.get_all_objects_as_handles()) do
-        table.insert(targets, object)
-    end
-
-    for _, pickups in ipairs(entities.get_all_pickups_as_handles()) do
-        table.insert(targets, pickups)
-    end
-
-    for _, target in ipairs(targets) do
-        ENTITY.SET_ENTITY_INVINCIBLE(target, true)
-        util.yield()
-    end
-end)
-
-menu.toggle_loop(world, "SET_ENTITY_INVINCIBLE false", {""}, "", function()
-    local targets = {}
-
-    for _, ped in ipairs(entities.get_all_peds_as_handles()) do
-        table.insert(targets, ped)
-    end
-
-    for _, vehicle in ipairs(entities.get_all_vehicles_as_handles()) do
-        table.insert(targets, vehicle)
-    end
-
-    for _, object in ipairs(entities.get_all_objects_as_handles()) do
-        table.insert(targets, object)
-    end
-
-    for _, pickups in ipairs(entities.get_all_pickups_as_handles()) do
-        table.insert(targets, pickups)
-    end
-
-    for _, target in ipairs(targets) do
-        ENTITY.SET_ENTITY_INVINCIBLE(target, false)
-        util.yield()
-    end
-end)
-
-menu.toggle_loop(server, "GtaBannerforall", {"GtaBannerforall"}, "", function()
-    for k, pid in pairs(players.list()) do
-        util.trigger_script_event(1 << pid, {-330501227, pid})
-    end
-end)
-
 menu.toggle_loop(server, "nodamage EXPLOSION spamm", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
     for k, pid in pairs(players.list()) do
         local pos = players.get_position(pid)
@@ -2303,30 +2156,8 @@ menu.action(about, "github:latiao-1337", {""}, "", function()
 
 end)
 
-menu.action(test, "TERMINATE_ALL_SCRIPTS_WITH_THIS_NAME ALL", {""}, "", function()
-    for _, script in ipairs(ALL_script) do
-        MISC.TERMINATE_ALL_SCRIPTS_WITH_THIS_NAME(script)
-    end
-end)
-
-menu.action(test, "START_SCRIPTscript all", {""}, "", function()
-    for _, script in ipairs(ALL_script) do
-        START_SCRIPT(script)
-    end
-end)
-
-menu.action(test, "START_SCRIPTscript freemode", {""}, "", function()
-    START_SCRIPT("freemode")
-end)
-
 menu.toggle_loop(self, "SET_PLAYER_LOCKON_RANGE_OVERRIDE", {"SET_PLAYER_LOCKON_RANGE_OVERRIDE"}, "", function()
     PLAYER.SET_PLAYER_LOCKON_RANGE_OVERRIDE(players.user(), 100000000)
-end)
-
-menu.toggle_loop(self, "ADD_PLAYER_TARGETABLE_ENTITY ALL", {"ADD_PLAYER_TARGETABLE_ENTITY"}, "", function()
-    for k, ent in pairs(entities.get_all_peds_as_handles()) do
-        PLAYER.ADD_PLAYER_TARGETABLE_ENTITY(players.user(), ent)
-    end
 end)
 
 menu.action(world, "tp ch_prop_fingerutil.log_scanner", {"latiaotpch_prop_fingerutil.log_scanner_01a"}, "", function()
@@ -2364,48 +2195,44 @@ menu.action(dividends, "CREATE_VEHICLE asterope", {""}, "", function()
 end)
 
 menu.toggle_loop(test, "FIX_OBJECT_FRAGMENT all", {"latiaobadBBREAK_OBJECT_FRAGMENT_CHILDcrash"}, "", function()
-    for _, ent in pairs(entities.get_all_objects_as_handles()) do
-        OBJECT.FIX_OBJECT_FRAGMENT(ent)
+    for k, ent in pairs(entities.get_all_objects_as_pointers()) do
+        local success, error_message = pcall(function()
+            OBJECT.FIX_OBJECT_FRAGMENT(ent)
+        end)
+        if not success then
+            print("Error deleting entity: " .. error_message)
+        end
     end
 end)
 menu.toggle_loop(test, "BREAK_OBJECT_FRAGMENT_CHILD all", {"latiaobadBBREAK_OBJECT_FRAGMENT_CHILDcrash"}, "", function()
-    for _, ent in pairs(entities.get_all_objects_as_handles()) do
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(ent, 0, false)
-    end
-end)
-menu.toggle_loop(test, "util.log all ob", {"util.logallob"}, "", function()
-    for _, ent in pairs(entities.get_all_objects_as_handles()) do
-    end
-end)
-
-menu.toggle_loop(server, "bounty script spamm for all", {"latiaobounty script spammforall"}, "", function()
-    for k, pid in pairs(players.list()) do
-        if pid == players.user() then
-            continue
+    for k, ent in pairs(entities.get_all_objects_as_pointers()) do
+        local success, error_message = pcall(function()
+            OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(ent, 0, false)
+        end)
+        if not success then
+            print("Error deleting entity: " .. error_message)
         end
-        util.trigger_script_event(1 << pid, {1517551547, pid, pid, 0, math.random(INT_MIN, INT_MAX), 0, 0, 0, 0, 0, 0,
-                                             0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1})
-        
     end
 end)
 
-menu.toggle_loop(server, "latiao ALL_script_test host test", {"latiaoALL_script_test"}, "latiaoALL_script_test.", function()
-    for _, script in ipairs(ALL_script) do
-        for x = -1, 0 do
-            for y = 0, 0 do
-                local host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, x, y)
-                
+menu.toggle_loop(server, "latiao ALL_script_test host test", {"latiaoALL_script_test"}, "latiaoALL_script_test.",
+    function()
+        for _, script in ipairs(ALL_script) do
+            for x = -1, 0 do
+                for y = 0, 0 do
+                    local host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, x, y)
+
                     local name = PLAYER.GET_PLAYER_NAME(host)
                     if name ~= "**Invalid**" then
-                    local hostinfo = script .. "," .. x .. "," .. y .. "=" .. name
-                    util.draw_debug_text(hostinfo)
--- print(hostinfo)
+                        local hostinfo = script .. "," .. x .. "," .. y .. "=" .. name
+                        util.draw_debug_text(hostinfo)
+                        -- print(hostinfo)
+                    end
+                end
             end
         end
-    end
-end
-    
-end)
+
+    end)
 
 menu.toggle_loop(server, "auto super request_script_host for all ", {"autorequest_script_hostall"},
     "autorequest_script_hostall.", function()
@@ -2422,345 +2249,44 @@ menu.toggle_loop(server, "auto super request_script_host for all ", {"autoreques
 
     end)
 
-menu.action(server, "prtest", {"test"}, ("test"), function()
-    for x = -10, 10 do
-        for y = -10, 10 do
-            util.log(x .. y)
-        end
-    end
-end)
+menu.toggle_loop(test, "所有实体不无敌", {}, "", function()
 
-menu.action(world, "TASK_SET_BLOCKING_OF_NON_TEMPORARY_EVENTS", {"latiaoTASK_SET_BLOCKING_OF_NON_TEMPORARY_EVENTS"},
-    ("kickpedvehicle"), function()
-        for _, ped in pairs(entities.get_all_peds_as_handles()) do
-            if not entities.is_player_ped(ped) then
-                TASK.TASK_SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, true)
-            end
-        end
-    end)
-
-menu.action(test, "NETWORK_SESSION_HOST", {"NETWORK_SESSION_HOST"}, ("NETWORK_SESSION_HOST"), function()
-    NETWORK.NETWORK_SESSION_HOST(0, 100, false)
-end)
-menu.action(test, "NETWORK_SESSION_HOST_SINGLE_PLAYER", {"NETWORK_SESSION_HOST_SINGLE_PLAYER"},
-    ("NETWORK_SESSION_HOST_SINGLE_PLAYER"), function()
-        NETWORK.NETWORK_SESSION_HOST_SINGLE_PLAYER(2)
-    end)
-menu.action(test, "NETWORK_QUIT_MP_TO_DESKTOP", {"NETWORK_QUIT_MP_TO_DESKTOP"}, ("NETWORK_QUIT_MP_TO_DESKTOP"),
-    function()
-        NETWORK.NETWORK_QUIT_MP_TO_DESKTOP()
-    end)
-menu.action(test, "ADD_POP_MULTIPLIER_SPHERE", {"ADD_POP_MULTIPLIER_SPHERE"}, ("ADD_POP_MULTIPLIER_SPHERE"), function()
-    MISC.ADD_POP_MULTIPLIER_SPHERE(0, 0, 0, 10000, 10000, 10000, false, true)
-end)
-
--- menu.toggle_loop(testMenu, "kick vehicles", {"latiaokickvehicles"}, "latiaokickvehicles.", function()
---     util.trigger_script_event(1 << pid, {-503325966})
---     if not players.exists(pid) then
---         util.stop_thread()
---     end
--- end)
-
--- menu.action(server, "REQUES_ENTITY all ped", {"latiaoREQUES_ENTITYall"}, "latiaoREQUES_ENTITYall.", function()
---     for k, ent in pairs(entities.get_all_peds_as_handles()) do
---         if not entities.is_player_ped(ent) then
---             NETWORK.SET_NETWORK_ID_CAN_MIGRATE(ent, false)
---         end
---     end
--- end)
-
-menu.toggle_loop(test, "SET_ENTITY_AS_MISSION_ENTITY all ped", {}, "", function()
-
-    for _, ent in ipairs(entities.get_all_peds_as_handles()) do
-        -- if not entities.is_player_ped(ent) then
-        -- if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(ent) then
-        ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ent, false, false)
-        -- end
-        -- end
-    end
-
-end)
-
-menu.toggle_loop(test, "SET_ENTITY_AS_MISSION_ENTITY all vehicles", {}, "", function()
-
-    for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
-        -- if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(ent) then
-        ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ent, false, false)
-        -- end
-    end
-
-end)
-
-menu.toggle_loop(test, "SET_ENTITY_AS_MISSION_ENTITY all objects", {}, "", function()
-
-    for k, ent in pairs(entities.get_all_objects_as_handles()) do
-        -- if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(ent) then
-        ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ent, false, false)
-        -- end
-    end
-
-end)
-
-menu.toggle_loop(test, "SET_ENTITY_AS_MISSION_ENTITY all pickups", {}, "", function()
-
-    for k, ent in pairs(entities.get_all_pickups_as_handles()) do
-        -- if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(ent) then
-        ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ent, false, false)
-        -- end
-    end
-
-end)
-
-menu.toggle_loop(test, "SET_ENTITY_AS_NO_LONGER_NEEDED all ped", {}, "", function()
-
-    for _, ent in ipairs(entities.get_all_peds_as_handles()) do
-        -- if not entities.is_player_ped(ent) then
-        if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-            ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(ent)
-        end
-        -- end
-    end
-
-end)
-
-menu.toggle_loop(test, "SET_ENTITY_AS_NO_LONGER_NEEDED all vehicles", {}, "", function()
-
-    for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
-        if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-            ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(ent)
-        end
-    end
-
-end)
-
-menu.toggle_loop(test, "SET_ENTITY_AS_NO_LONGER_NEEDED all objects", {}, "", function()
-
-    for k, ent in pairs(entities.get_all_objects_as_handles()) do
-        if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-            ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(ent)
-        end
-    end
-
-end)
-
-menu.toggle_loop(test, "SET_ENTITY_AS_NO_LONGER_NEEDED all pickups", {}, "", function()
-
-    for k, ent in pairs(entities.get_all_pickups_as_handles()) do
-        if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-            ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(ent)
-        end
-    end
-
-end)
-
-menu.toggle_loop(test, "SET_ENTITY_INVINCIBLE all ped true", {}, "", function()
-
-    for _, ent in ipairs(entities.get_all_peds_as_handles()) do
-        if not entities.is_player_ped(ent) then
-            -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-            ENTITY.SET_ENTITY_INVINCIBLE(ent, true)
-            -- end
-        end
-    end
-
-end)
-
-menu.toggle_loop(test, "SET_ENTITY_INVINCIBLE all vehicles true", {}, "", function()
-
-    for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
-        -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-        ENTITY.SET_ENTITY_INVINCIBLE(ent, true)
-        -- end
-    end
-
-end)
-
-menu.toggle_loop(test, "SET_ENTITY_INVINCIBLE all objects true", {}, "", function()
-
-    for k, ent in pairs(entities.get_all_objects_as_handles()) do
-        -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-        ENTITY.SET_ENTITY_INVINCIBLE(ent, true)
-        -- end
-    end
-
-end)
-
-menu.toggle_loop(test, "SET_ENTITY_INVINCIBLE all pickups true", {}, "", function()
-
-    for k, ent in pairs(entities.get_all_pickups_as_handles()) do
-        -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-        ENTITY.SET_ENTITY_INVINCIBLE(ent, true)
-        -- end
-    end
-
-end)
-
-menu.toggle_loop(test, "SET_ENTITY_INVINCIBLE all ped false", {}, "", function()
-
-    for _, ent in ipairs(entities.get_all_peds_as_handles()) do
-        if not entities.is_player_ped(ent) then
-            -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
+    for k, ent in pairs(entities.get_all_objects_as_pointers()) do
+        local success, error_message = pcall(function()
             ENTITY.SET_ENTITY_INVINCIBLE(ent, false)
-            -- end
+        end)
+        if not success then
+            print("Error deleting entity: " .. error_message)
         end
     end
-
 end)
 
-menu.toggle_loop(test, "SET_ENTITY_INVINCIBLE all vehicles false", {}, "", function()
+menu.toggle_loop(test, "所有实体无敌", {}, "", function()
 
-    for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
-        -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-        ENTITY.SET_ENTITY_INVINCIBLE(ent, false)
-        -- end
-    end
-
-end)
-
-menu.toggle_loop(test, "SET_ENTITY_INVINCIBLE all objects false", {}, "", function()
-
-    for k, ent in pairs(entities.get_all_objects_as_handles()) do
-        -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-        ENTITY.SET_ENTITY_INVINCIBLE(ent, false)
-        -- end
-    end
-
-end)
-
-menu.toggle_loop(test, "SET_ENTITY_INVINCIBLE all pickups false", {}, "", function()
-
-    for k, ent in pairs(entities.get_all_pickups_as_handles()) do
-        -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-        ENTITY.SET_ENTITY_INVINCIBLE(ent, false)
-        -- end
-    end
-
-end)
-
-menu.toggle_loop(test, "NETWORK.NETWORK_UNREGISTER_NETWORKED_ENTITY all ped false", {}, "", function()
-
-    for _, ent in ipairs(entities.get_all_peds_as_handles()) do
-        if not entities.is_player_ped(ent) then
-            -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-            NETWORK.NETWORK_UNREGISTER_NETWORKED_ENTITY(ent, false)
-            -- end
+    for k, ent in pairs(entities.get_all_objects_as_pointers()) do
+        local success, error_message = pcall(function()
+            ENTITY.SET_ENTITY_INVINCIBLE(ent, true)
+        end)
+        if not success then
+            print("Error deleting entity: " .. error_message)
         end
     end
-
 end)
 
-menu.toggle_loop(test, "NETWORK.NETWORK_UNREGISTER_NETWORKED_ENTITY all vehicles false", {}, "", function()
-
-    for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
-        -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-        NETWORK.NETWORK_UNREGISTER_NETWORKED_ENTITY(ent, false)
-        -- end
-    end
-
-end)
-
-menu.toggle_loop(test, "NETWORK.NETWORK_UNREGISTER_NETWORKED_ENTITY all objects false", {}, "", function()
-
-    for k, ent in pairs(entities.get_all_objects_as_handles()) do
-        -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-        NETWORK.NETWORK_UNREGISTER_NETWORKED_ENTITY(ent, false)
-        -- end
-    end
-
-end)
-
-menu.toggle_loop(test, "NETWORK.NETWORK_UNREGISTER_NETWORKED_ENTITY all pickups false", {}, "", function()
-
-    for k, ent in pairs(entities.get_all_pickups_as_handles()) do
-        -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-        NETWORK.NETWORK_UNREGISTER_NETWORKED_ENTITY(ent, false)
-        -- end
-    end
-
-end)
-
-menu.toggle_loop(test, "NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED all ped false", {}, "", function()
-
-    for _, ent in ipairs(entities.get_all_peds_as_handles()) do
-        if not entities.is_player_ped(ent) then
-            -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-            NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED(ent, false)
-            -- end
-        end
-    end
-
-end)
-
-menu.toggle_loop(test, "NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED all vehicles false", {}, "", function()
-
-    for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
-        -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-        NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED(ent, false)
-        -- end
-    end
-
-end)
-
-menu.toggle_loop(test, "NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED all objects false", {}, "", function()
-
-    for k, ent in pairs(entities.get_all_objects_as_handles()) do
-        -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-        NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED(ent, false)
-        -- end
-    end
-
-end)
-
-menu.toggle_loop(test, "NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED all pickups false", {}, "", function()
-
-    for k, ent in pairs(entities.get_all_pickups_as_handles()) do
-        -- if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-        NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED(ent, false)
-        -- end
-    end
-
-end)
-
-
-menu.toggle_loop(world, "unlockallvehicles", {""}, ".", function()
+menu.toggle_loop(world, "解锁所有车", {""}, ".", function()
     for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
         VEHICLE.SET_VEHICLE_DOORS_LOCKED(ent, 0)
     end
 end)
 
-menu.toggle_loop(world, "lockallvehicles", {""}, ".", function()
+menu.toggle_loop(world, "锁定所有车", {""}, ".", function()
     for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
         VEHICLE.SET_VEHICLE_DOORS_LOCKED(ent, 2)
     end
 end)
 
-menu.toggle_loop(world, "ATTACH_ENTITY_TO_ENTITY all ped tp lonnggggg", {}, "", function()
-    -- local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-    for _, ent in ipairs(entities.get_all_peds_as_handles()) do
-        if not entities.is_player_ped(ent) then
-            if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(ent) then
-                ENTITY.ATTACH_ENTITY_TO_ENTITY(ent, players.user_ped(), 0, 0, 0, 1000, 0, 0, 0, false, false, false,
-                    false, 0, true, 0)
-            end
-        end
-    end
-
-end)
-
 menu.toggle_loop(test, "saveall", {""}, ".", function()
     STATS.STAT_SAVE(0, 0, 3, 0);
-end)
-
-menu.toggle_loop(world, "test", {""}, "", function()
-    for _, ent in pairs(entities.get_all_objects_as_handles()) do
-        for _, targetModelHash in pairs(Models) do
-            if ENTITY.GET_ENTITY_MODEL(ent) == targetModelHash then
-                entities.delete(ent)
-                util.yield()
-                break
-            end
-        end
-    end
 end)
 
 -- menu.action(server, "task all", {"latiaotaskall"}, "latiaotaskall", function()
@@ -2840,24 +2366,17 @@ menu.action(admin, "RC Tank", {""}, ".", function()
     SET_INT_GLOBAL(2794162 + 6894, 1)
 end)
 
-
 menu.toggle_loop(server, "循环给予收藏品", {""}, "", function()
-    
+
     menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
-   menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give RP"))
-   util.yield(10000)
+    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give RP"))
+    util.yield(10000)
 end)
 
 menu.toggle_loop(server, "循环给予经验", {""}, "", function()
-    
+
     menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give RP"))
     util.yield(1)
-end)
-
-menu.action(server, "test trigger_script_event", {""}, "", function()
-    for k, pid in pairs(players.list()) do
-        util.trigger_script_event(1 << pid, {-1906536929})
-    end
 end)
 
 menu.toggle_loop(world, "随机玩家击杀 ped ", {""}, "", function()
@@ -2876,65 +2395,16 @@ menu.toggle_loop(world, "随机玩家击杀 ped ", {""}, "", function()
 
 end)
 
-menu.toggle_loop(world, "util.log random pid ", {""}, "", function()
-    local list = players.list()
-    local index = math.random(#list)
-    util.log(list[index])
-
-end)
-
-menu.toggle_loop(world, "NETWORK_REGISTER_ENTITY_AS_NETWORKED", {"NETWORK_REGISTER_ENTITY_AS_NETWORKED"},
-    "NETWORK_REGISTER_ENTITY_AS_NETWORKED.", function()
-        local targets = {}
-
-        for _, ped in ipairs(entities.get_all_peds_as_handles()) do
-            table.insert(targets, ped)
-        end
-
-        for _, vehicle in ipairs(entities.get_all_vehicles_as_handles()) do
-            table.insert(targets, vehicle)
-        end
-
-        for _, object in ipairs(entities.get_all_objects_as_handles()) do
-            table.insert(targets, object)
-        end
-
-        for _, pickups in ipairs(entities.get_all_pickups_as_handles()) do
-            table.insert(targets, pickups)
-        end
-
-        for _, target in ipairs(targets) do
-            if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(target) == false then
-                NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED(target)
-            end
-
-        end
-    end)
-
 menu.action(world, "delallnotNETWORK", {"delallnotNETWORK"}, "delallnotNETWORK.", function()
-    local targets = {}
+    for _, entity in ipairs(ALL_Entities()) do
+        local success, error_message = pcall(function()
+            if not NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(entity) then
+                entities.delete(entity)
+            end
+        end)
 
-    for _, ped in ipairs(entities.get_all_peds_as_handles()) do
-        table.insert(targets, ped)
-    end
-
-    for _, vehicle in ipairs(entities.get_all_vehicles_as_handles()) do
-        table.insert(targets, vehicle)
-    end
-
-    for _, object in ipairs(entities.get_all_objects_as_handles()) do
-        table.insert(targets, object)
-    end
-
-    for _, pickups in ipairs(entities.get_all_pickups_as_handles()) do
-        table.insert(targets, pickups)
-    end
-
-    for _, target in ipairs(targets) do
-        if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(target) == false then
-
-            entities.delete(target)
-            menu.trigger_commands("deleteropes")
+        if not success then
+            print("Error deleting entity: " .. error_message)
         end
     end
 
@@ -2944,15 +2414,22 @@ menu.action(world, "tp ch_prop_fingerutil.log_scanner", {"latiaotpch_prop_finger
     local Models = {util.joaat("ch_prop_fingerutil.log_scanner_01a"), util.joaat("ch_prop_fingerutil.log_scanner_01b"),
                     util.joaat("ch_prop_fingerutil.log_scanner_01c"), util.joaat("ch_prop_fingerutil.log_scanner_01d")}
 
-    for _, ent in pairs(entities.get_all_objects_as_handles()) do
+    local playerPos = players.get_position(players.user())
+
+    for _, ent in pairs(entities.get_all_pickups_as_pointers()) do
         for _, targetModelHash in pairs(Models) do
-            if ENTITY.GET_ENTITY_MODEL(ent) == targetModelHash then
-                ENTITY.SET_ENTITY_COORDS(ent, players.get_position(players.user()), false)
-                util.yield()
-                break
+            local success, error_message = pcall(function()
+                if ENTITY.GET_ENTITY_MODEL(ent) == targetModelHash then
+                    ENTITY.SET_ENTITY_COORDS(ent, playerPos.x, playerPos.y, playerPos.z, false)
+                end
+            end)
+
+            if not success then
+                print("Error setting coordinates: " .. error_message)
             end
         end
     end
+
 end)
 
 menu.action(world, "REFRESH_INTERIOR", {""}, "", function()
@@ -2980,30 +2457,27 @@ menu.toggle_loop(server, "自动送温暖", {""}, ".", function()
 
     if players.get_script_host() == players.user() then
         util.log("give")
-     
+
         menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
         menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give RP"))
         menu.trigger_command(menu.ref_by_path("Players>All Players>Weapons>Give Weapons>Give All Weapons"))
         menu.trigger_command(menu.ref_by_path("Players>All Players>Weapons>Give Ammo"))
         menu.trigger_command(menu.ref_by_path("Players>All Players>Weapons>Give Parachute"))
-     
+
         util.log("give end")
-            util.log("Wait for 15 seconds")
+        util.log("Wait for 15 seconds")
         util.yield(15000) -- Wait for 15 seconds
-     
+
         util.log("go")
         menu.trigger_command(menu.ref_by_path("Online>New Session>Find Public Session"))
         util.yield(10000)
-    
-     else
+
+    else
         util.log("request_script_host")
         util.request_script_host("freemode")
-     end
-     
+    end
+
 end)
-
-
-
 
 menu.toggle(server, "new player test", {""}, ".", function()
     start = true
@@ -3037,13 +2511,15 @@ end)
 menu.toggle_loop(server, "giverpforall", {""}, "", function()
     for k, pid in pairs(players.list()) do
         if pid == players.user() then
-            continue
+            goto out
         end
         util.trigger_script_event(1 << pid, {968269233, -1, 4, 21, 1, 1, 1})
         util.trigger_script_event(1 << pid, {968269233, -1, 4, 22, 1, 1, 1})
         util.trigger_script_event(1 << pid, {968269233, -1, 4, 23, 1, 1, 1})
         util.trigger_script_event(1 << pid, {968269233, -1, 4, 24, 1, 1, 1})
+
     end
+    ::out::
 end)
 
 -- menu.toggle_loop(server, "testgiverpforall", {""}, "", function()
@@ -3065,6 +2541,8 @@ end)
 --     
 -- end)
 
-menu.action(world, "request_model", {""}, "", function()
-    util.request_model(util.joaat("vw_prop_vw_lux_card_01a"))
+
 end)
+if not success then
+    print(error_message)
+end
