@@ -1,4 +1,4 @@
-local success, error_message = pcall(function()
+
 
     local function ALL_Entities()
         local targets = {}
@@ -2178,6 +2178,8 @@ local success, error_message = pcall(function()
         ENTITY.SET_ENTITY_MAX_HEALTH(players.user_ped(), 328)
     end)
 
+
+
     menu.action(server, "super request_script_host for all ", {"request_script_hostall"}, "latiaoNrequest_script_host.",
         function()
             for _, script in ipairs(ALL_script) do
@@ -2502,7 +2504,7 @@ local success, error_message = pcall(function()
 
     menu.toggle_loop(server, "自动送温暖", {""}, ".", function()
 
-        if players.get_script_host() == players.user() then
+        if not util.is_session_transition_active() then
             util.log("give")
 
             menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
@@ -2513,15 +2515,14 @@ local success, error_message = pcall(function()
 
             util.log("give end")
             util.log("Wait for 15 seconds")
-            util.yield(15000) -- Wait for 15 seconds
+            util.yield(15000)
 
             util.log("go")
             menu.trigger_command(menu.ref_by_path("Online>New Session>Find Public Session"))
-            util.yield(10000)
-
+            util.yield()
         else
-            util.log("request_script_host")
-            util.request_script_host("freemode")
+            print("loding")
+            util.yield()
         end
 
     end)
@@ -2588,7 +2589,32 @@ local success, error_message = pcall(function()
     --     
     -- end)
 
+    menu.toggle_loop(server, "testjoin", {""}, "", function()
+
+        for k, pid in pairs(players.list()) do
+            local player = PLAYER.GET_PLAYER_NAME(pid)
+            local active = NETWORK.NETWORK_IS_PLAYER_ACTIVE(pid)
+            if not active then -- 如果玩家不在线或者不在游戏中，就打印出来
+                print(player.."="..active)
+            end
+                end
+        
+    end)
+
+
+    menu.toggle_loop(self, "锁定玩家", {}, "允许使用制导发射器锁定玩家", function()
+
+
+        for k, pid in pairs(players.list()) do
+            local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+
+            PLAYER.ADD_PLAYER_TARGETABLE_ENTITY(players.user(), playerped)
+            ENTITY.SET_ENTITY_IS_TARGET_PRIORITY(playerped, false, 0)   
+        end
+
+
+
+
 end)
-if not success then
-    print(error_message)
-end
+
+
