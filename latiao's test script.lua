@@ -773,7 +773,7 @@
                 if pid == players.get_host() or pid == players.user() or players.is_marked_as_modder(pid) then
                     goto out
                 end
-                util.trigger_script_event(1 << pid, {-1321657966, pid, INT_MAX, 0, 0, 1})
+                util.trigger_script_event(1 << pid, {968269233, pid, 4, 233, 1, 1, 1})
 
             end
             ::out::
@@ -915,6 +915,14 @@
             menu.trigger_command(menu.ref_by_path("Players>All Players>Increment Commend/Report Stats>Griefing or Disruptive Gameplay"))
             menu.trigger_command(menu.ref_by_path("Players>All Players>Increment Commend/Report Stats>Cheating or Modding"))
             menu.trigger_command(menu.ref_by_path("Players>All Players>Increment Commend/Report Stats>Glitching or Abusing Game Features"))
+        end
+    end)
+
+    menu.toggle_loop(server, "loop commendation all", {"latiaoreportall"}, "reportall.", function()
+        util.yield(1000)
+        if NETWORK.NETWORK_IS_HOST() then
+            menu.trigger_command(menu.ref_by_path("Players>All Players>Increment Commend/Report Stats>Helpful"))
+            menu.trigger_command(menu.ref_by_path("Players>All Players>Increment Commend/Report Stats>Friendly"))
         end
     end)
 
@@ -1100,12 +1108,18 @@
     menu.action(dividends, "MPPLY_H3_COOLDOWN", {""}, "MPPLY_H3_COOLDOWN.", function()
         STAT_SET_INT("MPPLY_H3_COOLDOWN", -1)
     end)
-    local nohostalldividends = menu.slider(dividends, "nohostalldividends", {"nohostcasino"}, "", -100000, 100000, 100,
+    menu.action(dividends, "跳过赌场冷却", {}, "", function()
+        STAT_SET_INT("H3_COMPLETEDPOSIX", -1)
+
+
+    end)
+    local nohostalldividends = menu.slider(dividends, "不是主机本地分红", {"nohostcasino"}, "", -100000, 100000, 100,
         5, function()
 
         end)
 
-    menu.toggle_loop(dividends, "casino and Perico and Doomsday for you(you not host)", {""}, "latiaonohost.",
+
+    menu.toggle_loop(dividends, "设置不是主机本地分红", {""}, "latiaonohost.",
         function()
             SET_INT_GLOBAL(2685249 + 6615, menu.get_value(nohostalldividends))
         end)
@@ -1183,6 +1197,12 @@
         SET_INT_GLOBAL(1959865 + 812 + 50 + 4, menu.get_value(Doomsday))
     end)
 
+    menu.action(dividends, "跳过小岛冷却", {}, "", function()
+        STAT_SET_INT("H4_PROGRESS", -1)
+
+
+    end)
+
     menu.action(dividends, "完成小岛前置", {}, "", function()
         STAT_SET_INT("H4CNF_BS_ENTR", -1)
         STAT_SET_INT("H4CNF_BS_GEN", -1)
@@ -1206,10 +1226,10 @@
         SET_INT_GLOBAL(262145 + 30259 + 10, 0)
 
     end)
-    local Pericotarget = menu.slider(dividends, "小岛目标价值", {""}, "", INT_MIN, INT_MAX, 1000, 100000,
+    local Pericotarget = menu.slider(dividends, "小岛目标价值", {"CayoMain"}, "CayoMain", INT_MIN, INT_MAX, 1000, 100000,
         function()
         end)
-    menu.action(dividends, "设置小岛目标价值", {""}, ".", function()
+    menu.action(dividends, "设置小岛目标价值", {""}, "", function()
         SET_INT_GLOBAL(262145 + 30259 + 0, menu.get_value(Pericotarget))
         SET_INT_GLOBAL(262145 + 30259 + 1, menu.get_value(Pericotarget))
         SET_INT_GLOBAL(262145 + 30259 + 2, menu.get_value(Pericotarget))
@@ -1634,7 +1654,7 @@
         --     util.trigger_script_event(1 << pid, {-1321657966, pid, 1})
         -- end)
 
-        menu.toggle_loop(testMenu, "host freeze", {""}, ".", function()
+        menu.toggle_loop(testMenu, "无限邀请加载", {""}, ".", function()
             util.trigger_script_event(1 << pid, {-1321657966, pid, pid, 0, 0, 115})
 
             if not players.exists(pid) then
@@ -1642,7 +1662,7 @@
             end
         end)
 
-        menu.toggle_loop(testMenu, "host freeze2", {""}, ".", function()
+        menu.toggle_loop(testMenu, "循环邀请公寓", {""}, ".", function()
             util.trigger_script_event(1 << pid, {-1321657966, pid, pid, 0, 0, 1})
 
             if not players.exists(pid) then
@@ -1660,6 +1680,14 @@
 
         menu.action(testMenu, "test kick2", {""}, ".", function()
             util.trigger_script_event(1 << pid, {1613825825, pid, 939521535})
+
+            if not players.exists(pid) then
+                util.stop_thread()
+            end
+        end)
+
+        menu.action(testMenu, "无效收藏品踢", {""}, ".", function()
+            util.trigger_script_event(1 << pid,{968269233, -1, 4, 233, 1, 1, 1})
 
             if not players.exists(pid) then
                 util.stop_thread()
@@ -1881,6 +1909,11 @@
 
         end)
 
+        menu.toggle_loop(testMenu, "loop giverp2", {""}, "", function()
+            util.trigger_script_event(1 << pid, {968269233,  -1,   8,  -5,  1,  1,  1})
+
+        end)
+
     end
 
     for _, pid in ipairs(players.list()) do
@@ -1979,9 +2012,13 @@
         end
     end)
 
-    menu.toggle_loop(server, "block am_hunt_the_Beast", {"latiaoblockam_hunt_the_Beast"},
-        "latiaoblockam_hunt_the_Beast", function()
+    menu.toggle_loop(server, "阻止变成野兽", {""},
+        "", function()
+            if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(util.joaat("am_hunt_the_Beast")) > 0 then
+                -- print("stop am_hunt_the_Beast")
             MISC.TERMINATE_ALL_SCRIPTS_WITH_THIS_NAME("am_hunt_the_Beast")
+        
+            end
         end)
 
     menu.toggle_loop(server, "block am_gang_call", {"latiaoblockam_gang_call"}, "latiaoblockam_gang_call", function()
@@ -1998,6 +2035,7 @@
 
     menu.action(server, "NETWORK_START_SOLO_TUTORIAL_SESSION", {"latiaoNETWORK_START_SOLO_TUTORIAL_SESSION"},
         "NETWORK_START_SOLO_TUTORIAL_SESSION", function()
+            
             NETWORK.NETWORK_START_SOLO_TUTORIAL_SESSION()
         end)
 
@@ -2570,6 +2608,19 @@
 
     end)
 
+    menu.toggle_loop(server, "giverpforall2", {""}, "", function()
+        for k, pid in pairs(players.list()) do
+            if pid == players.user() then
+                goto out
+            end
+            util.trigger_script_event(1 << pid, {968269233,  -1,   8,  -5,  1,  1,  1})
+
+            ::out::
+        end
+
+    end)
+
+
     -- menu.toggle_loop(server, "testgiverpforall", {""}, "", function()
     --     menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
     --     menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give RP"))
@@ -2618,3 +2669,15 @@
 end)
 
 
+menu.toggle_loop(world, "超级npc无视", {""}, "", function()
+    for k, ent in pairs(entities.get_all_peds_as_handles()) do
+        PED.SET_PED_SEEING_RANGE(ent,0)
+        PED.SET_PED_ID_RANGE(ent,0)
+        PED.SET_PED_HEARING_RANGE(ent,0)
+    end
+end)
+
+menu.toggle_loop(server, "GET MY JOIN INFO", {""}, "", function()
+    print("NETWORK_IS_PLAYER_ACTIVE="..NETWORK.NETWORK_IS_PLAYER_ACTIVE(players.user()))
+    print("IS_PLAYER_PLAYING="..PLAYER.IS_PLAYER_PLAYING(players.user()))
+end)
