@@ -463,7 +463,10 @@ menu.toggle(killaura, "killaura_use_random_player_explosion", {}, "", function(o
     killaura_random_player_explosion = on
 end)
 
-local time = menu.slider(killaura, "killauratime", {"killauratime"}, "", 0, INT_MAX, 0, 1, function()
+local killauratime = menu.slider(killaura, "killauratime", {"killauratime"}, "", 0, INT_MAX, 0, 1, function()
+end)
+
+local killauraDamage = menu.slider(killaura, "killauraDamage", {"killauraDamage"}, "", 0, INT_MAX, 0, 1, function()
 end)
 -- menu.toggle(killaura, "kick ped to vehicle", {}, "", function(on)
 --     kill_aura_kick_vehicle = on
@@ -491,22 +494,22 @@ menu.toggle_loop(killaura, "killaura all", {"latiaokillaura"}, ("SHOOT ALL"), fu
             (ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(players.user_ped(), ped, 17) == false and not kill_aura_through_walls)) then
 
             if kill_aura_fire_Loop then
-                FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 12, INT_MAX, false, true, 0.0)
+                FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 12, menu.get_value(killauraDamage), false, true, 0.0)
             elseif kill_aura_nick_explosion then
-                FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
+                FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 0, menu.get_value(killauraDamage), false, true, 0.0)
             elseif kill_aura_explosion then
-                FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
+                FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, menu.get_value(killauraDamage), false, true, 0.0)
             elseif killaura_random_player_explosion then
-                FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
+                FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, menu.get_value(killauraDamage), false, true, 0.0)
             elseif killaura_random_player then
                 -- util.log("killaura_random_player")
-                MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z, INT_MAX, true,
-                    util.joaat("weapon_pistol"), randomPid, false, true, 1)
+                MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z, menu.get_value(killauraDamage), true,
+                    util.joaat("weapon_pistol"), randomPid, false, true, INT_MAX)
             else
                 -- util.log("killaura_none")
-                MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z, INT_MAX, true,
-                    util.joaat("weapon_pistol"), players.user_ped(), false, true, 1)
-                util.yield(menu.get_value(time))
+                MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z, menu.get_value(killauraDamage), true,
+                    util.joaat("weapon_pistol"), players.user_ped(), false, true, INT_MAX)
+                util.yield(menu.get_value(killauratime))
             end
         end
         ::out::
@@ -1104,7 +1107,9 @@ menu.toggle_loop(dividends, "设置不是主机本地分红", {""}, "latiaonohos
     SET_INT_GLOBAL(2685249 + 6615, menu.get_value(nohostalldividends))
 end)
 
-menu.toggle_loop(dividends, "一键设置小岛前置和分红 1-4人", {""}, ".", function()
+menu.toggle_loop(dividends, "一键设置赌场前置和分红 1-4人", {""}, ".", function()
+
+
     STAT_SET_INT("H3OPT_ACCESSPOINTS", -1)
     STAT_SET_INT("H3OPT_POI", -1)
     STAT_SET_INT("H3OPT_BITSET1", -1)
@@ -1141,6 +1146,9 @@ menu.toggle_loop(dividends, "一键设置小岛前置和分红 1-4人", {""}, ".
 
     SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 4, 100)
 end)
+
+-- =
+-- end)
 
 menu.action(dividends, "完成赌场前置", {""}, "", function()
     STAT_SET_INT("H3OPT_ACCESSPOINTS", -1)
@@ -1375,7 +1383,7 @@ menu.action(dividends, "fin fm_mission_controller_2020 2 ", {"fin fm_mission_con
 local money = menu.slider(dividends, "fm_mission_controller money", {"fm_mission_controllermoney"},
     "fm_mission_controllermoney", INT_MIN, INT_MAX, 3000000, 100000, function()
     end)
-menu.action(dividends, "moneyfm_mission_controller", {"moneyfm_mission_controller"}, "moneyfinfm_mission_controller",
+menu.toggle_loop(dividends, " moneyfm_mission_controller", {"moneyfm_mission_controller"}, "moneyfinfm_mission_controller",
     function()
         SET_INT_LOCAL("fm_mission_controller", 19728 + 2686, menu.get_value(money))
     end)
@@ -1386,11 +1394,11 @@ menu.action(dividends, "finfm_mission_controller", {"finfmc"}, "finfm_mission_co
     SET_INT_LOCAL("fm_mission_controller", 31603 + 69, 100000000)
 end)
 
-menu.action(server, "if you host block ad bot join", {}, "", function()
+menu.toggle_loop(server, "if you host love kick ad bot", {}, "", function()
     if NETWORK.NETWORK_IS_HOST() then
-        menu.trigger_command(menu.ref_by_path("Online>Session>Block Joins>From Known Advertisers" .. "on"))
+        menu.trigger_command(menu.ref_by_path("Online>Chat>Reactions>Advertisement>Love Letter Kick>Strangers"))
     else
-        menu.trigger_command(menu.ref_by_path("Online>Session>Block Joins>From Known Advertisers" .. "off"))
+        menu.trigger_command(menu.ref_by_path("Online>Chat>Reactions>Advertisement>Love Letter Kick>Disabled"))
     end
 end)
 
@@ -1404,7 +1412,7 @@ local function testMenuSetup(pid)
     util.log(
         "player:" .. playername .. " pid:" .. pid .. " PlayerPed:" .. playerPED .. " gameLANGUAGE:" .. gameLANGUAGE ..
             " connect_ip:" .. connect_ip)
-    menu.divider(menu.player_root(pid), "latiao's stand script")
+    menu.divider(menu.player_root(pid), "latiao's test menu")
 
     local testMenu = menu.list(menu.player_root(pid), "test", {}, "")
     menu.action(testMenu, "get_language", {}, "", function()
@@ -2468,11 +2476,19 @@ end)
 menu.action(admin, "RC Tank", {""}, ".", function()
     SET_INT_GLOBAL(2794162 + 6894, 1)
 end)
+menu.toggle_loop(server, "是主机循环给予收藏品", {""}, "", function()
+    if NETWORK.NETWORK_IS_HOST() then
+    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
+    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give RP"))
+    util.yield(15000)
+    end
+end)
+
 
 menu.toggle_loop(server, "循环给予收藏品", {""}, "", function()
 
     menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
-    -- menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give RP"))
+    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give RP"))
     util.yield(15000)
 end)
 menu.toggle_loop(server, "循环给予收藏品2", {""}, "", function()
