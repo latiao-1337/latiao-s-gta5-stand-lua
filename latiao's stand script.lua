@@ -1404,7 +1404,7 @@ local function testMenuSetup(pid)
     util.log(
         "player:" .. playername .. " pid:" .. pid .. " PlayerPed:" .. playerPED .. " gameLANGUAGE:" .. gameLANGUAGE ..
             " connect_ip:" .. connect_ip)
-    menu.divider(menu.player_root(pid), "latiao's test menu")
+    menu.divider(menu.player_root(pid), "latiao's stand script")
 
     local testMenu = menu.list(menu.player_root(pid), "test", {}, "")
     menu.action(testMenu, "get_language", {}, "", function()
