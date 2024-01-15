@@ -1,3 +1,38 @@
+-- copy for 
+-- chat gpt
+-- JinxScript
+-- Heist Control
+
+  
+  -- 将整数转换为ip地址
+  function int2ip (num)
+    local ip = "" -- 初始化结果为空字符串
+    for i = 3, 0, -1 do -- 遍历4个字节
+      local b = num % 256 -- 取出最低字节
+      num = math.floor (num / 256) -- 右移一个字节
+      ip = b .. "." .. ip -- 将字节拼接到结果中
+    end
+    return ip:sub (1, -2) -- 去掉最后的点号并返回结果
+  end
+--copy chat gpt
+
+
+local language_code = {
+    [0] = "american (en-US)",
+    [1] = "french (fr-FR)",
+    [2] = "german (de-DE)",
+    [3] = "italian (it-IT)",
+    [4] = "spanish (es-ES)",
+    [5] = "brazilian (pt-BR)",
+    [6] = "polish (pl-PL)",
+    [7] = "russian (ru-RU)",
+    [8] = "korean (ko-KR)",
+    [9] = "chinesetrad (zh-TW)",
+    [10] = "japanese (ja-JP)",
+    [11] = "mexican (es-MX)",
+    [12] = "chinesesimp (zh-CN)"
+}
+
 local function ALL_Entities()
     local targets = {}
 
@@ -498,17 +533,19 @@ menu.toggle_loop(killaura, "开启", {"latiaokillaura"}, ("SHOOT ALL"), function
             elseif kill_aura_nick_explosion then
                 FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 0, menu.get_value(killauraDamage), false, true, 0.0)
             elseif kill_aura_explosion then
-                FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, menu.get_value(killauraDamage), false, true, 0.0)
-            -- elseif killaura_random_player_explosion then
+                FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, menu.get_value(killauraDamage),
+                    false, true, 0.0)
+                -- elseif killaura_random_player_explosion then
                 -- FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, menu.get_value(killauraDamage), false, true, 0.0)
             elseif killaura_random_player then
-                -- util.log("killaura_random_player")
-                MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z, menu.get_value(killauraDamage), true,
-                    util.joaat("weapon_pistol"), randomPid, false, true, INT_MAX)
+                --  util.toast("killaura_random_player")
+                MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z,
+                    menu.get_value(killauraDamage), true, util.joaat("weapon_pistol"), randomPid, false, true, INT_MAX)
             else
-                -- util.log("killaura_none")
-                MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z, menu.get_value(killauraDamage), true,
-                    util.joaat("weapon_pistol"), players.user_ped(), false, true, INT_MAX)
+                --  util.toast("killaura_none")
+                MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z,
+                    menu.get_value(killauraDamage), true, util.joaat("weapon_pistol"), players.user_ped(), false, true,
+                    INT_MAX)
                 util.yield(menu.get_value(killauratime))
             end
         end
@@ -521,7 +558,7 @@ menu.toggle_loop(killaura, "开启", {"latiaokillaura"}, ("SHOOT ALL"), function
 
 end)
 
-menu.toggle_loop(self, "heal/armour", {}, "", function()
+menu.toggle_loop(self, "血量/护甲 信息", {}, "", function()
     util.draw_debug_text("heal: " .. ENTITY.GET_ENTITY_HEALTH(players.user_ped()) .. "/" ..
                              PED.GET_PED_MAX_HEALTH(players.user_ped()) .. "\narmour: " ..
                              PED.GET_PED_ARMOUR(players.user_ped()) .. "/" ..
@@ -591,8 +628,6 @@ menu.action(world, "删除所有", {"latiaodelall"}, "delall.", function()
     end
 end)
 
-
-
 menu.toggle_loop(world, "删除所有死亡npc", {"latiaoremoveDEADped"}, ("latiaoremoveDEADped"), function()
     for _, ped in pairs(entities.get_all_peds_as_handles()) do
         if ENTITY.IS_ENTITY_DEAD(ped) then
@@ -602,32 +637,28 @@ menu.toggle_loop(world, "删除所有死亡npc", {"latiaoremoveDEADped"}, ("lati
     end
 end)
 
-menu.toggle_loop(world, "移除所有npc枪", {"latiaoREMOVE_ALL_PED_WEAPONS"}, "REMOVE_ALL_PED_WEAPONS.",
-    function()
-        for _, ped in pairs(entities.get_all_peds_as_handles()) do
-            if not entities.is_player_ped(ped) then
-                WEAPON.REMOVE_ALL_PED_WEAPONS(ped)
-            end
+menu.toggle_loop(world, "移除所有npc枪", {"latiaoREMOVE_ALL_PED_WEAPONS"}, "REMOVE_ALL_PED_WEAPONS.", function()
+    for _, ped in pairs(entities.get_all_peds_as_handles()) do
+        if not entities.is_player_ped(ped) then
+            WEAPON.REMOVE_ALL_PED_WEAPONS(ped)
         end
-    end)
-menu.toggle_loop(world, "冻结所有npc", {"latiaoFREEZE_ENTITY_POSITION"}, "FREEZE_ENTITY_POSITION.",
-    function()
-        for _, ped in pairs(entities.get_all_peds_as_handles()) do
-            if not entities.is_player_ped(ped) then
+    end
+end)
+menu.toggle_loop(world, "冻结所有npc", {"latiaoFREEZE_ENTITY_POSITION"}, "FREEZE_ENTITY_POSITION.", function()
+    for _, ped in pairs(entities.get_all_peds_as_handles()) do
+        if not entities.is_player_ped(ped) then
 
-                ENTITY.FREEZE_ENTITY_POSITION(ped, true)
+            ENTITY.FREEZE_ENTITY_POSITION(ped, true)
 
-            end
         end
-    end, function()
-        for _, ped in pairs(entities.get_all_peds_as_handles()) do
-            if not entities.is_player_ped(ped) then
-                ENTITY.FREEZE_ENTITY_POSITION(ped, false)
-            end
+    end
+end, function()
+    for _, ped in pairs(entities.get_all_peds_as_handles()) do
+        if not entities.is_player_ped(ped) then
+            ENTITY.FREEZE_ENTITY_POSITION(ped, false)
         end
-    end)
-
-
+    end
+end)
 
 menu.toggle_loop(world, "隐秘击杀所有npc", {"latiaosilencekillallped"}, "latiaotsilencekillallped.", function()
     for _, ped in entities.get_all_peds_as_handles() do
@@ -638,7 +669,6 @@ menu.toggle_loop(world, "隐秘击杀所有npc", {"latiaosilencekillallped"}, "l
         end
     end
 end)
-
 
 menu.toggle_loop(world, "触发所有npc布娃娃", {"latiaoSET_PED_TO_RAGDOLL_WITH_FALL"},
     "latiaoSET_PED_TO_RAGDOLL_WITH_FALL.", function()
@@ -686,8 +716,6 @@ end, function()
     PLAYER.SET_DISPATCH_COPS_FOR_PLAYER(players.user(), true)
 end)
 
-
-
 menu.toggle_loop(world, "删除警察", {"latiaodelcops"}, "latiaodelcops", function()
     for k, ent in pairs(entities.get_all_peds_as_handles()) do
         for _, copsModels in ipairs({util.joaat("s_m_y_cop_01"), util.joaat("s_m_y_sheriff_01"),
@@ -711,7 +739,6 @@ menu.toggle_loop(server, "自动自由模式脚本主机", {"latiaoautoScripthos
     end
 end)
 
-
 menu.action(server, "踢所有人排除主机和作弊玩家", {"latiaokickallexcludehost"}, "latiaokickallexcludehost",
     function()
         for k, pid in pairs(players.list()) do
@@ -721,7 +748,7 @@ menu.action(server, "踢所有人排除主机和作弊玩家", {"latiaokickallex
             util.trigger_script_event(1 << pid, {968269233, pid, 4, 233, 1, 1, 1})
             ::out::
         end
-        
+
     end)
 
 menu.toggle_loop(server, "举报+情书踢作弊玩家", {"latiaocrashkickmod"}, "crash and kickmod.", function()
@@ -774,35 +801,36 @@ menu.toggle_loop(server, "是主机踢游戏语言为中文的玩家", {""}, "",
                     goto out
                 end
                 menu.trigger_commands("loveletterkick" .. attack)
-                -- util.log(attack)
+                --  util.toast(attack)
             end
             ::out::
         end
-        
+
     end
 
 end)
 
-menu.toggle_loop(server, "是主机举报+封号踢所有玩家", {"latiaobankallmoder"}, "latiaobankallmoder.", function()
-    if NETWORK.NETWORK_IS_HOST() then
-        for k, pid in pairs(players.list()) do
-            if pid == players.user() then
-                goto out
-            end
-            if players.is_marked_as_modder(pid) then
-                local attack = PLAYER.GET_PLAYER_NAME(pid)
-                util.toast(attack .. "kick ing")
-                menu.trigger_commands("reportgriefing" .. attack)
-                util.yield(100)
-                menu.trigger_commands("ban" .. attack)
-                
-            end
-            ::out::
-        end
-        
-    end
+menu.toggle_loop(server, "是主机举报+封号踢所有玩家", {"latiaobankallmoder"}, "latiaobankallmoder.",
+    function()
+        if NETWORK.NETWORK_IS_HOST() then
+            for k, pid in pairs(players.list()) do
+                if pid == players.user() then
+                    goto out
+                end
+                if players.is_marked_as_modder(pid) then
+                    local attack = PLAYER.GET_PLAYER_NAME(pid)
+                    util.toast(attack .. "kick ing")
+                    menu.trigger_commands("reportgriefing" .. attack)
+                    util.yield(100)
+                    menu.trigger_commands("ban" .. attack)
 
-end)
+                end
+                ::out::
+            end
+
+        end
+
+    end)
 
 menu.toggle_loop(server, "不是主机反弹踢你的玩家", {"raidallplayer"}, "", function()
     if NETWORK.NETWORK_IS_HOST() then
@@ -880,35 +908,29 @@ menu.toggle_loop(server, "所有人踢出载具", {"latiaoreportall"}, "reportal
     end
 end)
 
-
-menu.toggle_loop(server, "循环 TIMER_STOP SOUND 声音所有人", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
-    AUDIO.PLAY_SOUND_FROM_COORD(-1, "TIMER_STOP", 0, 0, 0, "HUD_MINI_GAME_SOUNDSET", true, INT_MAX, true)
-
-    -- util.yield(50)
-end)
-
-menu.toggle_loop(server, "循环 WastedSounds SOUND 声音所有人l", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
-    AUDIO.PLAY_SOUND_FROM_COORD(-1, "MP_Flash", 0, 0, 0, "WastedSounds", true, INT_MAX, true)
+menu.action(server, "TIMER_STOP SOUND 声音所有人", {""}, "latiaobadsoundforall", function()
+    for i = 1, 100, 1 do
+        AUDIO.PLAY_SOUND_FROM_COORD(-1, "TIMER_STOP", 0, 0, 0, "HUD_MINI_GAME_SOUNDSET", true, INT_MAX, true)
+    end
 
     -- util.yield(50)
 end)
 
-menu.toggle_loop(server, "循环 Camera_Shoot SOUND 声音所有人l", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
-    AUDIO.PLAY_SOUND_FROM_COORD(-1, "Camera_Shoot", 0, 0, 0, "Phone_Soundset_Franklin", true, INT_MAX, true)
+menu.action(server, "WastedSounds SOUND 声音所有人", {""}, "latiaobadsoundforall", function()
+    for i = 1, 100, 1 do
+        AUDIO.PLAY_SOUND_FROM_COORD(-1, "MP_Flash", 0, 0, 0, "WastedSounds", true, INT_MAX, true)
+    end
 
     -- util.yield(50)
 end)
 
+menu.action(server, "Camera_Shoot SOUND 声音所有l", {""}, "latiaobadsoundforall", function()
+    for i = 1, 100, 1 do
+        AUDIO.PLAY_SOUND_FROM_COORD(-1, "Camera_Shoot", 0, 0, 0, "Phone_Soundset_Franklin", true, INT_MAX, true)
+    end
 
-
--- menu.toggle_loop(server, "REQUES_ENTITY pedtest", {"latiaoREQUES_ENTITYped"}, "latiaoREQUES_ENTITYped.", function()
-
--- for _, target in ipairs(entities.get_all_peds_as_handles()) do
---     local success = NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
-
--- end
-
--- end)
+    -- util.yield(50)
+end)
 
 menu.toggle_loop(server, "请求所有 行人", {"latiaoREQUES_ENTITYped"}, "latiaoREQUES_ENTITYped.", function()
     for _, target in ipairs(entities.get_all_peds_as_handles()) do
@@ -919,7 +941,7 @@ menu.toggle_loop(server, "请求所有 行人", {"latiaoREQUES_ENTITYped"}, "lat
             end)
 
             if not success then
-                -- print(success,error_message)
+                --  util.toast(success,error_message)
             end
         end
     end
@@ -943,16 +965,15 @@ menu.toggle_loop(server, "请求所有 实体", {"latiaoREQUES_ENTITYobjects"}, 
 
 end)
 
-menu.toggle_loop(server, "请求所有 载具", {"latiaoREQUES_ENTITYvehicles"}, "REQUES_ENTITYvehicles.",
-    function()
-        for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
-            local owner = entities.get_owner(target)
-            if owner ~= players.user() then
-                NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
+menu.toggle_loop(server, "请求所有 载具", {"latiaoREQUES_ENTITYvehicles"}, "REQUES_ENTITYvehicles.", function()
+    for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
+        local owner = entities.get_owner(target)
+        if owner ~= players.user() then
+            NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
 
-            end
         end
-    end)
+    end
+end)
 
 menu.toggle_loop(server, "请求所有 载具 排除玩家", {""}, ".", function()
     for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
@@ -983,9 +1004,8 @@ menu.toggle_loop(server, "请求所有 可拾取2", {""}, "", function()
     end
 end)
 
-
-menu.action(test, "跳过对话", {"latiaoIS_SCRIPTED_CONVERSATION_ONGOING"},
-    "IS_SCRIPTED_CONVERSATION_ONGOING.", function()
+menu.action(test, "跳过对话", {"latiaoIS_SCRIPTED_CONVERSATION_ONGOING"}, "IS_SCRIPTED_CONVERSATION_ONGOING.",
+    function()
         AUDIO.STOP_SCRIPTED_CONVERSATION(false)
     end)
 
@@ -1009,9 +1029,10 @@ menu.toggle_loop(test, "清屏", {"latiaocleanchat"}, "latiaocleanchat.", functi
     chat.send_message("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", false, true, true)
 end)
 
-menu.action(test, "跳过教程CLEAR_ALL_HELP_MESSAGES", {"latiaoCLEAR_ALL_HELP_MESSAGES"}, "CLEAR_ALL_HELP_MESSAGES.", function()
-    HUD.CLEAR_ALL_HELP_MESSAGES()
-end)
+menu.action(test, "跳过教程CLEAR_ALL_HELP_MESSAGES", {"latiaoCLEAR_ALL_HELP_MESSAGES"}, "CLEAR_ALL_HELP_MESSAGES.",
+    function()
+        HUD.CLEAR_ALL_HELP_MESSAGES()
+    end)
 local dividends = menu.list(menu.my_root(), "任务", {}, "")
 local dividends_general = menu.list(dividends, "通用", {}, "")
 local dividends_dc = menu.list(dividends, "赌场", {}, "")
@@ -1042,8 +1063,8 @@ menu.action(dividends_dc, "跳过赌场冷却", {}, "", function()
     STAT_SET_INT("H3_COMPLETEDPOSIX", 0)
 
 end)
-local nohostalldividends = menu.slider(dividends_general, "不是主机本地分红", {"nohostcasino"}, "", -100000, 100000,
-    100, 5, function()
+local nohostalldividends = menu.slider(dividends_general, "不是主机本地分红", {"nohostcasino"}, "", -100000,
+    100000, 100, 5, function()
 
     end)
 
@@ -1052,7 +1073,6 @@ menu.toggle_loop(dividends_general, "设置不是主机本地分红", {""}, "lat
 end)
 
 menu.toggle_loop(dividends_dc, "一键设置赌场前置和分红 1-4人", {""}, ".", function()
-
 
     STAT_SET_INT("H3OPT_ACCESSPOINTS", -1)
     STAT_SET_INT("H3OPT_POI", -1)
@@ -1182,7 +1202,6 @@ menu.action(dividends_plkd, "完成小岛前置", {}, "", function()
 
 end)
 
-
 menu.toggle_loop(dividends_plkd, "一键设置小岛前置和分红 1-4人", {}, "", function()
     STAT_SET_INT("H4_PROGRESS", 126823)
 
@@ -1218,14 +1237,13 @@ menu.toggle_loop(dividends_plkd, "一键设置小岛前置和分红 1-4人", {},
     STAT_SET_INT("H4LOOT_PAINT_SCOPED", 0)
     STAT_SET_INT("H4LOOT_PAINT_V", 0)
 
-
     SET_INT_GLOBAL(1970744 + 831 + 56 + 1, 300)
     SET_INT_GLOBAL(1970744 + 831 + 56 + 2, 300)
     SET_INT_GLOBAL(1970744 + 831 + 56 + 3, 300)
     SET_INT_GLOBAL(1970744 + 831 + 56 + 4, 300)
 
     SET_INT_GLOBAL(262145 + 30259 + 9, 0)
-    SET_INT_GLOBAL(262145 + 30259 + 10, 0)  
+    SET_INT_GLOBAL(262145 + 30259 + 10, 0)
 
 end)
 
@@ -1269,8 +1287,9 @@ menu.toggle_loop(dividends_gy, "公寓抢劫总价值14500000 (you host)", {""},
     SET_INT_GLOBAL(262145 + 9314 + 4, 14500000)
 end)
 
-local Apartment = menu.slider(dividends_gy, "公寓抢劫分红", {""}, "15000000", INT_MIN, INT_MAX, 100, 100, function()
-end)
+local Apartment = menu.slider(dividends_gy, "公寓抢劫分红", {""}, "15000000", INT_MIN, INT_MAX, 100, 100,
+    function()
+    end)
 menu.toggle_loop(dividends_gy, "设置公寓抢劫分红 (you host)", {""}, ".", function()
     SET_INT_GLOBAL(1930201 + 3008 + 1, menu.get_value(Apartment))
     SET_INT_GLOBAL(1930201 + 3008 + 2, menu.get_value(Apartment))
@@ -1278,48 +1297,17 @@ menu.toggle_loop(dividends_gy, "设置公寓抢劫分红 (you host)", {""}, ".",
     SET_INT_GLOBAL(1930201 + 3008 + 4, menu.get_value(Apartment))
 end)
 
-menu.toggle_loop(server, "fm_mission_controller host test", {"latiaofm_mission_controllertest"},
-    "latiaofm_mission_controllertest.", function()
-        local host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller", 0, 0)
-
-        local name = PLAYER.GET_PLAYER_NAME(host)
-        if name ~= "**Invalid**" then
-            util.draw_debug_text("fm_mission_controller host is:" .. name)
-        end
-
-    end)
-menu.toggle_loop(server, "fm_mission_controller_2020 host test", {"latiaofm_mission_controller_2020test"},
-    "latiaofm_mission_controllertest_2020.", function()
-        local host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller_2020", 0, 0)
-
-        local name = PLAYER.GET_PLAYER_NAME(host)
-        -- print(name)
-        if name ~= "**Invalid**" then
-            util.draw_debug_text("fm_mission_controller_2020 host is: " .. name)
-        end
-
-    end)
-menu.toggle_loop(server, "freemode host test", {"latiaofreemodetest"}, "latiaofreemodetest.", function()
-    local host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("freemode", -1, 0)
-    local name = PLAYER.GET_PLAYER_NAME(host)
-    if name ~= "**Invalid**" then
-        util.draw_debug_text("freemode host is: " .. name)
-    end
-end)
-
-
 menu.action(dividends_general, "一键完成任务_2020 ", {"fin fm_mission_controller_2020"},
     "finfm_mission_controller_2020", function()
         SET_INT_LOCAL("fm_mission_controller_2020", 48513 + 1, 17784544)
         SET_INT_LOCAL("fm_mission_controller_2020", 48513 + 1765 + 1, 2000)
     end)
 
-
 local money = menu.slider(dividends_general, "设置抢劫金钱", {"fm_mission_controllermoney"},
     "fm_mission_controllermoney", INT_MIN, INT_MAX, 3000000, 100000, function()
     end)
-menu.toggle_loop(dividends_general, "设置抢劫金钱", {"moneyfm_mission_controller"}, "moneyfinfm_mission_controller",
-    function()
+menu.toggle_loop(dividends_general, "设置抢劫金钱", {"moneyfm_mission_controller"},
+    "moneyfinfm_mission_controller", function()
         SET_INT_LOCAL("fm_mission_controller", 19728 + 2686, menu.get_value(money))
     end)
 
@@ -1329,7 +1317,7 @@ menu.action(dividends_general, "一键完成任务", {"finfmc"}, "finfm_mission_
     SET_INT_LOCAL("fm_mission_controller", 31603 + 69, 100000000)
 end)
 
-menu.toggle_loop(server, "if you host love kick ad bot", {}, "", function()
+menu.toggle_loop(server, "是主机踢广告机", {}, "", function()
     if NETWORK.NETWORK_IS_HOST() then
         menu.trigger_command(menu.ref_by_path("Online>Chat>Reactions>Advertisement>Love Letter Kick>Strangers"))
     else
@@ -1339,70 +1327,79 @@ end)
 
 -- player root
 local function latiaostandMenuSetup(pid)
-    local playerPED = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+    -- local playerPED = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
     local playername = players.get_name(pid)
-    local gameLANGUAGE = players.get_language(pid)
-    local connect_ip = players.get_connect_ip(pid)
-    local pos = players.get_position(pid)
-    util.log(
-        "player:" .. playername .. " pid:" .. pid .. " PlayerPed:" .. playerPED .. " gameLANGUAGE:" .. gameLANGUAGE ..
-            " connect_ip:" .. connect_ip)
+    local gameLANGUAGE = language_code[players.get_language(pid)]
+    local connect_ip = int2ip(players.get_connect_ip(pid))
+    local get_connect_port = players.get_connect_port(pid)
+    -- local pos = players.get_position(pid)
+    util.toast("名为:" .. playername .. " 槽位:" .. pid .. " 游戏语言:" .. gameLANGUAGE .. " 连接ip:" ..
+                   connect_ip .. " 连接端口:" .. get_connect_port .. "加入了游戏")
     menu.divider(menu.player_root(pid), "latiao's STAND menu")
 
     local latiaostandMenu = menu.list(menu.player_root(pid), "latiao's STAND menu", {}, "")
     local latiao_trigger_script_event = menu.list(latiaostandMenu, "自定义发送脚本事件", {}, "")
 
+    local latiao_trigger_script_event_1 = menu.slider(latiao_trigger_script_event, "参数1",
+        {"latiao_trigger_script_event_1"}, "latiao_trigger_script_event_1", INT_MIN, INT_MAX, -1, 1, function()
 
+        end)
+    local latiao_trigger_script_event_2 = menu.slider(latiao_trigger_script_event, "参数2",
+        {"latiao_trigger_script_event_2"}, "latiao_trigger_script_event_2", INT_MIN, INT_MAX, -1, 1, function()
 
-    local latiao_trigger_script_event_1 = menu.slider(latiao_trigger_script_event, "参数1", {"latiao_trigger_script_event_1"}, "latiao_trigger_script_event_1", INT_MIN, INT_MAX,
-    -1, 1, function()
+        end)
+    local latiao_trigger_script_event_3 = menu.slider(latiao_trigger_script_event, "参数3",
+        {"latiao_trigger_script_event_3"}, "latiao_trigger_script_event_3", INT_MIN, INT_MAX, -1, 1, function()
 
+        end)
+
+    local latiao_trigger_script_event_4 = menu.slider(latiao_trigger_script_event, "参数4",
+        {"latiao_trigger_script_event_4"}, "latiao_trigger_script_event_4", INT_MIN, INT_MAX, -1, 1, function()
+
+        end)
+    local latiao_trigger_script_event_5 = menu.slider(latiao_trigger_script_event, "参数5",
+        {"latiao_trigger_script_event_5"}, "latiao_trigger_script_event_5", INT_MIN, INT_MAX, -1, 1, function()
+
+        end)
+    local latiao_trigger_script_event_6 = menu.slider(latiao_trigger_script_event, "参数6",
+        {"latiao_trigger_script_event_6"}, "latiao_trigger_script_event_6", INT_MIN, INT_MAX, -1, 1, function()
+
+        end)
+    local latiao_trigger_script_event_7 = menu.slider(latiao_trigger_script_event, "参数7",
+        {"latiao_trigger_script_event_7"}, "latiao_trigger_script_event_7", INT_MIN, INT_MAX, -1, 1, function()
+
+        end)
+    local latiao_trigger_script_event_8 = menu.slider(latiao_trigger_script_event, "参数8",
+        {"latiao_trigger_script_event_8"}, "latiao_trigger_script_event_8", INT_MIN, INT_MAX, -1, 1, function()
+
+        end)
+    local latiao_trigger_script_event_9 = menu.slider(latiao_trigger_script_event, "参数9",
+        {"latiao_trigger_script_event_9"}, "latiao_trigger_script_event_9", INT_MIN, INT_MAX, -1, 1, function()
+
+        end)
+    local latiao_trigger_script_event_10 = menu.slider(latiao_trigger_script_event, "参数10",
+        {"latiao_trigger_script_event_10"}, "latiao_trigger_script_event_10", INT_MIN, INT_MAX, -1, 1, function()
+
+        end)
+
+    menu.toggle_loop(latiao_trigger_script_event, "发送", {""}, "latiaonohost.", function()
+        util.trigger_script_event(1 << pid,
+            {menu.get_value(latiao_trigger_script_event_1, latiao_trigger_script_event_2, latiao_trigger_script_event_3,
+                latiao_trigger_script_event_4, latiao_trigger_script_event_5, latiao_trigger_script_event_6,
+                latiao_trigger_script_event_7, latiao_trigger_script_event_8, latiao_trigger_script_event_9,
+                latiao_trigger_script_event_10)})
     end)
-    local latiao_trigger_script_event_2 = menu.slider(latiao_trigger_script_event, "参数2", {"latiao_trigger_script_event_2"}, "latiao_trigger_script_event_2", INT_MIN, INT_MAX,
-    -1, 1, function()
 
+    menu.action(latiaostandMenu, "WastedSounds  声音轰炸", {""}, "latiaobadsoundforall", function()
+        for i = 1, 100, 1 do
+            AUDIO.PLAY_SOUND_FROM_ENTITY(-1, "MP_Flash", PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), "WastedSounds", true,
+                -1)
+        end
+
+        -- util.yield(50)
     end)
-    local latiao_trigger_script_event_3 = menu.slider(latiao_trigger_script_event, "参数3", {"latiao_trigger_script_event_3"}, "latiao_trigger_script_event_3", INT_MIN, INT_MAX,
-    -1, 1, function()
-
-    end)
-
-    local latiao_trigger_script_event_4 = menu.slider(latiao_trigger_script_event, "参数4", {"latiao_trigger_script_event_4"}, "latiao_trigger_script_event_4", INT_MIN, INT_MAX,
-    -1, 1, function()
-
-    end)
-    local latiao_trigger_script_event_5 = menu.slider(latiao_trigger_script_event, "参数5", {"latiao_trigger_script_event_5"}, "latiao_trigger_script_event_5", INT_MIN, INT_MAX,
-    -1, 1, function()
-
-    end)
-    local latiao_trigger_script_event_6 = menu.slider(latiao_trigger_script_event, "参数6", {"latiao_trigger_script_event_6"}, "latiao_trigger_script_event_6", INT_MIN, INT_MAX,
-    -1, 1, function()
-
-    end)
-    local latiao_trigger_script_event_7 = menu.slider(latiao_trigger_script_event, "参数7", {"latiao_trigger_script_event_7"}, "latiao_trigger_script_event_7", INT_MIN, INT_MAX,
-    -1, 1, function()
-
-    end)
-    local latiao_trigger_script_event_8 = menu.slider(latiao_trigger_script_event, "参数8", {"latiao_trigger_script_event_8"}, "latiao_trigger_script_event_8", INT_MIN, INT_MAX,
-    -1, 1, function()
-
-    end)
-    local latiao_trigger_script_event_9 = menu.slider(latiao_trigger_script_event, "参数9", {"latiao_trigger_script_event_9"}, "latiao_trigger_script_event_9", INT_MIN, INT_MAX,
-    -1, 1, function()
-
-    end)
-    local latiao_trigger_script_event_10 = menu.slider(latiao_trigger_script_event, "参数10", {"latiao_trigger_script_event_10"}, "latiao_trigger_script_event_10", INT_MIN, INT_MAX,
-    -1, 1, function()
-
-    end)
-
-menu.toggle_loop(latiao_trigger_script_event, "发送", {""}, "latiaonohost.", function()
-    util.trigger_script_event(1 << pid,{ menu.get_value(latiao_trigger_script_event_1,latiao_trigger_script_event_2,latiao_trigger_script_event_3,latiao_trigger_script_event_4,latiao_trigger_script_event_5,latiao_trigger_script_event_6,latiao_trigger_script_event_7,latiao_trigger_script_event_8,latiao_trigger_script_event_9,latiao_trigger_script_event_10)})
-end)
-
-
     menu.action(latiaostandMenu, "查询他的游戏语言", {}, "", function()
-        util.log(players.get_language(pid))
+        util.toast(players.get_language(pid))
 
     end)
 
@@ -1419,8 +1416,6 @@ end)
         menu.trigger_commands("historynote" .. player .. " latiaoblockjoin")
         menu.trigger_commands("loveletterkick" .. player)
     end)
-
-
 
     menu.toggle_loop(latiaostandMenu, "冻结", {}, "", function()
         util.trigger_script_event(1 << pid, {-1253241415, 0, 0, 1, 0})
@@ -1547,8 +1542,6 @@ end)
         -- end)
     end)
 
-
-
     menu.toggle_loop(latiaostandMenu, "实名爆炸", {"latiaoMEEXPLOSION"}, "", function()
         local pos = players.get_position(pid)
         FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
@@ -1565,9 +1558,6 @@ end)
             util.stop_thread()
         end
     end)
-
-
-
 
     menu.toggle_loop(latiaostandMenu, "无效物体崩溃", {"latiaobedojectcrash"}, "", function()
         STREAMING.REQUEST_MODEL(util.joaat("prop_tall_grass_ba"))
@@ -1594,12 +1584,10 @@ end)
         FIRE.ADD_EXPLOSION(pos, 0, 100.0, false, true, 100.0)
     end)
 
-
-
-
-    menu.action(latiaostandMenu, "主机踢NETWORK_SESSION_KICK_PLAYER", {"latiaoNETWORK_SESSION_KICK_PLAYER"}, "", function()
-        NETWORK.NETWORK_SESSION_KICK_PLAYER(pid)
-    end)
+    menu.action(latiaostandMenu, "主机踢NETWORK_SESSION_KICK_PLAYER", {"latiaoNETWORK_SESSION_KICK_PLAYER"}, "",
+        function()
+            NETWORK.NETWORK_SESSION_KICK_PLAYER(pid)
+        end)
 
     menu.toggle_loop(latiaostandMenu, "船轰炸", {"latiaotunspammcrash"}, "", function()
         local pos = players.get_position(pid)
@@ -1613,8 +1601,6 @@ end)
             util.stop_thread()
         end
     end)
-
-
 
     menu.action(latiaostandMenu, "删除船", {""}, "", function()
         for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
@@ -1649,8 +1635,6 @@ end)
             util.stop_thread()
         end
     end)
-
-
 
     menu.action(latiaostandMenu, "无效收藏品踢", {""}, ".", function()
         util.trigger_script_event(1 << pid, {968269233, -1, 4, 233, 1, 1, 1})
@@ -1723,8 +1707,6 @@ end)
         NETWORK.SET_REMOTE_PLAYER_AS_GHOST(pid, false)
     end)
 
-
-
     menu.toggle_loop(latiaostandMenu, "循环举报", {""}, ".", function()
         util.yield(1000)
         local player = players.get_name(pid)
@@ -1739,10 +1721,6 @@ end)
             util.stop_thread()
         end
     end)
-
-
-
-
 
     menu.toggle_loop(latiaostandMenu, "脚本声音轰炸", {}, "", function()
         -- for i = 0, 150 do
@@ -1824,24 +1802,23 @@ end)
         end
     end)
 
+    menu.toggle_loop(latiaostandMenu, "用他名击杀npc ", {"latiaobedsoundforall"}, "latiaobedsoundforall",
+        function()
+            for _, ped in entities.get_all_peds_as_handles() do
+                if not entities.is_player_ped(ped) and ENTITY.IS_ENTITY_DEAD(ped) == false then
 
-
-    menu.toggle_loop(latiaostandMenu, "用他名击杀npc ", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
-        for _, ped in entities.get_all_peds_as_handles() do
-            if not entities.is_player_ped(ped) and ENTITY.IS_ENTITY_DEAD(ped) == false then
-
-                -- if not  then
-                local pos = v3.new(ENTITY.GET_ENTITY_COORDS(ped))
-                FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), pos.x, pos.y, pos.z, 0, INT_MAX,
-                    false, true, 0.0)
-                -- end
+                    -- if not  then
+                    local pos = v3.new(ENTITY.GET_ENTITY_COORDS(ped))
+                    FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), pos.x, pos.y, pos.z, 0, INT_MAX,
+                        false, true, 0.0)
+                    -- end
+                end
             end
-        end
 
-        if not players.exists(pid) then
-            util.stop_thread()
-        end
-    end)
+            if not players.exists(pid) then
+                util.stop_thread()
+            end
+        end)
 
     menu.toggle_loop(latiaostandMenu, "循环送经验", {""}, "", function()
         util.trigger_script_event(1 << pid, {968269233, -1, 4, 21, 1, 1, 1})
@@ -1856,8 +1833,6 @@ end)
 
     end)
 
-
-
 end
 
 for _, pid in ipairs(players.list()) do
@@ -1865,7 +1840,6 @@ for _, pid in ipairs(players.list()) do
 end
 
 players.on_join(latiaostandMenuSetup)
-
 
 menu.toggle_loop(server, "闪现坐标", {"latiaobadpost"}, ("latiaobadpost"), function()
     menu.trigger_commands("spoofpos")
@@ -1899,12 +1873,10 @@ menu.toggle_loop(test, "信息查询枪", {"latiaodebugshot"}, ("latiaobadpost")
             b = 0,
             a = 255
         }, true)
-        util.log(text)
+        util.toast(text)
     end
 
 end)
-
-
 
 menu.action(test, "退游戏", {"latiaoQUIT_GAME"}, "", function()
     MISC.QUIT_GAME()
@@ -1920,18 +1892,17 @@ end, function()
     end
 end)
 
-
 menu.toggle_loop(server, "显示谁在开麦克风", {"LATIAOTALKINGTEST"}, "", function()
     for k, pid in pairs(players.list()) do
         if NETWORK.NETWORK_IS_PLAYER_TALKING(pid) then
-            util.draw_debug_text(players.get_name(pid) .. " TALKING")
+            util.draw_debug_text(players.get_name(pid) .. " 在说话")
         end
     end
 end)
 
 menu.toggle_loop(server, "阻止变成野兽", {""}, "", function()
     if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(util.joaat("am_hunt_the_Beast")) > 0 then
-        -- print("stop am_hunt_the_Beast")
+        util.toast("stop am_hunt_the_Beast")
         MISC.TERMINATE_ALL_SCRIPTS_WITH_THIS_NAME("am_hunt_the_Beast")
 
     end
@@ -1941,27 +1912,19 @@ menu.toggle_loop(server, "block am_gang_call", {"latiaoblockam_gang_call"}, "lat
     MISC.TERMINATE_ALL_SCRIPTS_WITH_THIS_NAME("am_gang_call")
 end)
 
-menu.toggle_loop(server, "block bounty", {"latiaoblockbounty"}, "latiaoblockbounty", function()
-    if players.get_bounty(players.user()) ~= nil then
-        menu.trigger_commands("removebounty")
-        util.log("removebounty")
-        util.yield(1000)
-    end
-end)
-
 menu.action(server, "启动子战局", {"latiaoNETWORK_START_SOLO_TUTORIAL_SESSION"},
     "NETWORK_START_SOLO_TUTORIAL_SESSION", function()
 
         NETWORK.NETWORK_START_SOLO_TUTORIAL_SESSION()
     end)
 
-menu.action(server, "关闭子战局", {"latiaoNETWORK_END_TUTORIAL_SESSION"},
-    "NETWORK_END_TUTORIAL_SESSION", function()
+menu.action(server, "关闭子战局", {"latiaoNETWORK_END_TUTORIAL_SESSION"}, "NETWORK_END_TUTORIAL_SESSION",
+    function()
         NETWORK.NETWORK_END_TUTORIAL_SESSION()
     end)
 
-local HEALTH = menu.slider(world, "设置血量 ", {"SET_ENTITY_HEALTH"}, "SET_ENTITY_HEALTH", INT_MIN, INT_MAX,
-    100, 1, function()
+local HEALTH = menu.slider(world, "设置血量 ", {"SET_ENTITY_HEALTH"}, "SET_ENTITY_HEALTH", INT_MIN, INT_MAX, 100, 1,
+    function()
     end)
 
 menu.toggle_loop(world, "设置血量 for get_all_objects_as_handles", {""}, "", function()
@@ -2031,9 +1994,10 @@ menu.action(dividends_brdr, "开启别惹德瑞", {}, "", function()
     STAT_SET_INT("FIXER_STORY_BS", -1)
 end)
 
-local ContractPayout = menu.slider(dividends_brdr, "别惹德瑞分红", {"ContractPayout"}, "", 0, INT_MAX, 0, 1, function()
+local ContractPayout = menu.slider(dividends_brdr, "别惹德瑞分红", {"ContractPayout"}, "", 0, INT_MAX, 0, 1,
+    function()
 
-end)
+    end)
 
 menu.toggle_loop(dividends_brdr, "设置别惹德瑞分红", {""}, "", function()
     SET_INT_GLOBAL(262145 + 31955, menu.get_value(ContractPayout))
@@ -2070,7 +2034,7 @@ menu.action(test, "kill freemode", {"latiaoblockfreemode"}, "", function()
     end)
 end)
 
-menu.action(test, "tp and back", {"latiaotpback"}, "", function()
+menu.action(test, "刷新当前区块(tp and back)", {"latiaotpback"}, "", function()
     local pos = players.get_position(players.user())
 
     ENTITY.SET_ENTITY_COORDS_NO_OFFSET(players.user_ped(), pos.x, pos.y, 2600)
@@ -2080,7 +2044,7 @@ menu.action(test, "tp and back", {"latiaotpback"}, "", function()
     -- )
 end)
 
-menu.toggle_loop(test, "bad SOUND script_event2", {""}, "", function()
+menu.toggle_loop(test, "脚本声音轰炸", {""}, "", function()
     -- util.yield(1500)
     for k, pid in pairs(players.list()) do
         util.trigger_script_event(1 << pid, {996099702, pid})
@@ -2088,7 +2052,7 @@ menu.toggle_loop(test, "bad SOUND script_event2", {""}, "", function()
     end
 end)
 
-menu.toggle_loop(test, "bad SOUND script_event", {""}, "", function()
+menu.toggle_loop(test, "检查点信息轰炸", {""}, "", function()
     -- util.yield(1500)
     for k, pid in pairs(players.list()) do
         util.trigger_script_event(1 << pid, {-642704387, pid, 782258655, 0, 0, 0, 0, 0, 0, 0, pid, 0, 0, 0})
@@ -2096,7 +2060,7 @@ menu.toggle_loop(test, "bad SOUND script_event", {""}, "", function()
     end
 end)
 
-menu.toggle_loop(test, "info spamm", {"test1"}, "tet2", function()
+menu.toggle_loop(test, "信息轰炸", {"test1"}, "tet2", function()
     -- util.yield(1500)
     for k, pid in pairs(players.list()) do
         util.trigger_script_event(1 << pid,
@@ -2109,37 +2073,36 @@ menu.toggle_loop(world, "STOP_FIRE_IN_RANGE", {""}, ".", function()
     FIRE.STOP_FIRE_IN_RANGE(0, 0, 0, INT_MAX)
 end)
 
-menu.toggle_loop(world, "EVERYONE IGNORE ALL PLAYER", {}, "", function()
+menu.toggle_loop(world, "所有人忽略EVERYONE IGNORE ALL PLAYER", {}, "", function()
     PLAYER.SET_EVERYONE_IGNORE_PLAYER(players.user(), true)
 end, function()
     PLAYER.SET_EVERYONE_IGNORE_PLAYER(players.user(), false)
 end)
 
-menu.toggle_loop(world, "SET_CAN_ATTACK_FRIENDLY", {""}, ".", function()
+menu.toggle_loop(world, "可以射击队友", {""}, ".", function()
     PED.SET_CAN_ATTACK_FRIENDLY(players.user_ped(), true, false)
 end, function()
     PED.SET_CAN_ATTACK_FRIENDLY(players.user_ped(), false, false)
 end)
 
-menu.toggle_loop(world, "NOISE SET 0 FOR ALL PLAYER", {}, "", function()
+menu.toggle_loop(world, "没有噪音", {}, "", function()
     PLAYER.SET_PLAYER_NOISE_MULTIPLIER(players.user(), 0.0)
     PLAYER.SET_PLAYER_SNEAKING_NOISE_MULTIPLIER(players.user(), 0.0)
 end)
 
-menu.toggle_loop(self, "SET_ENTITY_MAX_HEALTH 0", {""}, ".", function()
+menu.toggle_loop(self, "假死 SET_ENTITY_MAX_HEALTH 0", {""}, ".", function()
     ENTITY.SET_ENTITY_MAX_HEALTH(players.user_ped(), 0)
 end, function()
     ENTITY.SET_ENTITY_MAX_HEALTH(players.user_ped(), 328)
 end)
 
-menu.action(server, "super request_script_host for all ", {"request_script_hostall"}, "latiaoNrequest_script_host.",
-    function()
-        for _, script in ipairs(ALL_script) do
-            util.request_script_host(script)
-        end
-    end)
+menu.action(server, "请求所有脚本主机 ", {"request_script_hostall"}, "latiaoNrequest_script_host.", function()
+    for _, script in ipairs(ALL_script) do
+        util.request_script_host(script)
+    end
+end)
 
-menu.toggle_loop(server, "nodamage EXPLOSION spamm", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
+menu.toggle_loop(server, "无伤害爆炸轰炸", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
     for k, pid in pairs(players.list()) do
         local pos = players.get_position(pid)
         FIRE.ADD_EXPLOSION(pos, 0, 0, false, true, 0.0)
@@ -2154,26 +2117,8 @@ menu.toggle_loop(self, "SET_PLAYER_LOCKON_RANGE_OVERRIDE", {"SET_PLAYER_LOCKON_R
     PLAYER.SET_PLAYER_LOCKON_RANGE_OVERRIDE(players.user(), 100000000)
 end)
 
-menu.action(world, "tp ch_prop_fingerutil.log_scanner", {"latiaotpch_prop_fingerutil.log_scanner_01a"}, "", function()
-    local Models = {util.joaat("ch_prop_fingerutil.log_scanner_01a"), util.joaat("ch_prop_fingerutil.log_scanner_01b"),
-                    util.joaat("ch_prop_fingerutil.log_scanner_01c"), util.joaat("ch_prop_fingerutil.log_scanner_01d")}
-
-    for _, ent in pairs(entities.get_all_objects_as_handles()) do
-        for _, targetModelHash in pairs(Models) do
-            if ENTITY.GET_ENTITY_MODEL(ent) == targetModelHash then
-                ENTITY.SET_ENTITY_COORDS(ent, players.get_position(players.user()), false)
-                util.yield()
-                break
-            end
-        end
-    end
-end)
-
-menu.toggle_loop(server, "EXPLOSION sound spamm", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
+menu.toggle_loop(server, "爆炸声音轰炸", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
     FIRE.ADD_EXPLOSION(0, 0, 2500, 0, INT_MAX, true, false, INT_MAX)
-end)
-menu.action(world, "LOAD_ALL_OBJECTS_NOW", {"LOAD_ALL_OBJECTS_NOW"}, "LOAD_ALL_OBJECTS_NOW", function()
-    STREAMING.LOAD_ALL_OBJECTS_NOW()
 end)
 
 menu.action(dividends_dc, "赌场停车场生成载具", {""}, "", function()
@@ -2189,7 +2134,7 @@ menu.action(dividends_dc, "警察局房顶生成飞机", {""}, "", function()
 end)
 
 menu.toggle_loop(test, "FIX_OBJECT_FRAGMENT all", {"latiaobadBBREAK_OBJECT_FRAGMENT_CHILDcrash"}, "", function()
-    for k, ent in pairs(entities.get_all_objects_as_handles()) do
+    for k, ent in ipairs(ALL_Entities()) do
         local success, error_message = pcall(function()
             OBJECT.FIX_OBJECT_FRAGMENT(ent)
         end)
@@ -2199,7 +2144,7 @@ menu.toggle_loop(test, "FIX_OBJECT_FRAGMENT all", {"latiaobadBBREAK_OBJECT_FRAGM
     end
 end)
 menu.toggle_loop(test, "BREAK_OBJECT_FRAGMENT_CHILD all", {"latiaobadBBREAK_OBJECT_FRAGMENT_CHILDcrash"}, "", function()
-    for k, ent in pairs(entities.get_all_objects_as_handles()) do
+    for k, ent in ipairs(ALL_Entities()) do
         local success, error_message = pcall(function()
             OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(ent, 0, false)
         end)
@@ -2209,39 +2154,38 @@ menu.toggle_loop(test, "BREAK_OBJECT_FRAGMENT_CHILD all", {"latiaobadBBREAK_OBJE
     end
 end)
 
-menu.toggle_loop(server, "latiao ALL_script_test host test", {"latiaoALL_script_test"}, "latiaoALL_script_test.",
-    function()
-        for _, script in ipairs(ALL_script) do
-            for x = -1, 0 do
-                for y = 0, 0 do
-                    local host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, x, y)
+menu.toggle_loop(server, "所有脚本主机测试", {"latiaoALL_script_test"}, "latiaoALL_script_test.", function()
+    for _, script in ipairs(ALL_script) do
+        for x = -1, 0 do
+            for y = 0, 0 do
+                local host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, x, y)
 
-                    local name = PLAYER.GET_PLAYER_NAME(host)
-                    if name ~= "**Invalid**" then
-                        local hostinfo = script .. "," .. x .. "," .. y .. "=" .. name
-                        util.draw_debug_text(hostinfo)
-                        -- print(hostinfo)
-                    end
+                local name = PLAYER.GET_PLAYER_NAME(host)
+                if name ~= "**Invalid**" then
+                    local hostinfo = script .. "," .. x .. "," .. y .. "=" .. name
+                    util.draw_debug_text(hostinfo)
+                    --  util.toast(hostinfo)
                 end
             end
         end
+    end
 
-    end)
+end)
 
-menu.toggle_loop(server, "auto super request_script_host for all ", {"autorequest_script_hostall"},
-    "autorequest_script_hostall.", function()
-        for _, script in ipairs(ALL_script) do
-            for x = -1, 0 do
-                for y = 0, 0 do
-                    local host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, x, y)
-                    if host ~= -1 and not (host == players.user()) then
-                        util.request_script_host(script, x, y)
-                    end
-                end
-            end
-        end
+-- menu.toggle_loop(server, "auto super request_script_host for all ", {"autorequest_script_hostall"},
+--     "autorequest_script_hostall.", function()
+--         for _, script in ipairs(ALL_script) do
+--             for x = -1, 0 do
+--                 for y = 0, 0 do
+--                     local host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, x, y)
+--                     if host ~= -1 and not (host == players.user()) then
+--                         util.request_script_host(script, x, y)
+--                     end
+--                 end
+--             end
+--         end
 
-    end)
+--     end)
 
 menu.toggle_loop(test, "所有实体不无敌", {}, "", function()
 
@@ -2279,68 +2223,17 @@ menu.toggle_loop(world, "锁定所有车", {""}, ".", function()
     end
 end)
 
-menu.toggle_loop(test, "saveall", {""}, ".", function()
+menu.toggle_loop(test, "保存", {"latiaosave"}, "latiaosave", function()
     STATS.STAT_SAVE(0, 0, 3, 0);
 end)
 
--- menu.action(server, "task all", {"latiaotaskall"}, "latiaotaskall", function()
---     for i = 1, 12 do
---         for i2 = 1, 45 do
---             for k, pid in pairs(players.list()) do
---                 util.trigger_script_event(1 << pid, {770949062, pid, 16156, i2, i,0,1})
---             end
---         end
---     end
--- end)
-
--- menu.action(server, "task all", {"latiaotaskall"}, "latiaotaskall", function()
---     -- for i = 1, 8 do
---     for i2 = 1, 45 do
---         for k, pid in pairs(players.list()) do
---             util.trigger_script_event(1 << pid, {1262194935, pid, 1962800054273, i2})
---         end
---     end
---     -- end
--- end)
-
-menu.toggle_loop(server, "if you host give Collectibles>All", {""}, "", function()
-
-    if NETWORK.NETWORK_IS_HOST() then
-        menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
-        util.yield(10000)
-    end
-end)
-
-menu.toggle_loop(server, "if you host give Collectibles>All NO TIME", {""}, "", function()
-
-    if NETWORK.NETWORK_IS_HOST() then
-        menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
-
-    end
-end)
-
-menu.toggle_loop(server, "loop give Collectibles>All", {""}, "", function()
-
-    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
-    util.yield(10000)
-
-end)
-
-menu.toggle_loop(server, "loop give Collectibles>All2", {""}, "", function()
-
-    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
-
-end)
-
-
 menu.toggle_loop(server, "是主机循环给予收藏品", {""}, "", function()
     if NETWORK.NETWORK_IS_HOST() then
-    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
-    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give RP"))
-    util.yield(15000)
+        menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
+        menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give RP"))
+        util.yield(15000)
     end
 end)
-
 
 menu.toggle_loop(server, "循环给予收藏品", {""}, "", function()
 
@@ -2413,54 +2306,16 @@ menu.action(world, "删除所有非网络实体", {"latiaodelallnotNETWORK"}, "l
 
 end)
 
-menu.action(world, "tp ch_prop_fingerutil.log_scanner", {"latiaotpch_prop_fingerutil.log_scanner_01a"}, "", function()
-    local Models = {util.joaat("ch_prop_fingerutil.log_scanner_01a"), util.joaat("ch_prop_fingerutil.log_scanner_01b"),
-                    util.joaat("ch_prop_fingerutil.log_scanner_01c"), util.joaat("ch_prop_fingerutil.log_scanner_01d")}
-
-    local playerPos = players.get_position(players.user())
-
-    for _, ent in pairs(entities.get_all_pickups_as_handles()) do
-        for _, targetModelHash in pairs(Models) do
-            local success, error_message = pcall(function()
-                if ENTITY.GET_ENTITY_MODEL(ent) == targetModelHash then
-                    ENTITY.SET_ENTITY_COORDS(ent, playerPos.x, playerPos.y, playerPos.z, false)
-                end
-            end)
-
-            if not success then
-                print("Error setting coordinates: " .. error_message)
-            end
-        end
-    end
-
-end)
-
-menu.action(world, "REFRESH_INTERIOR", {""}, "", function()
+menu.action(world, "刷新室内", {""}, "", function()
     local myINTERIOR = INTERIOR.GET_INTERIOR_FROM_ENTITY((players.user_ped()))
     INTERIOR.REFRESH_INTERIOR(myINTERIOR)
-end)
-menu.toggle_loop(server, "clean chat", {"latiaocleanchat"}, "latiaocleanchat.", function()
-    local chatt = math.random(100000000)
-
-    chat.send_message(chatt, false, true, true)
-end)
-
-menu.toggle_loop(world, "IS_PED_IN_COMBAT", {"IS_PED_IN_COMBAT"}, "IS_PED_IN_COMBAT.", function()
-    for k, ent in pairs(entities.get_all_peds_as_handles()) do
-        if not entities.is_player_ped(ent) then
-            if PED.IS_PED_IN_COMBAT(ent, players.user_ped()) then
-
-                ENTITY.SET_ENTITY_COORDS(ent, players.get_position(players.user()), false)
-            end
-        end
-    end
 end)
 
 menu.toggle_loop(server, "自动送温暖", {""}, ".", function()
 
     if not util.is_session_transition_active() then
         util.yield(5000)
-        util.log("give")
+        util.toast("give")
 
         menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
         menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give RP"))
@@ -2468,15 +2323,15 @@ menu.toggle_loop(server, "自动送温暖", {""}, ".", function()
         menu.trigger_command(menu.ref_by_path("Players>All Players>Weapons>Give Ammo"))
         menu.trigger_command(menu.ref_by_path("Players>All Players>Weapons>Give Parachute"))
 
-        util.log("give end")
-        util.log("Wait for 15 seconds")
+        util.toast("give end")
+        util.toast("Wait for 15 seconds")
         util.yield(15000)
 
-        util.log("go")
+        util.toast("go")
         menu.trigger_command(menu.ref_by_path("Online>New Session>Find Public Session"))
         util.yield()
     else
-        print("loding")
+        util.toast("loding")
         util.yield()
     end
 
@@ -2486,7 +2341,7 @@ menu.toggle(server, "totest", {""}, ".", function()
     local test_on = false
     test_on = true
     if test_on == true then
-        print("start")
+        util.toast("start")
         util.yield(1000)
     end
 end)
@@ -2517,37 +2372,6 @@ menu.toggle_loop(server, "giverpforall2", {""}, "", function()
 
 end)
 
--- menu.toggle_loop(server, "testgiverpforall", {""}, "", function()
---     menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
---     menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give RP"))
---     util.yield(1000)
--- end)
-
--- menu.action(server, "super giverpforall", {""}, "", function()
---     for k, pid in pairs(players.list()) do
---         -- for i = 0, 100 do
---             for i2 = 0, 100 do
---             util.trigger_script_event(1 << pid, {968269233, -1, 5, i2, 1, 1, 1})
---             -- print(i.."."..i)
---             util.yield(1)
---         -- end
---     end
--- end
---     
--- end)
-
-menu.toggle_loop(server, "testjoin", {""}, "", function()
-
-    for k, pid in pairs(players.list()) do
-        local player = PLAYER.GET_PLAYER_NAME(pid)
-        local active = NETWORK.NETWORK_IS_PLAYER_ACTIVE(pid)
-        if not active then -- 如果玩家不在线或者不在游戏中，就打印出来
-            print(player .. "=" .. active)
-        end
-    end
-
-end)
-
 menu.toggle_loop(self, "锁定玩家", {}, "允许使用制导发射器锁定玩家", function()
 
     for k, pid in pairs(players.list()) do
@@ -2567,26 +2391,8 @@ menu.toggle_loop(world, "超级npc无视", {""}, "", function()
     end
 end)
 
-menu.toggle_loop(server, "GET MY JOIN INFO", {""}, "", function()
-    print("NETWORK_IS_PLAYER_ACTIVE=" .. NETWORK.NETWORK_IS_PLAYER_ACTIVE(players.user()))
-    print("IS_PLAYER_PLAYING=" .. PLAYER.IS_PLAYER_PLAYING(players.user()))
-end)
-
-menu.action(test, "add all f", {""}, "", function()
-    for k, pid in pairs(players.list()) do
-        for i = 10000, INT_MAX do
-            -- for i2 = 0, 100 do
-            menu.trigger_commands("historyaddrid " .. i)
-            print(i)
-            util.yield()
-            -- end
-        end
-    end
-
-end)
-
-menu.toggle_loop(world, "NETWORK_REGISTER_ENTITY_AS_NETWORKEDobjects",
-    {"latiaoNETWORK_REGISTER_ENTITY_AS_NETWORKEDobjects"}, "NETWORK_REGISTER_ENTITY_AS_NETWORKEDobjects.", function()
+menu.toggle_loop(world, "重新注册网络实体 objects", {"latiaoNETWORK_REGISTER_ENTITY_AS_NETWORKEDobjects"},
+    "NETWORK_REGISTER_ENTITY_AS_NETWORKEDobjects.", function()
         for k, ent in pairs(entities.get_all_objects_as_handles()) do
             local success, error_message = pcall(function()
                 NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED(ent)
@@ -2598,12 +2404,12 @@ menu.toggle_loop(world, "NETWORK_REGISTER_ENTITY_AS_NETWORKEDobjects",
         end
     end)
 
-menu.toggle_loop(world, "NETWORK_REGISTER_ENTITY_AS_NETWORKEDpeds", {"latiaoNETWORK_REGISTER_ENTITY_AS_NETWORKEDpeds"},
+menu.toggle_loop(world, "重新注册网络实体 ped", {"latiaoNETWORK_REGISTER_ENTITY_AS_NETWORKEDpeds"},
     "NETWORK_REGISTER_ENTITY_AS_NETWORKEDpeds.", function()
         for k, ent in pairs(entities.get_all_peds_as_handles()) do
             if not entities.is_player_ped(ent) then
                 local success, error_message = pcall(function()
-                NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED(ent)
+                    NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED(ent)
                 end)
                 if not success then
 
@@ -2613,11 +2419,11 @@ menu.toggle_loop(world, "NETWORK_REGISTER_ENTITY_AS_NETWORKEDpeds", {"latiaoNETW
         end
     end)
 
-menu.toggle_loop(world, "NETWORK_REGISTER_ENTITY_AS_NETWORKEDvehicles",
-    {"latiaoNETWORK_REGISTER_ENTITY_AS_NETWORKEDvehicles"}, "NETWORK_REGISTER_ENTITY_AS_NETWORKEDvehicles.", function()
+menu.toggle_loop(world, "重新注册网络实体 vehicles", {"latiaoNETWORK_REGISTER_ENTITY_AS_NETWORKEDvehicles"},
+    "NETWORK_REGISTER_ENTITY_AS_NETWORKEDvehicles.", function()
         for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
             local success, error_message = pcall(function()
-            NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED(ent)
+                NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED(ent)
             end)
             if not success then
 
@@ -2626,11 +2432,11 @@ menu.toggle_loop(world, "NETWORK_REGISTER_ENTITY_AS_NETWORKEDvehicles",
         end
     end)
 
-menu.toggle_loop(world, "NETWORK_REGISTER_ENTITY_AS_NETWORKEDpickups",
-    {"latiaoNETWORK_REGISTER_ENTITY_AS_NETWORKEDvehicles"}, "NETWORK_REGISTER_ENTITY_AS_NETWORKEDvehicles.", function()
+menu.toggle_loop(world, "重新注册网络实体 pickups", {"latiaoNETWORK_REGISTER_ENTITY_AS_NETWORKEDvehicles"},
+    "NETWORK_REGISTER_ENTITY_AS_NETWORKEDvehicles.", function()
         for k, ent in pairs(entities.get_all_pickups_as_handles()) do
             local success, error_message = pcall(function()
-            NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED(ent)
+                NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED(ent)
             end)
             if not success then
 
@@ -2639,76 +2445,20 @@ menu.toggle_loop(world, "NETWORK_REGISTER_ENTITY_AS_NETWORKEDpickups",
         end
     end)
 
-    menu.toggle_loop(world, "pointers tp objects", {"latiaopointers tp objects"}, "pointers tp objects.", function()
-        local pos = players.get_position(players.user())
-        for k, ent in pairs(entities.get_all_objects_as_pointers()) do
-            local success, error_message = pcall(function()
-                print(ent)
-                ENTITY.SET_ENTITY_COORDS(ent, pos.x, pos.y, pos.z, false)
-            end)
-            if not success then
-                print(error_message)
-            end
-    
-        end
-    end)
-    
-    menu.toggle_loop(world, "pointers tp peds", {"latiaopointers tp peds"}, "pointers tp peds.", function()
-        local pos = players.get_position(players.user())
-        for k, ent in pairs(entities.get_all_peds_as_pointers()) do
-            if not entities.is_player_ped(ent) then
-                local success, error_message = pcall(function()
-                    ENTITY.SET_ENTITY_COORDS(ent, pos.x, pos.y, pos.z, false)
-                end)
-                if not success then
-                    print(error_message)
-                end
-            end
-    
-        end
-    end)
-    
-    menu.toggle_loop(world, "pointers tp vehicles", {"latiaopointers tp vehicles"}, "pointers tp vehicles.", function()
-        local pos = players.get_position(players.user())
-        for k, ent in pairs(entities.get_all_vehicles_as_pointers()) do
-            local success, error_message = pcall(function()
-                ENTITY.SET_ENTITY_COORDS(ent, pos.x, pos.y, pos.z, false)
-            end)
-            if not success then
-                print(error_message)
-            end
-    
-        end
-    end)
-    
-    menu.toggle_loop(world, "pointers tp pickups", {"latiaopointers tp vehicles"}, "pointers tp vehicles.", function()
-        local pos = players.get_position(players.user())
-        for k, ent in pairs(entities.get_all_pickups_as_pointers()) do
-            local success, error_message = pcall(function()
-                ENTITY.SET_ENTITY_COORDS(ent, pos.x, pos.y, pos.z, false)
-            end)
-            if not success then
-                print(error_message)
-            end
-    
-        end
-    end)
-
-
-menu.toggle_loop(world, "tp objects", {"latiaotp objects"}, "tp objects.", function()
+menu.toggle_loop(world, "传送 物体 到我 ", {"latiaotpobjects"}, "tp objects.", function()
     local pos = players.get_position(players.user())
     for k, ent in pairs(entities.get_all_objects_as_handles()) do
         local success, error_message = pcall(function()
             ENTITY.SET_ENTITY_COORDS(ent, pos.x, pos.y, pos.z, false)
         end)
         if not success then
-            print(error_message)
+            util.toast(error_message)
         end
 
     end
 end)
 
-menu.toggle_loop(world, "tp peds", {"latiaotp peds"}, "tp peds.", function()
+menu.toggle_loop(world, "传送 npc 到我", {"latiaotppeds"}, "tppeds.", function()
     local pos = players.get_position(players.user())
     for k, ent in pairs(entities.get_all_peds_as_handles()) do
         if not entities.is_player_ped(ent) then
@@ -2716,40 +2466,40 @@ menu.toggle_loop(world, "tp peds", {"latiaotp peds"}, "tp peds.", function()
                 ENTITY.SET_ENTITY_COORDS(ent, pos.x, pos.y, pos.z, false)
             end)
             if not success then
-                print(error_message)
+                util.toast(error_message)
             end
         end
 
     end
 end)
 
-menu.toggle_loop(world, "tp vehicles", {"latiaotp vehicles"}, "tp vehicles.", function()
+menu.toggle_loop(world, "传送 载具 到我", {"latiaotp vehicles"}, "tp vehicles.", function()
     local pos = players.get_position(players.user())
     for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
         local success, error_message = pcall(function()
             ENTITY.SET_ENTITY_COORDS(ent, pos.x, pos.y, pos.z, false)
         end)
         if not success then
-            print(error_message)
+            util.toast(error_message)
         end
 
     end
 end)
 
-menu.toggle_loop(world, "tp pickups", {"latiaotp vehicles"}, "tp vehicles.", function()
+menu.toggle_loop(world, "传送 可拾取 到我", {"latiaotp vehicles"}, "tp vehicles.", function()
     local pos = players.get_position(players.user())
     for k, ent in pairs(entities.get_all_pickups_as_handles()) do
         local success, error_message = pcall(function()
             ENTITY.SET_ENTITY_COORDS(ent, pos.x, pos.y, pos.z, false)
         end)
         if not success then
-            print(error_message)
+            util.toast(error_message)
         end
 
     end
 end)
 
-menu.toggle_loop(world, "tp NETWORKED objects", {"latiaotp objects"}, "tp objects.", function()
+menu.toggle_loop(world, "传送网络 实体", {"latiaotp objects"}, "tp objects.", function()
     local pos = players.get_position(players.user())
     for k, ent in pairs(entities.get_all_objects_as_handles()) do
 
@@ -2759,13 +2509,13 @@ menu.toggle_loop(world, "tp NETWORKED objects", {"latiaotp objects"}, "tp object
             end
         end)
         if not success then
-            print(error_message)
+            util.toast(error_message)
         end
 
     end
 end)
 
-menu.toggle_loop(world, "tp NETWORKED peds", {"latiaotp peds"}, "tp peds.", function()
+menu.toggle_loop(world, "传送网络 peds", {"latiaotp peds"}, "tp peds.", function()
     local pos = players.get_position(players.user())
     for k, ent in pairs(entities.get_all_peds_as_handles()) do
         if not entities.is_player_ped(ent) then
@@ -2775,14 +2525,14 @@ menu.toggle_loop(world, "tp NETWORKED peds", {"latiaotp peds"}, "tp peds.", func
                 end
             end)
             if not success then
-                print(error_message)
+                util.toast(error_message)
             end
         end
 
     end
 end)
 
-menu.toggle_loop(world, "tp NETWORKED vehicles", {"latiaotp vehicles"}, "tp vehicles.", function()
+menu.toggle_loop(world, "传送网络 载具", {"latiaotp vehicles"}, "tp vehicles.", function()
     local pos = players.get_position(players.user())
     for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
         local success, error_message = pcall(function()
@@ -2791,13 +2541,13 @@ menu.toggle_loop(world, "tp NETWORKED vehicles", {"latiaotp vehicles"}, "tp vehi
             end
         end)
         if not success then
-            print(error_message)
+            util.toast(error_message)
         end
 
     end
 end)
 
-menu.toggle_loop(world, "tp NETWORKED pickups", {"latiaotp vehicles"}, "tp vehicles.", function()
+menu.toggle_loop(world, "传送网络 可拾取物", {"latiaotp vehicles"}, "tp vehicles.", function()
     local pos = players.get_position(players.user())
     for k, ent in pairs(entities.get_all_pickups_as_handles()) do
         local success, error_message = pcall(function()
@@ -2806,60 +2556,55 @@ menu.toggle_loop(world, "tp NETWORKED pickups", {"latiaotp vehicles"}, "tp vehic
             end
         end)
         if not success then
-            print(error_message)
+            util.toast(error_message)
         end
 
     end
 end)
 
-
 menu.slider_float(world, "风速", {"SET_WIND"}, "", 0, INT_MAX, -1, 1, function(value)
-        MISC.SET_WIND(value)
-    end)
-    menu.slider_float(world, "雨量", {"SET_RAIN"}, "", 0, INT_MAX, -1, 1, function(value)
-        MISC.SET_RAIN(value)
-    end)
+    MISC.SET_WIND(value)
+end)
+menu.slider_float(world, "雨量", {"SET_RAIN"}, "", 0, INT_MAX, -1, 1, function(value)
+    MISC.SET_RAIN(value)
+end)
 
-
-    menu.toggle_loop(world, "tp到附近的网络objects", {""}, "", function()
-        for _, target in ipairs(entities.get_all_objects_as_handles()) do
-            if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(target) then
+menu.toggle_loop(world, "tp到附近的网络objects", {""}, "", function()
+    for _, target in ipairs(entities.get_all_objects_as_handles()) do
+        if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(target) then
+            local objectspos = ENTITY.GET_ENTITY_COORDS(target, true)
+            ENTITY.SET_ENTITY_COORDS(players.user_ped(), objectspos.x, objectspos.y, objectspos.z, false)
+        end
+    end
+end)
+menu.toggle_loop(world, "tp到附近的网络 peds", {""}, "", function()
+    for _, target in ipairs(entities.get_all_peds_as_handles()) do
+        if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(target) then
+            if not entities.is_player_ped(target) then
                 local objectspos = ENTITY.GET_ENTITY_COORDS(target, true)
                 ENTITY.SET_ENTITY_COORDS(players.user_ped(), objectspos.x, objectspos.y, objectspos.z, false)
             end
         end
-    end)
-    menu.toggle_loop(world, "tp到附近的网络 peds", {""}, "", function()
-        for _, target in ipairs(entities.get_all_peds_as_handles()) do
-            if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(target) then
-                if not entities.is_player_ped(target) then
-                    local objectspos = ENTITY.GET_ENTITY_COORDS(target, true)
-                    ENTITY.SET_ENTITY_COORDS(players.user_ped(), objectspos.x, objectspos.y, objectspos.z, false)
-                end
-            end
+    end
+end)
+menu.toggle_loop(world, "tp到附近的网络 vehicles", {""}, "", function()
+    for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
+        if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(target) then
+            local objectspos = ENTITY.GET_ENTITY_COORDS(target, true)
+            ENTITY.SET_ENTITY_COORDS(players.user_ped(), objectspos.x, objectspos.y, objectspos.z, false)
         end
-    end)
-    menu.toggle_loop(world, "tp到附近的网络 vehicles", {""}, "", function()
-        for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
-            if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(target) then
-                local objectspos = ENTITY.GET_ENTITY_COORDS(target, true)
-                ENTITY.SET_ENTITY_COORDS(players.user_ped(), objectspos.x, objectspos.y, objectspos.z, false)
-            end
 
+    end
+end)
+menu.toggle_loop(world, "tp到附近的网络 pickups", {""}, "", function()
+    for _, target in ipairs(entities.get_all_pickups_as_handles()) do
+        if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(target) then
+            local objectspos = ENTITY.GET_ENTITY_COORDS(target, true)
+            ENTITY.SET_ENTITY_COORDS(players.user_ped(), objectspos.x, objectspos.y, objectspos.z, false)
         end
-    end)
-    menu.toggle_loop(world, "tp到附近的网络 pickups", {""}, "", function()
-        for _, target in ipairs(entities.get_all_pickups_as_handles()) do
-            if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(target) then
-                local objectspos = ENTITY.GET_ENTITY_COORDS(target, true)
-                ENTITY.SET_ENTITY_COORDS(players.user_ped(), objectspos.x, objectspos.y, objectspos.z, false)
-            end
 
-        end
-    end)
-    menu.action(admin, "呼叫虎鲸", {""}, "", function()
-        SET_INT_GLOBAL(2738587 + 960, 1)
-    end)
-    menu.action(test, "print STAT_GET_INT", {""}, "", function()
-        print(STAT_GET_INT("SCRIPT_INCREASE_SHO"))
-    end)
+    end
+end)
+menu.action(admin, "呼叫虎鲸", {""}, "", function()
+    SET_INT_GLOBAL(2738587 + 960, 1)
+end)
