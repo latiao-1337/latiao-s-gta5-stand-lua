@@ -538,11 +538,11 @@ menu.toggle_loop(killaura, "开启", {"latiaokillaura"}, ("SHOOT ALL"), function
                 -- elseif killaura_random_player_explosion then
                 -- FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, menu.get_value(killauraDamage), false, true, 0.0)
             elseif killaura_random_player then
-                --  util.toast("killaura_random_player")
+                --  util.log("killaura_random_player")
                 MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z,
                     menu.get_value(killauraDamage), true, util.joaat("weapon_pistol"), randomPid, false, true, INT_MAX)
             else
-                --  util.toast("killaura_none")
+                --  util.log("killaura_none")
                 MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z,
                     menu.get_value(killauraDamage), true, util.joaat("weapon_pistol"), players.user_ped(), false, true,
                     INT_MAX)
@@ -660,15 +660,7 @@ end, function()
     end
 end)
 
-menu.toggle_loop(world, "隐秘击杀所有npc", {"latiaosilencekillallped"}, "latiaotsilencekillallped.", function()
-    for _, ped in entities.get_all_peds_as_handles() do
-        if not entities.is_player_ped(ped) then
-            local pos = players.get_position(players.user())
-            ENTITY.SET_ENTITY_COORDS(ped, pos.x, pos.y, pos.z - 50, false)
-            FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z - 50, 0, 1, false, true, 0.0)
-        end
-    end
-end)
+
 
 menu.toggle_loop(world, "触发所有npc布娃娃", {"latiaoSET_PED_TO_RAGDOLL_WITH_FALL"},
     "latiaoSET_PED_TO_RAGDOLL_WITH_FALL.", function()
@@ -791,8 +783,7 @@ menu.toggle_loop(server, "情书踢作弊玩家", {""}, ".", function()
 
 end)
 
-menu.toggle_loop(server, "是主机踢游戏语言为中文的玩家", {""}, "", function()
-    if NETWORK.NETWORK_IS_HOST() then
+menu.toggle_loop(server, "踢游戏语言为中文的玩家", {""}, "", function()
         for k, pid in pairs(players.list()) do
             local language = players.get_language(pid)
             if language == 12 then
@@ -801,36 +792,16 @@ menu.toggle_loop(server, "是主机踢游戏语言为中文的玩家", {""}, "",
                     goto out
                 end
                 menu.trigger_commands("loveletterkick" .. attack)
-                --  util.toast(attack)
+                --  util.log(attack)
             end
             ::out::
         end
 
-    end
+
 
 end)
 
-menu.toggle_loop(server, "是主机举报+封号踢所有玩家", {"latiaobankallmoder"}, "latiaobankallmoder.",
-    function()
-        if NETWORK.NETWORK_IS_HOST() then
-            for k, pid in pairs(players.list()) do
-                if pid == players.user() then
-                    goto out
-                end
-                if players.is_marked_as_modder(pid) then
-                    local attack = PLAYER.GET_PLAYER_NAME(pid)
-                    util.toast(attack .. "kick ing")
-                    menu.trigger_commands("reportgriefing" .. attack)
-                    util.yield(100)
-                    menu.trigger_commands("ban" .. attack)
 
-                end
-                ::out::
-            end
-
-        end
-
-    end)
 
 menu.toggle_loop(server, "不是主机反弹踢你的玩家", {"raidallplayer"}, "", function()
     if NETWORK.NETWORK_IS_HOST() then
@@ -883,23 +854,20 @@ menu.action(server, "踢自己", {"latiaokickme"}, "latiaokickme.", function()
     NETWORK.NETWORK_SESSION_KICK_PLAYER(players.user())
 end)
 
-menu.toggle_loop(server, "是主机循环举报所有人", {"latiaoreportall"}, "reportall.", function()
+menu.toggle_loop(server, "循环举报所有人", {"latiaoreportall"}, "reportall.", function()
     util.yield(1000)
-    if NETWORK.NETWORK_IS_HOST() then
         menu.trigger_command(menu.ref_by_path(
             "Players>All Players>Increment Commend/Report Stats>Griefing or Disruptive Gameplay"))
         menu.trigger_command(menu.ref_by_path("Players>All Players>Increment Commend/Report Stats>Cheating or Modding"))
         menu.trigger_command(menu.ref_by_path(
             "Players>All Players>Increment Commend/Report Stats>Glitching or Abusing Game Features"))
-    end
+    
 end)
 
-menu.toggle_loop(server, "是主机称赞所有人", {"latiaoreportall"}, "reportall.", function()
+menu.toggle_loop(server, "称赞所有人", {"latiaoreportall"}, "reportall.", function()
     util.yield(1000)
-    if NETWORK.NETWORK_IS_HOST() then
         menu.trigger_command(menu.ref_by_path("Players>All Players>Increment Commend/Report Stats>Helpful"))
         menu.trigger_command(menu.ref_by_path("Players>All Players>Increment Commend/Report Stats>Friendly"))
-    end
 end)
 
 menu.toggle_loop(server, "所有人踢出载具", {"latiaoreportall"}, "reportall.", function()
@@ -941,7 +909,7 @@ menu.toggle_loop(server, "请求所有 行人", {"latiaoREQUES_ENTITYped"}, "lat
             end)
 
             if not success then
-                --  util.toast(success,error_message)
+                --  util.log(success,error_message)
             end
         end
     end
@@ -1040,7 +1008,8 @@ local dividends_plkd = menu.list(dividends, "佩里克岛", {}, "")
 local dividends_mr = menu.list(dividends, "末日", {}, "")
 local dividends_gy = menu.list(dividends, "公寓", {}, "")
 local dividends_brdr = menu.list(dividends, "事务所", {}, "")
-
+local dividends_gzp = menu.list(dividends, "改装铺", {}, "")
+local dividends_hsz = menu.list(dividends, "回收站", {}, "")
 menu.toggle_loop(dividends_general, "跳过所有黑客内容", {"latiaojumphack"}, "latiaojumphack.", function()
     SET_INT_LOCAL("fm_mission_controller_2020", 24333, 5)
     SET_FLOAT_LOCAL("fm_mission_controller_2020", 30357 + 3, 100)
@@ -1052,8 +1021,8 @@ menu.toggle_loop(dividends_general, "跳过所有黑客内容", {"latiaojumphack
     SET_INT_LOCAL("fm_mission_controller", 1512, 3) -- For ACT I, Setup: Server Farm (Lester), https://www.unknowncheats.me/forum/3687245-post112.html
     SET_INT_LOCAL("fm_mission_controller", 1543, 2)
     SET_INT_LOCAL("fm_mission_controller", 1269 + 135, 3) -- For ACT III, https://www.unknowncheats.me/forum/3455828-post8.html
-    -- SET_INT_LOCAL("fm_mission_controller", 11776 + 24, 7)
-    -- SET_FLOAT_LOCAL("fm_mission_controller", 10067 + 11, 100)
+    SET_INT_LOCAL("fm_mission_controller", 11776 + 24, 7)
+    SET_FLOAT_LOCAL("fm_mission_controller", 10067 + 11, 100)
 
 end)
 menu.action(dividends_dc, "跳过赌场手机匹配冷却", {""}, ".", function()
@@ -1085,30 +1054,30 @@ menu.toggle_loop(dividends_dc, "一键设置赌场前置和分红 1-4人", {""},
     STAT_SET_INT("H3OPT_CREWDRIVER", 5)
     STAT_SET_INT("H3OPT_CREWHACKER", 4)
 
-    SET_INT_GLOBAL(262145 + 29068, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 1, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 2, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 3, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 4, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 5, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 6, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 7, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 8, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 9, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 10, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 11, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 12, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 13, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 14, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 15, 0)
+    -- SET_INT_GLOBAL(262145 + 29068, 0)
+    -- SET_INT_GLOBAL(262145 + 29093 + 1, 0)
+    -- SET_INT_GLOBAL(262145 + 29093 + 2, 0)
+    -- SET_INT_GLOBAL(262145 + 29093 + 3, 0)
+    -- SET_INT_GLOBAL(262145 + 29093 + 4, 0)
+    -- SET_INT_GLOBAL(262145 + 29093 + 5, 0)
+    -- SET_INT_GLOBAL(262145 + 29093 + 6, 0)
+    -- SET_INT_GLOBAL(262145 + 29093 + 7, 0)
+    -- SET_INT_GLOBAL(262145 + 29093 + 8, 0)
+    -- SET_INT_GLOBAL(262145 + 29093 + 9, 0)
+    -- SET_INT_GLOBAL(262145 + 29093 + 10, 0)
+    -- SET_INT_GLOBAL(262145 + 29093 + 11, 0)
+    -- SET_INT_GLOBAL(262145 + 29093 + 12, 0)
+    -- SET_INT_GLOBAL(262145 + 29093 + 13, 0)
+    -- SET_INT_GLOBAL(262145 + 29093 + 14, 0)
+    -- SET_INT_GLOBAL(262145 + 29093 + 15, 0)
 
-    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 1, 100)
+    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 1, 150)
 
-    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 2, 100)
+    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 2, 150)
 
-    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 3, 100)
+    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 3, 150)
 
-    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 4, 100)
+    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 4, 150)
 end)
 
 -- =
@@ -1215,26 +1184,17 @@ menu.toggle_loop(dividends_plkd, "一键设置小岛前置和分红 1-4人", {},
 
     STAT_SET_INT("H4LOOT_CASH_I", 0)
     STAT_SET_INT("H4LOOT_CASH_C", 0)
-    STAT_SET_INT("H4LOOT_CASH_I_SCOPED", 0)
-    STAT_SET_INT("H4LOOT_CASH_C_SCOPED", 0)
     STAT_SET_INT("H4LOOT_CASH_V", 0)
     STAT_SET_INT("H4LOOT_WEED_I", 0)
     STAT_SET_INT("H4LOOT_WEED_C", 0)
-    STAT_SET_INT("H4LOOT_WEED_I_SCOPED", 0)
-    STAT_SET_INT("H4LOOT_WEED_C_SCOPED", 0)
     STAT_SET_INT("H4LOOT_WEED_V", 0)
     STAT_SET_INT("H4LOOT_COKE_I", 0)
     STAT_SET_INT("H4LOOT_COKE_C", 0)
-    STAT_SET_INT("H4LOOT_COKE_I_SCOPED", 0)
-    STAT_SET_INT("H4LOOT_COKE_C_SCOPED", 0)
     STAT_SET_INT("H4LOOT_COKE_V", 0)
     STAT_SET_INT("H4LOOT_GOLD_I", 0)
     STAT_SET_INT("H4LOOT_GOLD_C", 0)
-    STAT_SET_INT("H4LOOT_GOLD_I_SCOPED", 0)
-    STAT_SET_INT("H4LOOT_GOLD_C_SCOPED", 0)
     STAT_SET_INT("H4LOOT_GOLD_V", 0)
     STAT_SET_INT("H4LOOT_PAINT", 0)
-    STAT_SET_INT("H4LOOT_PAINT_SCOPED", 0)
     STAT_SET_INT("H4LOOT_PAINT_V", 0)
 
     SET_INT_GLOBAL(1970744 + 831 + 56 + 1, 300)
@@ -1280,12 +1240,7 @@ menu.action(dividends_gy, "完成公寓抢劫", {""}, "", function()
     STAT_SET_INT("HEIST_PLANNING_STAGE", -1)
 end)
 
-menu.toggle_loop(dividends_gy, "公寓抢劫总价值14500000 (you host)", {""}, ".", function()
-    SET_INT_GLOBAL(262145 + 9314 + 1, 14500000)
-    SET_INT_GLOBAL(262145 + 9314 + 2, 14500000)
-    SET_INT_GLOBAL(262145 + 9314 + 3, 14500000)
-    SET_INT_GLOBAL(262145 + 9314 + 4, 14500000)
-end)
+
 
 local Apartment = menu.slider(dividends_gy, "公寓抢劫分红", {""}, "15000000", INT_MIN, INT_MAX, 100, 100,
     function()
@@ -1333,7 +1288,7 @@ local function latiaostandMenuSetup(pid)
     local connect_ip = int2ip(players.get_connect_ip(pid))
     local get_connect_port = players.get_connect_port(pid)
     -- local pos = players.get_position(pid)
-    util.toast("名为:" .. playername .. " 槽位:" .. pid .. " 游戏语言:" .. gameLANGUAGE .. " 连接ip:" ..
+    util.log("名为:" .. playername .. " 槽位:" .. pid .. " 游戏语言:" .. gameLANGUAGE .. " 连接ip:" ..
                    connect_ip .. " 连接端口:" .. get_connect_port .. "加入了游戏")
     menu.divider(menu.player_root(pid), "latiao's STAND menu")
 
@@ -1391,7 +1346,7 @@ local function latiaostandMenuSetup(pid)
     end)
 
     menu.action(latiaostandMenu, "WastedSounds  声音轰炸", {""}, "latiaobadsoundforall", function()
-        for i = 1, 100, 1 do
+        for i = 1, 10, 1 do
             AUDIO.PLAY_SOUND_FROM_ENTITY(-1, "MP_Flash", PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), "WastedSounds", true,
                 -1)
         end
@@ -1399,7 +1354,7 @@ local function latiaostandMenuSetup(pid)
         -- util.yield(50)
     end)
     menu.action(latiaostandMenu, "查询他的游戏语言", {}, "", function()
-        util.toast(players.get_language(pid))
+        util.log(language_code[players.get_language(pid)])
 
     end)
 
@@ -1428,7 +1383,7 @@ local function latiaostandMenuSetup(pid)
         util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
         util.trigger_script_event(1 << pid, {-503325966})
         menu.trigger_commands("kill" .. players.get_name(pid))
-        FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
+        FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, math.random(0,82), INT_MAX, false, true, 0.0)
 
         if not players.exists(pid) then
             util.stop_thread()
@@ -1440,7 +1395,7 @@ local function latiaostandMenuSetup(pid)
         local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
         util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
         util.trigger_script_event(1 << pid, {-503325966})
-        FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
+        FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, math.random(0,82), INT_MAX, false, true, 0.0)
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1467,7 +1422,6 @@ local function latiaostandMenuSetup(pid)
 
         local obj = entities.create_object(glitch_hash, pos)
         ENTITY.SET_ENTITY_VISIBLE(obj, false)
-        -- ENTITY.SET_ENTITY_COLLISION(obj, true, true)
         util.yield()
         entities.delete(obj)
 
@@ -1525,17 +1479,11 @@ local function latiaostandMenuSetup(pid)
         GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY("scr_as_trans_smoke", ped, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
             5, false, false, false, 0, 0, 0, 255)
     end)
-    menu.action(latiaostandMenu, "烟雾 100", {"latiaoscr_as_trans_smoke"}, "", function()
-        STREAMING.REQUEST_NAMED_PTFX_ASSET("scr_as_trans")
-        GRAPHICS.USE_PARTICLE_FX_ASSET("scr_as_trans")
-        local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY("scr_as_trans_smoke", ped, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-            100, false, false, false, 0, 0, 0, 255)
-    end)
+
 
     menu.toggle_loop(latiaostandMenu, "匿名爆炸", {"latiaoNickEXPLOSION"}, "", function()
         local pos = players.get_position(pid)
-        FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
+        FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, math.random(0,82), INT_MAX, false, true, 0.0)
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1544,7 +1492,7 @@ local function latiaostandMenuSetup(pid)
 
     menu.toggle_loop(latiaostandMenu, "实名爆炸", {"latiaoMEEXPLOSION"}, "", function()
         local pos = players.get_position(pid)
-        FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
+        FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, math.random(0,82), INT_MAX, false, true, 0.0)
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1559,7 +1507,7 @@ local function latiaostandMenuSetup(pid)
         end
     end)
 
-    menu.toggle_loop(latiaostandMenu, "无效物体崩溃", {"latiaobedojectcrash"}, "", function()
+    menu.toggle_loop(latiaostandMenu, "无效物体崩溃", {"latiaobadojectcrash"}, "", function()
         STREAMING.REQUEST_MODEL(util.joaat("prop_tall_grass_ba"))
         local pos = players.get_position(pid)
         local object = entities.create_object(util.joaat("prop_tall_grass_ba"), pos)
@@ -1572,17 +1520,28 @@ local function latiaostandMenuSetup(pid)
         end
     end)
 
+    menu.toggle_loop(latiaostandMenu, "CREATE_OBJECT_NO_OFFSET", {""}, "", function()
+        STREAMING.REQUEST_MODEL(util.joaat("02gate3_l"))
+        local pos = players.get_position(pid)
+        OBJECT.CREATE_OBJECT_NO_OFFSET(util.joaat("02gate3_l"),pos.x,pos.y,pos.z,true,true,true)
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
     menu.toggle_loop(latiaostandMenu, "无效行人动作崩溃", {}, "", function()
         local ped = util.joaat('cs_manuel')
         STREAMING.REQUEST_MODEL(ped)
-        util.yield()
 
         local pos = players.get_position(pid)
         local createped = entities.create_ped(4, ped, pos, 0)
         WEAPON.GIVE_WEAPON_TO_PED(createped, util.joaat('WEAPON_HOMINGLAUNCHER'), 100, true, true)
         util.yield()
-        FIRE.ADD_EXPLOSION(pos, 0, 100.0, false, true, 100.0)
+        FIRE.ADD_EXPLOSION(pos, math.random(0,82), 100.0, false, true, 100.0)
     end)
+
+    
+
 
     menu.action(latiaostandMenu, "主机踢NETWORK_SESSION_KICK_PLAYER", {"latiaoNETWORK_SESSION_KICK_PLAYER"}, "",
         function()
@@ -1672,6 +1631,7 @@ local function latiaostandMenuSetup(pid)
 
     menu.toggle_loop(latiaostandMenu, "脚本声音轰炸 检查点", {""}, "", function()
         -- util.yield(1500)
+        util.yield(math.random(1000,1500))
         util.trigger_script_event(1 << pid, {-642704387, pid, 782258655, 0, 0, 0, 0, 0, 0, 0, pid, 0, 0, 0})
         if not players.exists(pid) then
             util.stop_thread()
@@ -1679,10 +1639,14 @@ local function latiaostandMenuSetup(pid)
     end)
 
     menu.toggle_loop(latiaostandMenu, "检查点信息轰炸", {"test1"}, "tet2", function()
-        -- util.yield(1500)
+        util.yield(math.random(1000,1500))
+        local list = players.list()
+        local index = math.random(#list)
+    
+        local randomPid = (list[index])
 
         util.trigger_script_event(1 << pid,
-            {-642704387, pid, 782258655, 0, 0, 0, 0, 0, 0, 0, math.random(0, 32), 0, 0, 0})
+            {-642704387, pid, 782258655, 0, 0, 0, 0, 0, 0, 0, randomPid, 0, 0, 0})
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1734,7 +1698,7 @@ local function latiaostandMenuSetup(pid)
 
     menu.toggle_loop(latiaostandMenu, "循环爆炸", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
         local pos = players.get_position(pid)
-        FIRE.ADD_EXPLOSION(pos, 0, INT_MAX, true, false, INT_MAX)
+        FIRE.ADD_EXPLOSION(pos, math.random(0,82), INT_MAX, true, false, INT_MAX)
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1802,6 +1766,14 @@ local function latiaostandMenuSetup(pid)
         end
     end)
 
+    menu.toggle_loop(latiaostandMenu, "循环CREATE_RANDOM_PED", {""}, "", function()
+        local pos = players.get_position(pid)
+        PED.CREATE_RANDOM_PED(pos.x, pos.y, pos.z)
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
     menu.toggle_loop(latiaostandMenu, "用他名击杀npc ", {"latiaobedsoundforall"}, "latiaobedsoundforall",
         function()
             for _, ped in entities.get_all_peds_as_handles() do
@@ -1809,7 +1781,7 @@ local function latiaostandMenuSetup(pid)
 
                     -- if not  then
                     local pos = v3.new(ENTITY.GET_ENTITY_COORDS(ped))
-                    FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), pos.x, pos.y, pos.z, 0, INT_MAX,
+                    FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), pos.x, pos.y, pos.z, math.random(0,82), INT_MAX,
                         false, true, 0.0)
                     -- end
                 end
@@ -1831,8 +1803,28 @@ local function latiaostandMenuSetup(pid)
     menu.toggle_loop(latiaostandMenu, "循环送经验2", {""}, "", function()
         util.trigger_script_event(1 << pid, {968269233, -1, 8, -5, 1, 1, 1})
 
+
+
+    end)
+    menu.toggle_loop(latiaostandMenu, "刷钱袋", {""}, "", function()
+        local pos = players.get_position(pid)
+    
+        OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_MONEY_CASE"),pos.x,pos.y,pos.z,0,10000,util.joaat("Prop_LD_CASE_01"),false,false)
     end)
 
+    menu.toggle_loop(latiaostandMenu, "刷手办", {""}, "", function()
+        local pos = players.get_position(pid)
+    
+
+        OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT") ,pos.x,pos.y,pos.z,0,1,util.joaat("vw_prop_vw_colle_prbubble"),false,false)
+    end)
+
+    menu.toggle_loop(latiaostandMenu, "刷纸牌", {""}, "", function()
+        local pos = players.get_position(pid)
+    
+
+        OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT") ,pos.x,pos.y,pos.z,0,1,util.joaat("vw_prop_vw_lux_card_01a"),false,false)
+    end)
 end
 
 for _, pid in ipairs(players.list()) do
@@ -1868,12 +1860,12 @@ menu.toggle_loop(test, "信息查询枪", {"latiaodebugshot"}, ("latiaobadpost")
         --  .. "," .. "NETWORK_ID" 
 
         directx.draw_text(0.5, 0.25, text, 5, 0.5, {
-            r = 255,
+            r = 1,
             g = 0,
             b = 0,
-            a = 255
+            a = 1
         }, true)
-        util.toast(text)
+        util.log(text)
     end
 
 end)
@@ -1902,7 +1894,7 @@ end)
 
 menu.toggle_loop(server, "阻止变成野兽", {""}, "", function()
     if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(util.joaat("am_hunt_the_Beast")) > 0 then
-        util.toast("stop am_hunt_the_Beast")
+        util.log("stop am_hunt_the_Beast")
         MISC.TERMINATE_ALL_SCRIPTS_WITH_THIS_NAME("am_hunt_the_Beast")
 
     end
@@ -1999,8 +1991,8 @@ local ContractPayout = menu.slider(dividends_brdr, "别惹德瑞分红", {"Contr
 
     end)
 
-menu.toggle_loop(dividends_brdr, "设置别惹德瑞分红", {""}, "", function()
-    SET_INT_GLOBAL(262145 + 31955, menu.get_value(ContractPayout))
+menu.toggle_loop(dividends_brdr, "设置别惹德瑞分红", {""}, "最大2000000", function()
+    SET_INT_GLOBAL(262145 + 32071, menu.get_value(ContractPayout))
 end)
 
 menu.toggle_loop(test, "CLEAR_AREA", {""}, "", function()
@@ -2044,6 +2036,15 @@ menu.action(test, "刷新当前区块(tp and back)", {"latiaotpback"}, "", funct
     -- )
 end)
 
+menu.action(test, "刷新当前区块(tp and back)", {"latiaotpback"}, "", function()
+    local pos = players.get_position(players.user())
+
+    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(players.user_ped(), pos.x, pos.y, -260)
+    util.yield()
+    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(players.user_ped(), pos.x, pos.y, pos.z)
+
+    -- )
+end)
 menu.toggle_loop(test, "脚本声音轰炸", {""}, "", function()
     -- util.yield(1500)
     for k, pid in pairs(players.list()) do
@@ -2086,8 +2087,8 @@ end, function()
 end)
 
 menu.toggle_loop(world, "没有噪音", {}, "", function()
-    PLAYER.SET_PLAYER_NOISE_MULTIPLIER(players.user(), 0.0)
-    PLAYER.SET_PLAYER_SNEAKING_NOISE_MULTIPLIER(players.user(), 0.0)
+    PLAYER.SET_PLAYER_NOISE_MULTIPLIER(players.user(), 0)
+    PLAYER.SET_PLAYER_SNEAKING_NOISE_MULTIPLIER(players.user(), 0)
 end)
 
 menu.toggle_loop(self, "假死 SET_ENTITY_MAX_HEALTH 0", {""}, ".", function()
@@ -2102,12 +2103,6 @@ menu.action(server, "请求所有脚本主机 ", {"request_script_hostall"}, "la
     end
 end)
 
-menu.toggle_loop(server, "无伤害爆炸轰炸", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
-    for k, pid in pairs(players.list()) do
-        local pos = players.get_position(pid)
-        FIRE.ADD_EXPLOSION(pos, 0, 0, false, true, 0.0)
-    end
-end)
 
 menu.action(about, "github:latiao-1337", {""}, "", function()
 
@@ -2118,7 +2113,7 @@ menu.toggle_loop(self, "SET_PLAYER_LOCKON_RANGE_OVERRIDE", {"SET_PLAYER_LOCKON_R
 end)
 
 menu.toggle_loop(server, "爆炸声音轰炸", {"latiaobedsoundforall"}, "latiaobedsoundforall", function()
-    FIRE.ADD_EXPLOSION(0, 0, 2500, 0, INT_MAX, true, false, INT_MAX)
+    FIRE.ADD_EXPLOSION(0, 0, 2500, math.random(0,82), INT_MAX, true, false, INT_MAX)
 end)
 
 menu.action(dividends_dc, "赌场停车场生成载具", {""}, "", function()
@@ -2164,7 +2159,7 @@ menu.toggle_loop(server, "所有脚本主机测试", {"latiaoALL_script_test"}, 
                 if name ~= "**Invalid**" then
                     local hostinfo = script .. "," .. x .. "," .. y .. "=" .. name
                     util.draw_debug_text(hostinfo)
-                    --  util.toast(hostinfo)
+                    --  util.log(hostinfo)
                 end
             end
         end
@@ -2187,9 +2182,33 @@ end)
 
 --     end)
 
+
+menu.action(test, "所有实体SET_ENTITY_AS_MISSION_ENTITY", {}, "", function()
+
+    for k, ent in ipairs(ALL_Entities()) do
+        local success, error_message = pcall(function()
+            ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ent, false,false)
+        end)
+        if not success then
+
+        end
+    end
+end)
+menu.action(test, "所有实体SET_ENTITY_AS_NO_LONGER_NEEDED", {}, "", function()
+
+    for k, ent in ipairs(ALL_Entities()) do
+        local success, error_message = pcall(function()
+            ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(ent)
+        end)
+        if not success then
+
+        end
+    end
+end)
+
 menu.toggle_loop(test, "所有实体不无敌", {}, "", function()
 
-    for k, ent in pairs(entities.get_all_objects_as_handles()) do
+    for k, ent in ipairs(ALL_Entities()) do
         local success, error_message = pcall(function()
             ENTITY.SET_ENTITY_INVINCIBLE(ent, false)
         end)
@@ -2201,7 +2220,7 @@ end)
 
 menu.toggle_loop(test, "所有实体无敌", {}, "", function()
 
-    for k, ent in pairs(entities.get_all_objects_as_handles()) do
+    for k, ent in pairs(ALL_Entities()) do
         local success, error_message = pcall(function()
             ENTITY.SET_ENTITY_INVINCIBLE(ent, true)
         end)
@@ -2227,47 +2246,15 @@ menu.toggle_loop(test, "保存", {"latiaosave"}, "latiaosave", function()
     STATS.STAT_SAVE(0, 0, 3, 0);
 end)
 
-menu.toggle_loop(server, "是主机循环给予收藏品", {""}, "", function()
-    if NETWORK.NETWORK_IS_HOST() then
-        menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
-        menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give RP"))
-        util.yield(15000)
-    end
-end)
 
 menu.toggle_loop(server, "循环给予收藏品", {""}, "", function()
+    -- if NETWORK.NETWORK_IS_HOST() then
+        menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
 
-    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
-    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give RP"))
-    util.yield(15000)
+        util.yield(15000)
+    -- end
 end)
-menu.toggle_loop(server, "循环给予收藏品2", {""}, "", function()
 
-    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>Movie Props"))
-    util.yield(3500)
-    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>Hidden Caches"))
-    util.yield(3500)
-    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>Treasure Chests"))
-    util.yield(3500)
-    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>Radio Antennas"))
-    util.yield(3500)
-    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>Media USBs"))
-    util.yield(3500)
-    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>Shipwrecks"))
-    util.yield(3500)
-    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>Buried Stashes"))
-    util.yield(3500)
-    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>Jack O' Lanterns"))
-    util.yield(3500)
-    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>LD Organics Merchandise"))
-    util.yield(3500)
-    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>Junk Energy Skydives"))
-    util.yield(3500)
-    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>Snowmen"))
-    util.yield(3500)
-    menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>G's Cache"))
-    util.yield(3500)
-end)
 
 menu.toggle_loop(server, "循环给予经验", {""}, "", function()
 
@@ -2285,7 +2272,7 @@ menu.toggle_loop(world, "随机玩家击杀 ped ", {""}, "", function()
         if not entities.is_player_ped(ped) and ENTITY.IS_ENTITY_DEAD(ped) == false then
 
             local pos = v3.new(ENTITY.GET_ENTITY_COORDS(ped))
-            FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
+            FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, math.random(0,82), INT_MAX, false, true, 0.0)
         end
     end
 
@@ -2315,7 +2302,7 @@ menu.toggle_loop(server, "自动送温暖", {""}, ".", function()
 
     if not util.is_session_transition_active() then
         util.yield(5000)
-        util.toast("give")
+        util.log("give")
 
         menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
         menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give RP"))
@@ -2323,15 +2310,15 @@ menu.toggle_loop(server, "自动送温暖", {""}, ".", function()
         menu.trigger_command(menu.ref_by_path("Players>All Players>Weapons>Give Ammo"))
         menu.trigger_command(menu.ref_by_path("Players>All Players>Weapons>Give Parachute"))
 
-        util.toast("give end")
-        util.toast("Wait for 15 seconds")
+        util.log("give end")
+        util.log("Wait for 15 seconds")
         util.yield(15000)
 
-        util.toast("go")
+        util.log("go")
         menu.trigger_command(menu.ref_by_path("Online>New Session>Find Public Session"))
         util.yield()
     else
-        util.toast("loding")
+        util.log("loding")
         util.yield()
     end
 
@@ -2341,7 +2328,7 @@ menu.toggle(server, "totest", {""}, ".", function()
     local test_on = false
     test_on = true
     if test_on == true then
-        util.toast("start")
+        util.log("start")
         util.yield(1000)
     end
 end)
@@ -2452,7 +2439,7 @@ menu.toggle_loop(world, "传送 物体 到我 ", {"latiaotpobjects"}, "tp object
             ENTITY.SET_ENTITY_COORDS(ent, pos.x, pos.y, pos.z, false)
         end)
         if not success then
-            util.toast(error_message)
+            util.log(error_message)
         end
 
     end
@@ -2466,7 +2453,7 @@ menu.toggle_loop(world, "传送 npc 到我", {"latiaotppeds"}, "tppeds.", functi
                 ENTITY.SET_ENTITY_COORDS(ent, pos.x, pos.y, pos.z, false)
             end)
             if not success then
-                util.toast(error_message)
+                util.log(error_message)
             end
         end
 
@@ -2480,7 +2467,7 @@ menu.toggle_loop(world, "传送 载具 到我", {"latiaotp vehicles"}, "tp vehic
             ENTITY.SET_ENTITY_COORDS(ent, pos.x, pos.y, pos.z, false)
         end)
         if not success then
-            util.toast(error_message)
+            util.log(error_message)
         end
 
     end
@@ -2493,7 +2480,7 @@ menu.toggle_loop(world, "传送 可拾取 到我", {"latiaotp vehicles"}, "tp ve
             ENTITY.SET_ENTITY_COORDS(ent, pos.x, pos.y, pos.z, false)
         end)
         if not success then
-            util.toast(error_message)
+            util.log(error_message)
         end
 
     end
@@ -2509,7 +2496,7 @@ menu.toggle_loop(world, "传送网络 实体", {"latiaotp objects"}, "tp objects
             end
         end)
         if not success then
-            util.toast(error_message)
+            util.log(error_message)
         end
 
     end
@@ -2525,7 +2512,7 @@ menu.toggle_loop(world, "传送网络 peds", {"latiaotp peds"}, "tp peds.", func
                 end
             end)
             if not success then
-                util.toast(error_message)
+                util.log(error_message)
             end
         end
 
@@ -2541,7 +2528,7 @@ menu.toggle_loop(world, "传送网络 载具", {"latiaotp vehicles"}, "tp vehicl
             end
         end)
         if not success then
-            util.toast(error_message)
+            util.log(error_message)
         end
 
     end
@@ -2556,7 +2543,7 @@ menu.toggle_loop(world, "传送网络 可拾取物", {"latiaotp vehicles"}, "tp 
             end
         end)
         if not success then
-            util.toast(error_message)
+            util.log(error_message)
         end
 
     end
@@ -2608,3 +2595,87 @@ end)
 menu.action(admin, "呼叫虎鲸", {""}, "", function()
     SET_INT_GLOBAL(2738587 + 960, 1)
 end)
+menu.action(dividends_gzp, "跳过改装铺前置", {""}, "", function()
+    STAT_SET_INT("TUNER_GEN_BS", -1)
+end)
+
+local dividends_gzpfh = menu.slider(dividends_gzp, "改装分红", {"dividends_gzpfh"}, "最大2000000", 0, INT_MAX, 0, 1,
+    function()
+
+    end)
+
+
+menu.toggle_loop(dividends_gzp, "设置改装分红", {""}, "", function()
+    SET_INT_GLOBAL(262145 + 31323 + 1 , menu.get_value(dividends_gzpfh))
+    SET_INT_GLOBAL(262145 + 31323 + 2 , menu.get_value(dividends_gzpfh))
+    SET_INT_GLOBAL(262145 + 31323 + 3 , menu.get_value(dividends_gzpfh))
+    SET_INT_GLOBAL(262145 + 31323 + 4 , menu.get_value(dividends_gzpfh))
+    SET_INT_GLOBAL(262145 + 31323 + 5 , menu.get_value(dividends_gzpfh))
+    SET_INT_GLOBAL(262145 + 31323 + 6 , menu.get_value(dividends_gzpfh))
+    SET_INT_GLOBAL(262145 + 31323 + 7 , menu.get_value(dividends_gzpfh))
+    SET_INT_GLOBAL(262145 + 31323 + 8 , menu.get_value(dividends_gzpfh))
+end)
+
+menu.toggle_loop(test, "自动收集", {""}, "", function()
+    PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 237, 1)
+    util.yield()
+end)
+
+
+menu.toggle_loop(world, "tp radar_temp_3", {""}, "", function()
+    local pos = v3.new(HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(431)))
+    ENTITY.SET_ENTITY_COORDS(players.user_ped(), pos.x, pos.y, pos.z, false)
+end)
+menu.action(dividends_hsz, "跳过回收站前置", {""}, "", function()
+    STAT_SET_INT("SALV23_FM_PROG", -1)
+end)
+
+menu.toggle_loop(world, "随机tp", {""}, "", function()
+    local pos = math.random(0,10000)
+    ENTITY.SET_ENTITY_COORDS(players.user_ped(),pos,pos ,0, false)
+end)
+menu.action(dividends_hsz, "回收站所有抢劫载具可选", {""}, "", function()
+    STAT_SET_INT("SALV23_VEHROB_STATUS0", -1)
+    STAT_SET_INT("SALV23_VEHROB_STATUS1", -1)
+    STAT_SET_INT("SALV23_VEHROB_STATUS2", -1)
+end)
+
+menu.toggle_loop(world, "CREATE_AMBIENT_PICKUP", {""}, "", function()
+    local pos = players.get_position(players.user())
+
+    OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT") ,pos.x,pos.y,pos.z,0,1,util.joaat("vw_prop_vw_colle_prbubble"),false,false)
+end)
+menu.toggle_loop(world, "CREATE_AMBIENT_PICKUP", {""}, "", function()
+    for k, pid in pairs(players.list()) do
+    local pos = players.get_position(pid)
+    -- OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT") ,pos.x,pos.y,pos.z,0,1,util.joaat("vw_prop_vw_lux_card_01a"),false,false)
+    OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT") ,pos.x,pos.y,pos.z,0,1,util.joaat("vw_prop_vw_colle_prbubble"),false,false)
+    -- util.yield()
+    end
+end)
+menu.toggle_loop(world, "CREATE_AMBIENT_PICKUP", {""}, "", function()
+    for k, pid in pairs(players.list()) do
+    local pos = players.get_position(pid)
+    OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT") ,pos.x,pos.y,pos.z,0,1,util.joaat("vw_prop_vw_lux_card_01a"),false,false)
+    -- OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT") ,pos.x,pos.y,pos.z,0,1,util.joaat("vw_prop_vw_colle_prbubble"),false,false)
+    -- util.yield()
+    end
+end)
+
+menu.toggle_loop(server, "主机踢你时踢所有人", {"latiaokickallexcludehost"}, "latiaokickallexcludehost",
+    function()
+
+        if players.is_marked_as_attacker(players.get_host()) then
+            for k, pid in pairs(players.list()) do
+                if pid == players.get_host() or pid == players.user() or players.is_marked_as_modder(pid) then
+                    goto out
+                end
+                util.trigger_script_event(1 << pid, {968269233, pid, 4, 233, 1, 1, 1})
+                ::out::
+            end
+            -- else
+                -- print("nohost")
+        end
+
+
+    end)
