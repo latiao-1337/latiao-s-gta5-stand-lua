@@ -752,7 +752,7 @@ menu.action(server, "无效收藏品脚本事件踢所有人", {"latiaokickallex
         end
     
     end)
-    menu.action(server, "主机踢所有人", {"latiaoloveletterkickall"}, "loveletter kick all.", function()
+    menu.action(server, "主机踢所有人", {"latiaohostkickall"}, "latiaohostkickall", function()
         for k, pid in pairs(players.list()) do
             if pid == players.user() then
                 goto out
@@ -765,26 +765,26 @@ menu.action(server, "无效收藏品脚本事件踢所有人", {"latiaokickallex
     
     end)
     
-    menu.action(server, "非主机踢所有人", {"latiaoloveletterkickall"}, "loveletter kick all.", function()
+    menu.action(server, "非主机踢所有人", {"latiaonohostkickall"}, "latiaonohostkickall.", function()
         for k, pid in pairs(players.list()) do
             if pid == players.user() then
                 goto out
             end
             local player = players.get_name(pid)
     
-            menu.trigger_commands("hostkick" .. player)
+            menu.trigger_commands("nohostkick" .. player)
             ::out::
         end
     
     end)
-    menu.action(server, "封号踢所有人", {"latiaoloveletterkickall"}, "loveletter kick all.", function()
+    menu.action(server, "封号踢所有人", {"latiaobanall"}, "latiaobanall.", function()
         for k, pid in pairs(players.list()) do
             if pid == players.user() then
                 goto out
             end
             local player = players.get_name(pid)
     
-            menu.trigger_commands("hostkick" .. player)
+            menu.trigger_commands("ban" .. player)
             ::out::
         end
     
