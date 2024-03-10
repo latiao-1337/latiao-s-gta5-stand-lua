@@ -720,7 +720,7 @@ end)
 
 menu.toggle_loop(server, "自动主机", {"latiaoautohost"}, ("autohost"), function()
     if not (players.get_host() == players.user()) then
-        menu.trigger_commands("kick" .. PLAYER.GET_PLAYER_NAME(players.get_host()))
+        menu.trigger_commands("kick" .. players.get_name(players.get_host()))
     end
 end)
 menu.toggle_loop(server, "自动自由模式脚本主机", {"latiaoautoScripthost"}, ("autoScripthost"), function()
@@ -729,7 +729,80 @@ menu.toggle_loop(server, "自动自由模式脚本主机", {"latiaoautoScripthos
     end
 end)
 
-menu.action(server, "踢所有人排除主机和作弊玩家", {"latiaokickallexcludehost"}, "latiaokickallexcludehost",
+menu.action(server, "无效收藏品脚本事件踢所有人", {"latiaokickallexcludehost"}, "latiaokickallexcludehost",
+    function()
+        for k, pid in pairs(players.list()) do
+            if pid == players.user()then
+                goto out
+            end
+            util.trigger_script_event(1 << pid, {968269233, pid, 4, 233, 1, 1, 1})
+            ::out::
+        end
+
+    end)
+    menu.action(server, "情书踢所有人", {"latiaoloveletterkickall"}, "loveletter kick all.", function()
+        for k, pid in pairs(players.list()) do
+            if pid == players.user() then
+                goto out
+            end
+            local player = players.get_name(pid)
+    
+            menu.trigger_commands("loveletterkick" .. player)
+            ::out::
+        end
+    
+    end)
+    menu.action(server, "主机踢所有人", {"latiaoloveletterkickall"}, "loveletter kick all.", function()
+        for k, pid in pairs(players.list()) do
+            if pid == players.user() then
+                goto out
+            end
+            local player = players.get_name(pid)
+    
+            menu.trigger_commands("hostkick" .. player)
+            ::out::
+        end
+    
+    end)
+    
+    menu.action(server, "非主机踢所有人", {"latiaoloveletterkickall"}, "loveletter kick all.", function()
+        for k, pid in pairs(players.list()) do
+            if pid == players.user() then
+                goto out
+            end
+            local player = players.get_name(pid)
+    
+            menu.trigger_commands("hostkick" .. player)
+            ::out::
+        end
+    
+    end)
+    menu.action(server, "封号踢所有人", {"latiaoloveletterkickall"}, "loveletter kick all.", function()
+        for k, pid in pairs(players.list()) do
+            if pid == players.user() then
+                goto out
+            end
+            local player = players.get_name(pid)
+    
+            menu.trigger_commands("hostkick" .. player)
+            ::out::
+        end
+    
+    end)
+    menu.action(server, "NETWORK_SESSION_KICK_PLAYER踢所有人", {"latiaohostkickall"}, "latiaohostkickall.", function()
+        if NETWORK.NETWORK_IS_HOST() then
+            for k, pid in pairs(players.list()) do
+                if pid == players.user() then
+                    goto out
+                end
+                NETWORK.NETWORK_SESSION_KICK_PLAYER(pid)
+    
+            end
+            ::out::
+        end
+    
+    end)
+menu.action(server, "无效收藏品脚本事件 排除主机和作弊玩家", {"latiaokickallexcludehost"}, "latiaokickallexcludehost",
     function()
         for k, pid in pairs(players.list()) do
             if pid == players.get_host() or pid == players.user() or players.is_marked_as_modder(pid) then
@@ -744,7 +817,7 @@ menu.action(server, "踢所有人排除主机和作弊玩家", {"latiaokickallex
 menu.action(server, "givecollectibles所有人排除主机和作弊玩家", {"latiaokickallexcludehost"},
     "latiaokickallexcludehost", function()
         for k, pid in pairs(players.list()) do
-            local attack = PLAYER.GET_PLAYER_NAME(pid)
+            local attack = players.get_name(pid)
             if pid == players.get_host() or pid == players.user() or players.is_marked_as_modder(pid) then
                 goto out
             end
@@ -754,27 +827,7 @@ menu.action(server, "givecollectibles所有人排除主机和作弊玩家", {"la
 
     end)
 
-menu.toggle_loop(server, "举报+情书踢作弊玩家", {"latiaocrashkickmod"}, "crash and kickmod.", function()
-    for k, pid in pairs(players.list()) do
-        if pid == players.get_host() or pid == players.user() then
-            goto out
-        end
-        if players.is_marked_as_modder(pid) then
-            local attack = PLAYER.GET_PLAYER_NAME(pid)
-            if pid == players.user() then
-                goto out
-            end
-            menu.trigger_commands("reportgriefing" .. attack)
-            menu.trigger_commands("reportexploits" .. attack)
-            menu.trigger_commands("reportbugabuse" .. attack)
-            util.yield(500)
-            menu.trigger_commands("loveletterkick" .. attack)
-        end
 
-        ::out::
-    end
-
-end)
 
 menu.toggle_loop(server, "情书踢作弊玩家", {""}, ".", function()
     for k, pid in pairs(players.list()) do
@@ -782,7 +835,7 @@ menu.toggle_loop(server, "情书踢作弊玩家", {""}, ".", function()
             goto out
         end
         if players.is_marked_as_modder(pid) then
-            local attack = PLAYER.GET_PLAYER_NAME(pid)
+            local attack = players.get_name(pid)
             if pid == players.user() then
                 goto out
             end
@@ -801,7 +854,7 @@ menu.toggle_loop(server, "封号踢作弊玩家", {""}, ".", function()
                 goto out
             end
             if players.is_marked_as_modder(pid) then
-                local attack = PLAYER.GET_PLAYER_NAME(pid)
+                local attack = players.get_name(pid)
                 if pid == players.user() then
                     goto out
                 end
@@ -821,7 +874,7 @@ menu.toggle_loop(server, "踢游戏语言为中文的玩家", {""}, "", function
     for k, pid in pairs(players.list()) do
         local language = players.get_language(pid)
         if language == 12 then
-            local attack = PLAYER.GET_PLAYER_NAME(pid)
+            local attack = players.get_name(pid)
             if pid == players.user() then
                 goto out
             end
@@ -841,39 +894,14 @@ menu.toggle_loop(server, "不是主机反弹踢你的玩家", {"raidallplayer"},
     end
 end)
 
-menu.action(server, "情书踢所有人", {"latiaoloveletterkickall"}, "loveletter kick all.", function()
-    for k, pid in pairs(players.list()) do
-        if pid == players.user() then
-            goto out
-        end
-        local player = PLAYER.GET_PLAYER_NAME(pid)
 
-        menu.trigger_commands("loveletterkick" .. player)
-        ::out::
-    end
-
-end)
-
-menu.action(server, "NETWORK_SESSION_KICK_PLAYER踢所有人", {"latiaohostkickall"}, "latiaohostkickall.", function()
-    if NETWORK.NETWORK_IS_HOST() then
-        for k, pid in pairs(players.list()) do
-            if pid == players.user() then
-                goto out
-            end
-            NETWORK.NETWORK_SESSION_KICK_PLAYER(pid)
-
-        end
-        ::out::
-    end
-
-end)
 
 menu.action(server, "超时所有人", {"latiaotimeout"}, "latiaotimeout.", function()
     for k, pid in pairs(players.list()) do
         if pid == players.user() then
             goto out
         end
-        local player = PLAYER.GET_PLAYER_NAME(pid)
+        local player = players.get_name(pid)
         menu.trigger_commands("timeout" .. player)
         ::out::
     end
@@ -898,7 +926,7 @@ menu.toggle_loop(server, "循环举报外挂", {"latiaoreportall"}, "reportall."
     util.yield(5000)
     for k, pid in pairs(players.list()) do
         if players.is_marked_as_modder(pid) then
-            local attack = PLAYER.GET_PLAYER_NAME(pid)
+            local attack = players.get_name(pid)
             if pid == players.user() then
                 goto out
             end
@@ -1484,7 +1512,7 @@ local function latiaostandMenuSetup(pid)
     end)
 
     menu.action(latiaostandMenu, "阻止加入", {}, "", function()
-        local player = PLAYER.GET_PLAYER_NAME(pid)
+        local player = players.get_name(pid)
         menu.trigger_commands("historyblock" .. player .. " on")
         menu.trigger_commands("historynote" .. player .. " latiaoblockjoin")
         menu.trigger_commands("loveletterkick" .. player)
@@ -1506,6 +1534,7 @@ local function latiaostandMenuSetup(pid)
             util.stop_thread()
         end
     end)
+
     menu.toggle_loop(latiaostandMenu, "超级近战击杀外挂玩家", {}, "", function()
         local pos = v3.new(players.get_position(pid))
         local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
@@ -1734,6 +1763,13 @@ local function latiaostandMenuSetup(pid)
     end)
 
     menu.action(latiaostandMenu, "无效收藏品踢", {""}, ".", function()
+        util.trigger_script_event(1 << pid, {968269233, -1, 4, 233, 1, 1, 1})
+
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+    menu.action(latiaostandMenu, "无效踢", {""}, ".", function()
         util.trigger_script_event(1 << pid, {968269233, -1, 4, 233, 1, 1, 1})
 
         if not players.exists(pid) then
@@ -2809,7 +2845,7 @@ end)
 
 menu.toggle_loop(server, "循环产业突袭", {""}, "", function()
     for k, pid in pairs(players.list()) do
-        local attack = PLAYER.GET_PLAYER_NAME(pid)
+        local attack = players.get_name(pid)
         if not pid == players.get_boss(pid) then
 
             goto out
@@ -2821,8 +2857,8 @@ menu.toggle_loop(server, "循环产业突袭", {""}, "", function()
     util.yield(100000)
 end)
 
-menu.toggle_loop(world, "TASK_COMBAT_PED false", {"TASK_COMBAT_PED"}, "TASK_COMBAT_PED.", function()
-    for k, ent in pairs(entities.get_all_peds_as_handles()) do
+menu.toggle_loop(world, "TASK_COMBAT_PED", {"TASK_COMBAT_PED"}, "TASK_COMBAT_PED.", function()
+    for k, ent in pairs(entities.get_all_peds_ads_handles()) do
         if not entities.is_player_ped(ent) then
             TASK.TASK_COMBAT_PED(ent, players.user_ped(), 0, 16)
         end
@@ -2831,7 +2867,8 @@ end)
 
 menu.action(server, "NETWORK_HASH_FROM_PLAYER_HANDLE", {""}, ".", function()
     for k, pid in pairs(players.list()) do
-        print(NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid))
+        local name = players.get_name(pid)
+        print(name..","..NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid))
     end
 end)
 
@@ -2872,7 +2909,7 @@ menu.toggle_loop(obinfo, "实体控制枪", {"latiaodebuggun"}, ("latiaodebuggun
         aim_info.model = util.reverse_joaat(aim_info.hash)
         aim_info.health = entities.get_health(handle)
         aim_info.OWNER = entities.get_owner(handle)
-        aim_info.OWNERName = PLAYER.GET_PLAYER_NAME(entities.get_owner(handle))
+        aim_info.OWNERName = players.get_name(entities.get_owner(handle))
         aim_info.ISNETWORKED = NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(handle)
         aim_info.ISMISSION = ENTITY.IS_ENTITY_A_MISSION_ENTITY(handle)
         local guninfo = "U请求实体 I传送到我 O删除 K爆炸"
