@@ -657,12 +657,11 @@ end, function()
     end
 end)
 
-menu.action(world, "触发所有npc布娃娃", {"SET_PED_TO_RAGDOLL"},
-    "SET_PED_TO_RAGDOLL.", function()
-        for _, ped in entities.get_all_peds_as_handles() do
-            PED.SET_PED_TO_RAGDOLL(ped, 0, 0, 0,false,false,false);
-        end
-    end)
+menu.action(world, "触发所有npc布娃娃", {"SET_PED_TO_RAGDOLL"}, "SET_PED_TO_RAGDOLL.", function()
+    for _, ped in entities.get_all_peds_as_handles() do
+        PED.SET_PED_TO_RAGDOLL(ped, 0, 0, 0, false, false, false);
+    end
+end)
 
 menu.toggle_loop(world, "CLEAR_PED_TASKS_IMMEDIATELY(冻结npc)", {"latiaoCLEAR_PED_TASKS_IMMEDIATELY"},
     "CLEAR_PED_TASKS_IMMEDIATELY.", function()
@@ -732,7 +731,7 @@ end)
 menu.action(server, "无效收藏品脚本事件踢所有人", {"latiaokickallexcludehost"}, "latiaokickallexcludehost",
     function()
         for k, pid in pairs(players.list()) do
-            if pid == players.user()then
+            if pid == players.user() then
                 goto out
             end
             util.trigger_script_event(1 << pid, {968269233, pid, 4, 233, 1, 1, 1})
@@ -740,70 +739,70 @@ menu.action(server, "无效收藏品脚本事件踢所有人", {"latiaokickallex
         end
 
     end)
-    menu.action(server, "情书踢所有人", {"latiaoloveletterkickall"}, "loveletter kick all.", function()
+menu.action(server, "情书踢所有人", {"latiaoloveletterkickall"}, "loveletter kick all.", function()
+    for k, pid in pairs(players.list()) do
+        if pid == players.user() then
+            goto out
+        end
+        local player = players.get_name(pid)
+
+        menu.trigger_commands("loveletterkick" .. player)
+        ::out::
+    end
+
+end)
+menu.action(server, "主机踢所有人", {"latiaohostkickall"}, "latiaohostkickall", function()
+    for k, pid in pairs(players.list()) do
+        if pid == players.user() then
+            goto out
+        end
+        local player = players.get_name(pid)
+
+        menu.trigger_commands("hostkick" .. player)
+        ::out::
+    end
+
+end)
+
+menu.action(server, "非主机踢所有人", {"latiaonohostkickall"}, "latiaonohostkickall.", function()
+    for k, pid in pairs(players.list()) do
+        if pid == players.user() then
+            goto out
+        end
+        local player = players.get_name(pid)
+
+        menu.trigger_commands("nohostkick" .. player)
+        ::out::
+    end
+
+end)
+menu.action(server, "封号踢所有人", {"latiaobanall"}, "latiaobanall.", function()
+    for k, pid in pairs(players.list()) do
+        if pid == players.user() then
+            goto out
+        end
+        local player = players.get_name(pid)
+
+        menu.trigger_commands("ban" .. player)
+        ::out::
+    end
+
+end)
+menu.action(server, "NETWORK_SESSION_KICK_PLAYER踢所有人", {"latiaohostkickall"}, "latiaohostkickall.", function()
+    if NETWORK.NETWORK_IS_HOST() then
         for k, pid in pairs(players.list()) do
             if pid == players.user() then
                 goto out
             end
-            local player = players.get_name(pid)
-    
-            menu.trigger_commands("loveletterkick" .. player)
-            ::out::
+            NETWORK.NETWORK_SESSION_KICK_PLAYER(pid)
+
         end
-    
-    end)
-    menu.action(server, "主机踢所有人", {"latiaohostkickall"}, "latiaohostkickall", function()
-        for k, pid in pairs(players.list()) do
-            if pid == players.user() then
-                goto out
-            end
-            local player = players.get_name(pid)
-    
-            menu.trigger_commands("hostkick" .. player)
-            ::out::
-        end
-    
-    end)
-    
-    menu.action(server, "非主机踢所有人", {"latiaonohostkickall"}, "latiaonohostkickall.", function()
-        for k, pid in pairs(players.list()) do
-            if pid == players.user() then
-                goto out
-            end
-            local player = players.get_name(pid)
-    
-            menu.trigger_commands("nohostkick" .. player)
-            ::out::
-        end
-    
-    end)
-    menu.action(server, "封号踢所有人", {"latiaobanall"}, "latiaobanall.", function()
-        for k, pid in pairs(players.list()) do
-            if pid == players.user() then
-                goto out
-            end
-            local player = players.get_name(pid)
-    
-            menu.trigger_commands("ban" .. player)
-            ::out::
-        end
-    
-    end)
-    menu.action(server, "NETWORK_SESSION_KICK_PLAYER踢所有人", {"latiaohostkickall"}, "latiaohostkickall.", function()
-        if NETWORK.NETWORK_IS_HOST() then
-            for k, pid in pairs(players.list()) do
-                if pid == players.user() then
-                    goto out
-                end
-                NETWORK.NETWORK_SESSION_KICK_PLAYER(pid)
-    
-            end
-            ::out::
-        end
-    
-    end)
-menu.action(server, "无效收藏品脚本事件 排除主机和作弊玩家", {"latiaokickallexcludehost"}, "latiaokickallexcludehost",
-    function()
+        ::out::
+    end
+
+end)
+menu.action(server, "无效收藏品脚本事件 排除主机和作弊玩家", {"latiaokickallexcludehost"},
+    "latiaokickallexcludehost", function()
         for k, pid in pairs(players.list()) do
             if pid == players.get_host() or pid == players.user() or players.is_marked_as_modder(pid) then
                 goto out
@@ -826,8 +825,6 @@ menu.action(server, "givecollectibles所有人排除主机和作弊玩家", {"la
         end
 
     end)
-
-
 
 menu.toggle_loop(server, "情书踢作弊玩家", {""}, ".", function()
     for k, pid in pairs(players.list()) do
@@ -893,8 +890,6 @@ menu.toggle_loop(server, "不是主机反弹踢你的玩家", {"raidallplayer"},
         menu.trigger_command(menu.ref_by_path("Online>Protections>Events>Kick Event>Love Letter Kick>Strangers"))
     end
 end)
-
-
 
 menu.action(server, "超时所有人", {"latiaotimeout"}, "latiaotimeout.", function()
     for k, pid in pairs(players.list()) do
@@ -1129,8 +1124,8 @@ menu.action(dividends_dc, "跳过赌场冷却", {}, "", function()
     STAT_SET_INT("H3_COMPLETEDPOSIX", -1)
 
 end)
-local nohostalldividends = menu.slider(dividends_general, "不是主机本地分红", {"nohostcasino"}, "", -100000,
-    100000, 100, 5, function()
+local nohostalldividends = menu.slider(dividends_general, "不是主机本地分红", {"nohostcasino"}, "", INT_MIN,
+    INT_MAX, 100, 5, function()
 
     end)
 
@@ -1203,6 +1198,9 @@ menu.action(dividends_dc, "设置赌场抢劫npc为最高级", {""}, "    .", fu
     STAT_SET_INT("H3OPT_CREWWEAP", 4)
     STAT_SET_INT("H3OPT_CREWDRIVER", 5)
     STAT_SET_INT("H3OPT_CREWHACKER", 4)
+    STAT_SET_INT("H3OPT_VEHS", 1)
+    STAT_SET_INT("H3OPT_WEAPS", 1)
+
 end)
 
 local casino = menu.slider(dividends_dc, "赌场抢劫分红", {""}, "", -100000, 100000, 100, 5, function()
@@ -1383,8 +1381,8 @@ menu.action(dividends_gy, "完成公寓抢劫", {""}, "", function()
     STAT_SET_INT("HEIST_PLANNING_STAGE", -1)
 end)
 
-local Apartment = menu.slider(dividends_gy, "公寓抢劫分红", {""}, "15000000", INT_MIN, INT_MAX, 100, 100,
-    function()
+local Apartment = menu.slider(dividends_gy, "公寓抢劫分红", {"dividends_gy_fh"}, "15000000", INT_MIN, INT_MAX,
+    100, 100, function()
     end)
 menu.toggle_loop(dividends_gy, "设置公寓抢劫分红 (you host)", {""}, ".", function()
     SET_INT_GLOBAL(1930201 + 3008 + 1, menu.get_value(Apartment))
@@ -2868,7 +2866,7 @@ end)
 menu.action(server, "NETWORK_HASH_FROM_PLAYER_HANDLE", {""}, ".", function()
     for k, pid in pairs(players.list()) do
         local name = players.get_name(pid)
-        print(name..","..NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid))
+        print(name .. "," .. NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid))
     end
 end)
 
@@ -2971,7 +2969,7 @@ end)
 
 menu.toggle_loop(test, "SET_PED_DENSITY_MULTIPLIER_THIS_FRAME", {""}, ".", function()
 
-        PED.SET_PED_DENSITY_MULTIPLIER_THIS_FRAME(INT_MAX)
+    PED.SET_PED_DENSITY_MULTIPLIER_THIS_FRAME(INT_MAX)
 
 end)
 menu.action(world, "删除摄像头", {"latiaodelcops"}, "latiaodelcops", function()
@@ -2985,5 +2983,15 @@ menu.action(world, "删除摄像头", {"latiaodelcops"}, "latiaodelcops", functi
 
             end
         end
+    end
+end)
+menu.toggle_loop(dividends_general, "所有任务最低玩家限制为0", {""}, "", function()
+    for i = 0, 1517 do
+        SET_INT_GLOBAL(794818 + i * 89, 0)
+        SET_INT_GLOBAL(803718, 1)
+		-- SET_INT_GLOBAL(4721848, 1)
+		-- SET_INT_GLOBAL(4895268, 0)
+		-- SET_INT_GLOBAL(4721844, 1)
+		-- SET_INT_GLOBAL(4721845, 1)
     end
 end)
