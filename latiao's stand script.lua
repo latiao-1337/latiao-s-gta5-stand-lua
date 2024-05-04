@@ -1753,27 +1753,33 @@ local function latiaostandMenuSetup(pid)
     end)
 
     menu.toggle_loop(latiaostandMenu, "循环邀请公寓", {""}, ".", function()
-        util.trigger_script_event(1 << pid, {-1321657966, pid, pid, 0, 0, 1})
+        util.trigger_script_event(1 << pid, {-1321657966, 0, pid, 0, 0, 1,0,0,0,0})
 
         if not players.exists(pid) then
             util.stop_thread()
         end
     end)
+    -- menu.action(latiaostandMenu, "无效公寓踢", {""}, ".", function()
+    --     -- 0 (公寓邀请): -1321657966, 1: 8, 2: 0, 3 (Owner): 12, 4: -1, 5: 1, 6 (Property): 115, 7: 0, 8: 0, 9: 0, 10: 0
+    --     util.trigger_script_event(1 << pid, {-1321657966,0, pid, -1, 1,INT_MAX,0,0,0,0})
+
+    --     if not players.exists(pid) then
+    --         util.stop_thread()
+    --     end
+    -- end)
+
+    
+
+    
 
     menu.action(latiaostandMenu, "无效收藏品踢", {""}, ".", function()
-        util.trigger_script_event(1 << pid, {968269233, -1, 4, 233, 1, 1, 1})
+        util.trigger_script_event(1 << pid, {968269233, -1, 4, INT_MAX, 1, 1, 1})
 
         if not players.exists(pid) then
             util.stop_thread()
         end
     end)
-    menu.action(latiaostandMenu, "无效踢", {""}, ".", function()
-        util.trigger_script_event(1 << pid, {968269233, -1, 4, 233, 1, 1, 1})
 
-        if not players.exists(pid) then
-            util.stop_thread()
-        end
-    end)
 
     menu.toggle_loop(latiaostandMenu, "循环发送到工作", {""}, ".", function()
         -- util.yield(1000)
@@ -1784,6 +1790,7 @@ local function latiaostandMenuSetup(pid)
             util.stop_thread()
         end
     end)
+
 
     menu.toggle_loop(latiaostandMenu, "脚本声音轰炸 邀请 ", {""}, "", function()
         -- util.yield(1500)
@@ -1970,7 +1977,7 @@ local function latiaostandMenuSetup(pid)
     menu.toggle_loop(latiaostandMenu, "刷钱袋", {""}, "", function()
         local pos = players.get_position(pid)
 
-        OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_MONEY_CASE"), pos.x, pos.y, pos.z, 0, 100,
+        OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_MONEY_CASE"), pos.x, pos.y, pos.z, 0, INT_MAX,
             util.joaat("Prop_LD_CASE_01"), false, false)
     end)
 
@@ -2002,8 +2009,9 @@ local function latiaostandMenuSetup(pid)
             util.stop_thread()
         end
     end)
-    menu.action(latiaostandMenu, "传送到海滩", {""}, ".", function()
-        util.trigger_script_event(1 << pid, {-1669592503, pid, 0, 0, 4, 0})
+    menu.action(latiaostandMenu, "test trigger_script_event", {""}, ".", function()
+                util.trigger_script_event(1 << pid, {1613825825,players.user(),308,-1,-1,-1,-1,-1,-1})
+  
         -- -1604421397, players.user(),0,60,4,
         if not players.exists(pid) then
             util.stop_thread()
@@ -2986,12 +2994,22 @@ menu.action(world, "删除摄像头", {"latiaodelcops"}, "latiaodelcops", functi
     end
 end)
 menu.toggle_loop(dividends_general, "所有任务最低玩家限制为0", {""}, "", function()
-    for i = 0, 1517 do
+    for i = 0, 2000 do
         SET_INT_GLOBAL(794818 + i * 89, 0)
         SET_INT_GLOBAL(803718, 1)
-		-- SET_INT_GLOBAL(4721848, 1)
-		-- SET_INT_GLOBAL(4895268, 0)
-		-- SET_INT_GLOBAL(4721844, 1)
-		-- SET_INT_GLOBAL(4721845, 1)
+		SET_INT_GLOBAL(4721848, 1)
+		SET_INT_GLOBAL(4895268, 0)
+		SET_INT_GLOBAL(4721844, 1)
+		SET_INT_GLOBAL(4721845, 1)
+    end
+end)
+menu.toggle_loop(test, "printIi", {""}, ".", function()
+
+    print("1l1l1l1l1l")
+
+end)
+menu.action(server, "test all trigger_script_event", {"trigger_script_event"}, "trigger_script_event.", function()
+    for k, pid in pairs(players.list()) do
+        util.trigger_script_event(1 << pid, {1613825825,players.user(),4096,-1,-1,-1,-1,-1,-1})
     end
 end)
