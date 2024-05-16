@@ -508,7 +508,7 @@ end)
 menu.toggle_loop(killaura, "开启", {"latiaokillaura"}, ("SHOOT ALL"), function()
     -- if kill_aura_peds or kill_aura_player or kill_aura_in_vehicle then
     for _, ped in pairs(entities.get_all_peds_as_handles()) do
-        local list = players.list()
+        local list = players.list(false,true,true)
         local index = math.random(#list)
         local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(list[index])
 
@@ -731,27 +731,35 @@ end)
 menu.action(server, "无效收藏品脚本事件踢所有人", {"latiaokickallexcludehost"}, "latiaokickallexcludehost",
     function()
 
-            util.trigger_script_event(util.get_session_players_bitflag(), {968269233, players.user(), 4, 233, 1, 1, 1})
-
+        util.trigger_script_event(util.get_session_players_bitflag(), {968269233, players.user(), 4, 233, 1, 1, 1})
 
     end)
 menu.action(server, "情书踢所有人", {"latiaoloveletterkickall"}, "loveletter kick all.", function()
-    for k, pid in pairs(players.list()) do
-        if pid == players.user() then
-            goto out
-        end
+    for k, pid in pairs(players.list(false,true,true)) do
         local player = players.get_name(pid)
 
         menu.trigger_commands("loveletterkick" .. player)
-        ::out::
+
     end
 
 end)
 menu.action(server, "主机踢所有人", {"latiaohostkickall"}, "latiaohostkickall", function()
-    for k, pid in pairs(players.list()) do
-        if pid == players.user() then
+    for k, pid in pairs(players.list(false,true,true)) do
+
+        local player = players.get_name(pid)
+
+        menu.trigger_commands("hostkick" .. player)
+
+    end
+
+end)
+
+menu.action(server, "主机踢所有人排除外挂", {"latiaohostkickall"}, "latiaohostkickall", function()
+    for k, pid in pairs(players.list(false,true,true)) do
+        if pid == players.get_host() or players.is_marked_as_modder(pid) then
             goto out
         end
+
         local player = players.get_name(pid)
 
         menu.trigger_commands("hostkick" .. player)
@@ -761,46 +769,35 @@ menu.action(server, "主机踢所有人", {"latiaohostkickall"}, "latiaohostkick
 end)
 
 menu.action(server, "非主机踢所有人", {"latiaonohostkickall"}, "latiaonohostkickall.", function()
-    for k, pid in pairs(players.list()) do
-        if pid == players.user() then
-            goto out
-        end
+    for k, pid in pairs(players.list(false,true,true)) do
         local player = players.get_name(pid)
 
         menu.trigger_commands("nohostkick" .. player)
-        ::out::
+
     end
 
 end)
 menu.action(server, "封号踢所有人", {"latiaobanall"}, "latiaobanall.", function()
-    for k, pid in pairs(players.list()) do
-        if pid == players.user() then
-            goto out
-        end
+    for k, pid in pairs(players.list(false,true,true)) do
         local player = players.get_name(pid)
 
         menu.trigger_commands("ban" .. player)
-        ::out::
+
     end
 
 end)
 menu.action(server, "NETWORK_SESSION_KICK_PLAYER踢所有人", {"latiaohostkickall"}, "latiaohostkickall.", function()
-    if NETWORK.NETWORK_IS_HOST() then
-        for k, pid in pairs(players.list()) do
-            if pid == players.user() then
-                goto out
-            end
+        for k, pid in pairs(players.list(false,true,true)) do
             NETWORK.NETWORK_SESSION_KICK_PLAYER(pid)
 
-        end
-        ::out::
+        
     end
 
 end)
 menu.action(server, "无效收藏品脚本事件 排除主机和作弊玩家", {"latiaokickallexcludehost"},
     "latiaokickallexcludehost", function()
-        for k, pid in pairs(players.list()) do
-            if pid == players.get_host() or pid == players.user() or players.is_marked_as_modder(pid) then
+        for k, pid in pairs(players.list(false,true,true)) do
+            if pid == players.get_host() or players.is_marked_as_modder(pid) then
                 goto out
             end
             util.trigger_script_event(1 << pid, {968269233, pid, 4, 233, 1, 1, 1})
@@ -811,9 +808,9 @@ menu.action(server, "无效收藏品脚本事件 排除主机和作弊玩家", {
 
 menu.action(server, "givecollectibles所有人排除主机和作弊玩家", {"latiaokickallexcludehost"},
     "latiaokickallexcludehost", function()
-        for k, pid in pairs(players.list()) do
+        for k, pid in pairs(players.list(false,true,true)) do
             local attack = players.get_name(pid)
-            if pid == players.get_host() or pid == players.user() or players.is_marked_as_modder(pid) then
+            if pid == players.get_host()  or players.is_marked_as_modder(pid) then
                 goto out
             end
             menu.trigger_commands("givecollectibles" .. attack)
@@ -823,15 +820,12 @@ menu.action(server, "givecollectibles所有人排除主机和作弊玩家", {"la
     end)
 
 menu.toggle_loop(server, "情书踢作弊玩家", {""}, ".", function()
-    for k, pid in pairs(players.list()) do
-        if pid == players.get_host() or pid == players.user() then
+    for k, pid in pairs(players.list(false,true,true)) do
+        if pid == players.get_host() then
             goto out
         end
         if players.is_marked_as_modder(pid) then
             local attack = players.get_name(pid)
-            if pid == players.user() then
-                goto out
-            end
             menu.trigger_commands("loveletterkick" .. attack)
         end
 
@@ -842,15 +836,9 @@ end)
 
 menu.toggle_loop(server, "封号踢作弊玩家", {""}, ".", function()
     if NETWORK.NETWORK_IS_HOST() then
-        for k, pid in pairs(players.list()) do
-            if pid == players.get_host() or pid == players.user() then
-                goto out
-            end
+        for k, pid in pairs(players.list(false,true,true)) do
             if players.is_marked_as_modder(pid) then
                 local attack = players.get_name(pid)
-                if pid == players.user() then
-                    goto out
-                end
                 menu.trigger_commands("ban" .. attack)
             end
 
@@ -864,13 +852,10 @@ menu.toggle_loop(server, "封号踢作弊玩家", {""}, ".", function()
 end)
 
 menu.toggle_loop(server, "踢游戏语言为中文的玩家", {""}, "", function()
-    for k, pid in pairs(players.list()) do
+    for k, pid in pairs(players.list(false,true,true)) do
         local language = players.get_language(pid)
         if language == 12 then
             local attack = players.get_name(pid)
-            if pid == players.user() then
-                goto out
-            end
             menu.trigger_commands("loveletterkick" .. attack)
             --  util.log(attack)
         end
@@ -888,13 +873,9 @@ menu.toggle_loop(server, "不是主机反弹踢你的玩家", {"raidallplayer"},
 end)
 
 menu.action(server, "超时所有人", {"latiaotimeout"}, "latiaotimeout.", function()
-    for k, pid in pairs(players.list()) do
-        if pid == players.user() then
-            goto out
-        end
+    for k, pid in pairs(players.list(false,true,true)) do
         local player = players.get_name(pid)
         menu.trigger_commands("timeout" .. player)
-        ::out::
     end
 
 end)
@@ -915,12 +896,9 @@ end)
 
 menu.toggle_loop(server, "循环举报外挂", {"latiaoreportall"}, "reportall.", function()
     util.yield(5000)
-    for k, pid in pairs(players.list()) do
+    for k, pid in pairs(players.list(false,true,true)) do
         if players.is_marked_as_modder(pid) then
             local attack = players.get_name(pid)
-            if pid == players.user() then
-                goto out
-            end
             -- menu.trigger_commands("reportgriefing" .. attack)
             menu.trigger_commands("reportexploits" .. attack)
             -- menu.trigger_commands("reportbugabuse" .. attack)
@@ -938,7 +916,7 @@ end)
 
 menu.toggle_loop(server, "所有人踢出载具", {"latiaoreportall"}, "reportall.", function()
     -- for k, pid in pairs(players.list()) do
-        util.trigger_script_event(util.get_session_players_bitflag(), {-503325966})
+    util.trigger_script_event(util.get_session_players_bitflag(), {-503325966})
     -- end
 end)
 
@@ -1025,23 +1003,23 @@ menu.toggle_loop(server, "请求所有 载具", {"latiaoREQUES_ENTITYvehicles"},
     end
 end)
 
-menu.toggle_loop(server, "请求所有 载具 排除玩家", {""}, ".", function()
-    for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
-        for k, pid in pairs(players.list()) do
-            local v1 = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false)
-            if target == v1 then
-                goto out
-            end
-            local owner = entities.get_owner(target)
-            if owner ~= players.user() then
-                NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
+-- menu.toggle_loop(server, "请求所有 载具 排除玩家", {""}, ".", function()
+--     for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
+--         for k, pid in pairs(players.list(false,true,true)) do
+--             local v1 = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false)
+--             if target == v1 then
+--                 goto out
+--             end
+--             local owner = entities.get_owner(target)
+--             if owner ~= players.user() then
+--                 NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(target)
 
-            end
-        end
-        ::out::
-    end
+--             end
+--         end
+--         ::out::
+--     end
 
-end)
+-- end)
 
 menu.toggle_loop(server, "请求所有 可拾取2", {""}, "", function()
     for k, target in pairs(entities.get_all_pickups_as_handles()) do
@@ -1575,31 +1553,28 @@ local function latiaostandMenuSetup(pid)
     end)
 
     menu.action(latiaostandMenu, "无效a_c_rat动作崩溃", {""}, ".", function()
-        local pos = players.get_position(pid)
+        local pos = players.get_cam_pos(pid)
         local ped = util.joaat('a_c_rat')
-        STREAMING.REQUEST_MODEL(ped)
-        local createped  = entities.create_ped(28,ped,pos,0)
-        WEAPON.GIVE_WEAPON_TO_PED(createped,util.joaat('weapon_grenade'),INT_MAX,true,true)
+        util.request_model(ped)
+        local createped = entities.create_ped(28, ped, pos, 0)
+        WEAPON.GIVE_WEAPON_TO_PED(createped, util.joaat('weapon_grenade'), INT_MAX, true, true)
         util.yield(1000)
-        TASK.TASK_THROW_PROJECTILE(createped,pos.x,pos.y,pos.z,0,0)
-    
-    
+        TASK.TASK_THROW_PROJECTILE(createped, pos.x, pos.y, pos.z, 0, 0)
+
     end)
     menu.action(latiaostandMenu, "无效u_m_m_jesus_01驾驶动作崩溃", {""}, ".", function()
-        local pos = players.get_position(pid)
+        local pos = players.get_cam_pos(pid)
         local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-            local mdl = util.joaat("u_m_m_jesus_01")
-            local veh_mdl = util.joaat("oppressor")
-            util.request_model(veh_mdl)
-            util.request_model(mdl)
-                    local veh = entities.create_vehicle(veh_mdl, pos, 0)
-                    local jesus = entities.create_ped(2, mdl, pos, 0)
-                    PED.SET_PED_INTO_VEHICLE(jesus, veh, -1)
-                    util.yield(1000)
-                    TASK.TASK_VEHICLE_HELI_PROTECT(jesus, veh, playerped, INT_MAX, 0, INT_MAX, 0, 0)
-    
-    
-    
+        local mdl = util.joaat("u_m_m_jesus_01")
+        local veh_mdl = util.joaat("oppressor")
+        util.request_model(veh_mdl)
+        util.request_model(mdl)
+        local veh = entities.create_vehicle(veh_mdl, pos, 0)
+        local jesus = entities.create_ped(2, mdl, pos, 0)
+        PED.SET_PED_INTO_VEHICLE(jesus, veh, -1)
+        util.yield(1000)
+        TASK.TASK_VEHICLE_HELI_PROTECT(jesus, veh, playerped, INT_MAX, 0, INT_MAX, 0, 0)
+
     end)
 
     menu.toggle_loop(latiaostandMenu, "TASK_COMBAT_PED", {}, "", function()
@@ -1623,7 +1598,7 @@ local function latiaostandMenuSetup(pid)
         local obj = entities.create_object(glitch_hash, pos)
         ENTITY.SET_ENTITY_VISIBLE(obj, false)
         util.yield()
-        entities.delete(obj)
+        util.request_model(obj)
 
         if not players.exists(pid) then
             util.stop_thread()
@@ -1727,8 +1702,8 @@ local function latiaostandMenuSetup(pid)
     end)
 
     menu.toggle_loop(latiaostandMenu, "无效物体崩溃", {"latiaobadojectcrash"}, "", function()
-        STREAMING.REQUEST_MODEL(util.joaat("prop_tall_grass_ba"))
-        local pos = players.get_position(pid)
+        util.request_model(util.joaat("prop_tall_grass_ba"))
+        local pos = players.get_cam_pos(pid)
         local object = entities.create_object(util.joaat("prop_tall_grass_ba"), pos)
         ENTITY.SET_ENTITY_COORDS_NO_OFFSET(object, pos, false, true, true)
 
@@ -1740,8 +1715,8 @@ local function latiaostandMenuSetup(pid)
     end)
 
     menu.toggle_loop(latiaostandMenu, "CREATE_OBJECT_NO_OFFSET", {""}, "", function()
-        STREAMING.REQUEST_MODEL(util.joaat("02gate3_l"))
-        local pos = players.get_position(pid)
+        util.request_model(util.joaat("02gate3_l"))
+        local pos = players.get_cam_pos(pid)
         OBJECT.CREATE_OBJECT_NO_OFFSET(util.joaat("02gate3_l"), pos.x, pos.y, pos.z, true, true, true)
         if not players.exists(pid) then
             util.stop_thread()
@@ -1750,11 +1725,11 @@ local function latiaostandMenuSetup(pid)
 
     menu.toggle_loop(latiaostandMenu, "无效行人动作崩溃", {}, "", function()
         local ped = util.joaat('cs_manuel')
-        STREAMING.REQUEST_MODEL(ped)
+        util.request_model(ped)
 
-        local pos = players.get_position(pid)
+        local pos = players.get_cam_pos(pid)
         local createped = entities.create_ped(4, ped, pos, 0)
-        WEAPON.GIVE_WEAPON_TO_PED(createped, util.joaat('WEAPON_HOMINGLAUNCHER'), 100, true, true)
+        WEAPON.GIVE_WEAPON_TO_PED(createped, util.joaat('WEAPON_HOMINGLAUNCHER'), INT_MAX, true, true)
         util.yield()
         FIRE.ADD_EXPLOSION(pos, math.random(0, 82), 100.0, false, true, 100.0)
     end)
@@ -1764,9 +1739,9 @@ local function latiaostandMenuSetup(pid)
             NETWORK.NETWORK_SESSION_KICK_PLAYER(pid)
         end)
 
-    menu.toggle_loop(latiaostandMenu, "船轰炸", {"latiaotunspammcrash"}, "", function()
-        local pos = players.get_position(pid)
-        STREAMING.REQUEST_MODEL(util.joaat("tug"))
+    menu.toggle_loop(latiaostandMenu, "船轰炸", {"latiaotunspammcrash"}, "配合使用 线上/保护选项/同步信息/传出/克隆删除/阻止", function()
+        local pos = players.get_cam_pos(pid)
+        util.request_model(util.joaat("tug"))
 
         local obj = entities.create_vehicle(util.joaat("tug"), pos, 0)
         ENTITY.SET_ENTITY_COORDS(obj, pos)
@@ -2006,24 +1981,30 @@ local function latiaostandMenuSetup(pid)
 
     end)
     menu.toggle_loop(latiaostandMenu, "刷钱袋", {""}, "", function()
+        local pickup = util.joaat("Prop_LD_CASE_01")
+        util.request_model(pickup)
         local pos = players.get_position(pid)
 
-        OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_MONEY_CASE"), pos.x, pos.y, pos.z, 0, INT_MAX,
-            util.joaat("Prop_LD_CASE_01"), false, false)
+        OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_MONEY_CASE"), pos.x, pos.y, pos.z, 0, INT_MAX, pickup, true,
+            false)
     end)
 
     menu.toggle_loop(latiaostandMenu, "刷手办", {""}, "", function()
+        local pickup = util.joaat("vw_prop_vw_colle_prbubble")
+        util.request_model(pickup)
         local pos = players.get_position(pid)
 
-        OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT"), pos.x, pos.y, pos.z, 0, INT_MAX,
-            util.joaat("vw_prop_vw_colle_prbubble"), false, false)
+        OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT"), pos.x, pos.y, pos.z, 0, INT_MAX, pickup, true,
+            false)
     end)
 
     menu.toggle_loop(latiaostandMenu, "刷纸牌", {""}, "", function()
+        local pickup = util.joaat("vw_prop_vw_lux_card_01a")
+        util.request_model(pickup)
         local pos = players.get_position(pid)
 
-        OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT"), pos.x, pos.y, pos.z, 0, INT_MAX,
-            util.joaat("vw_prop_vw_lux_card_01a"), false, false)
+        OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT"), pos.x, pos.y, pos.z, 0, INT_MAX, pickup, true,
+            false)
     end)
 
     menu.action(latiaostandMenu, "脚本传送到机场", {""}, ".", function()
@@ -2060,7 +2041,8 @@ local function latiaostandMenuSetup(pid)
     -- end)
 
     menu.action(latiaostandMenu, "无效物体破坏崩溃", {"latiaobadojectcrash"}, "", function()
-        local badobject = entities.create_object(util.joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
+        local badobject = entities.create_object(util.joaat("prop_fragtest_cnst_04"),
+            ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
         OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(badobject, 1, false)
         -- end
         -- entities.delete_by_handle(badobject)
@@ -2068,6 +2050,84 @@ local function latiaostandMenuSetup(pid)
             util.stop_thread()
         end
     end)
+
+    menu.toggle_loop(latiaostandMenu, "循环踢出ceo", {""}, ".", function()
+        util.trigger_script_event(1 << pid, {-972329058})
+
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
+    menu.action(latiaostandMenu, "ceo ban", {""}, ".", function()
+        util.trigger_script_event(1 << pid, {1531565154})
+
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+    menu.action(latiaostandMenu, "", {""}, ".", function()
+        util.trigger_script_event(1 << pid, {-1704545346})
+
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
+    menu.toggle_loop(latiaostandMenu, "过多实体vehicle掉帧/崩溃", {""}, "配合使用 线上/保护选项/同步信息/传出/克隆删除/阻止", function()
+        local pos = players.get_cam_pos(pid)
+        local vehicletobj = util.joaat("tug")
+        util.request_model(vehicletobj)
+        local createobj = entities.create_vehicle(vehicletobj, pos,0)
+        
+        ENTITY.SET_ENTITY_COORDS(createobj, pos)
+        util.yield(0)
+        entities.delete(createobj)
+
+
+
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
+    menu.toggle_loop(latiaostandMenu, "过多object实体掉帧/崩溃", {""}, "配合使用 线上/保护选项/同步信息/传出/克隆删除/阻止", function()
+        local pos = players.get_cam_pos(pid)
+        local objectobj = util.joaat("p_spinning_anus_s")
+        util.request_model(objectobj)
+        local createobj = entities.create_object(objectobj, pos)
+        
+        ENTITY.SET_ENTITY_COORDS(createobj, pos)
+        util.yield(0)
+        entities.delete(createobj)
+
+
+
+
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
+    menu.toggle_loop(latiaostandMenu, "过多ped实体掉帧/崩溃", {""}, "配合使用 线上/保护选项/同步信息/传出/克隆删除/阻止", function()
+        local pos = players.get_cam_pos(pid)
+        local pedobj = util.joaat("s_m_y_cop_01")
+        util.request_model(pedobj)
+        local createpedobj = entities.create_ped(6,pedobj, pos, 0)
+        
+        ENTITY.SET_ENTITY_COORDS(createpedobj, pos)
+        util.yield(0)
+        entities.delete(createpedobj)
+
+
+
+
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
+
 
 end
 
@@ -2260,21 +2320,19 @@ menu.toggle_loop(test, "脚本声音轰炸", {""}, "", function()
     -- util.yield(1500)
     util.trigger_script_event(util.get_session_players_bitflag(), {996099702})
 
-
 end)
 
 menu.toggle_loop(test, "检查点信息轰炸", {""}, "", function()
     -- util.yield(1500)
-    util.trigger_script_event(util.get_session_players_bitflag(), {-642704387, players.user(), 782258655, 0, 0, 0, 0, 0, 0, 0, players.user(), 0, 0, 0})
-
+    util.trigger_script_event(util.get_session_players_bitflag(),
+        {-642704387, players.user(), 782258655, 0, 0, 0, 0, 0, 0, 0, players.user(), 0, 0, 0})
 
 end)
 
 menu.toggle_loop(test, "信息轰炸", {"test1"}, "tet2", function()
     -- util.yield(1500)
     util.trigger_script_event(util.get_session_players_bitflag(),
-            {-642704387, players.user(), 782258655, 0, 0, 0, 0, 0, 0, 0, math.random(0, 32), 0, 0, 0})
-
+        {-642704387, players.user(), 782258655, 0, 0, 0, 0, 0, 0, 0, math.random(0, 32), 0, 0, 0})
 
 end)
 
@@ -2534,12 +2592,10 @@ menu.toggle_loop(server, "giverpforall", {""}, "", function()
     util.trigger_script_event(util.get_session_players_bitflag(), {968269233, -1, 4, 23, 1, 1, 1})
     util.trigger_script_event(util.get_session_players_bitflag(), {968269233, -1, 4, 24, 1, 1, 1})
 
-
 end)
 
 menu.toggle_loop(server, "giverpforall2", {""}, "", function()
     util.trigger_script_event(util.get_session_players_bitflag(), {968269233, -1, 8, -5, 1, 1, 1})
-
 
 end)
 
@@ -2831,31 +2887,31 @@ menu.toggle_loop(world, "CREATE_AMBIENT_PICKUP", {""}, "", function()
     OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT"), pos.x, pos.y, pos.z, 0, 1,
         util.joaat("vw_prop_vw_colle_prbubble"), false, false)
 end)
-menu.toggle_loop(world, "CREATE_AMBIENT_PICKUP", {""}, "", function()
-    for k, pid in pairs(players.list()) do
-        local pos = players.get_position(pid)
-        -- OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT") ,pos.x,pos.y,pos.z,0,1,util.joaat("vw_prop_vw_lux_card_01a"),false,false)
-        OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT"), pos.x, pos.y, pos.z, 0, 1,
-            util.joaat("vw_prop_vw_colle_prbubble"), false, false)
-        -- util.yield()
-    end
-end)
-menu.toggle_loop(world, "CREATE_AMBIENT_PICKUP", {""}, "", function()
-    for k, pid in pairs(players.list()) do
-        local pos = players.get_position(pid)
-        OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT"), pos.x, pos.y, pos.z, 0, 1,
-            util.joaat("vw_prop_vw_lux_card_01a"), false, false)
-        -- OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT") ,pos.x,pos.y,pos.z,0,1,util.joaat("vw_prop_vw_colle_prbubble"),false,false)
-        -- util.yield()
-    end
-end)
+-- menu.toggle_loop(world, "CREATE_AMBIENT_PICKUP", {""}, "", function()
+--     for k, pid in pairs(players.list()) do
+--         local pos = players.get_position(pid)
+--         -- OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT") ,pos.x,pos.y,pos.z,0,1,util.joaat("vw_prop_vw_lux_card_01a"),false,false)
+--         OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT"), pos.x, pos.y, pos.z, 0, 1,
+--             util.joaat("vw_prop_vw_colle_prbubble"), false, false)
+--         -- util.yield()
+--     end
+-- end)
+-- menu.toggle_loop(world, "CREATE_AMBIENT_PICKUP", {""}, "", function()
+--     for k, pid in pairs(players.list()) do
+--         local pos = players.get_position(pid)
+--         OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT"), pos.x, pos.y, pos.z, 0, 1,
+--             util.joaat("vw_prop_vw_lux_card_01a"), false, false)
+--         -- OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT") ,pos.x,pos.y,pos.z,0,1,util.joaat("vw_prop_vw_colle_prbubble"),false,false)
+--         -- util.yield()
+--     end
+-- end)
 
 menu.toggle_loop(server, "主机踢你时踢所有人", {"latiaokickallexcludehost"}, "latiaokickallexcludehost",
     function()
 
         if players.is_marked_as_attacker(players.get_host()) then
-            for k, pid in pairs(players.list()) do
-                if pid == players.get_host() or pid == players.user() or players.is_marked_as_modder(pid) then
+            for k, pid in pairs(players.list(false,true,true)) do
+                if pid == players.get_host() or players.is_marked_as_modder(pid) then
                     goto out
                 end
                 util.trigger_script_event(1 << pid, {968269233, pid, 4, 233, 1, 1, 1})
@@ -2955,7 +3011,7 @@ menu.toggle_loop(obinfo, "实体控制枪", {"latiaodebuggun"}, ("latiaodebuggun
         aim_info.OWNERName = players.get_name(entities.get_owner(handle))
         aim_info.ISNETWORKED = NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(handle)
         aim_info.ISMISSION = ENTITY.IS_ENTITY_A_MISSION_ENTITY(handle)
-        local guninfo = "U请求实体 I传送到我 O删除 K爆炸"
+        local guninfo = "U请求实体 I传送到我 O删除 K爆炸 H设置实体无敌 J关闭实体无敌"
 
         local text = "Hash=" .. aim_info.hash .. "," .. "Model=" .. aim_info.model .. "," .. "Health=" ..
                          aim_info.health .. "," .. "Owner=" .. aim_info.OWNER .. "," .. "OwnerName=" ..
@@ -2998,12 +3054,22 @@ menu.toggle_loop(obinfo, "实体控制枪", {"latiaodebuggun"}, ("latiaodebuggun
             FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
 
         end
+    if util.is_key_down(0x48) then
+        ENTITY.SET_ENTITY_INVINCIBLE(handle,true)
+        
+
+    end
+    if util.is_key_down(0x4A) then
+        
+        ENTITY.SET_ENTITY_INVINCIBLE(handle,false)
+
+    end
     end
 end)
 
 -- menu.toggle_loop(test, "循环刷警察", {}, "", function()
 --     local ped = util.joaat('s_m_y_cop_01')
---     STREAMING.REQUEST_MODEL(ped)
+--     util.request_model(ped)
 
 --     -- local pos = v3.new(0, 0, 0)
 --     PED.CREATE_PED(4, util.joaat('s_m_y_cop_01'), 0,0,0, 0,true,true)
@@ -3055,10 +3121,6 @@ menu.action(server, "无效声音全局崩", {""}, ".", function()
 
 end)
 
-
-
-
-
 menu.toggle_loop(server, "无限加血和防弹衣", {""}, ".", function()
     for k, pid in pairs(players.list()) do
         players.give_pickup_reward(pid, "REWARD_HEALTH")
@@ -3071,9 +3133,9 @@ menu.toggle_loop(server, "test give_pickup_reward", {""}, ".", function()
     end
 end)
 menu.action(server, "无效降落伞背包模型崩溃", {""}, ".", function()
-    PLAYER.SET_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(players.user(),util.joaat("v_ind_meatpacks_03"))
+    PLAYER.SET_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(players.user(), util.joaat("v_ind_meatpacks_03"))
     WEAPON.GIVE_DELAYED_WEAPON_TO_PED(players.user_ped(), util.joaat("gadget_parachute"), INT_MAX, false)
-    TASK.TASK_PARACHUTE_TO_TARGET(players.user_ped(),0,0,0)
+    TASK.TASK_PARACHUTE_TO_TARGET(players.user_ped(), 0, 0, 0)
 
 end)
 
@@ -3086,59 +3148,37 @@ end)
 
 
 
-menu.toggle_loop(dividends, "所有脚本主机测试", {"latiaoALL_script_test"}, "latiaoALL_script_test.", function()
-    local text = GET_INT_GLOBAL(4845023)
-    -- local text = string.format(
-    --     "\nContent Name: %s\nContent ID: %s\nContent Path: %s\nRoot Content ID: %s (%s)\nRoot Content ID Index: %s",
-    --     NETWORK.UGC_GET_CONTENT_NAME(0),
-    --     content_id,
-    --     NETWORK.UGC_GET_CONTENT_PATH(0, 0),
-    --     NETWORK.UGC_GET_ROOT_CONTENT_ID(0),
-    --     util.joaat(NETWORK.UGC_GET_ROOT_CONTENT_ID(0)),
-    --     MISC.GET_CONTENT_ID_INDEX(util.joaat(NETWORK.UGC_GET_ROOT_CONTENT_ID(0)))
-    -- )
-                    util.draw_debug_text(text)
-    print(text)
-
-
-end)
-
 menu.toggle_loop(server, "刷屏", {"latiaocleanchat"}, "latiaocleanchat.", function()
     chat.send_message((math.random(INT_MIN, INT_MAX)), false, true, true)
     util.yield(1000)
 end)
-menu.toggle_loop(server, "util.get_session_players_bitflag()", {"util.get_session_players_bitflag()"}, "util.get_session_players_bitflag().", function()
-    print(util.get_session_players_bitflag())
-end)
+menu.toggle_loop(server, "util.get_session_players_bitflag()", {"util.get_session_players_bitflag()"},
+    "util.get_session_players_bitflag().", function()
+        print(util.get_session_players_bitflag())
+    end)
 
-menu.toggle_loop(server, "清屏", {"latiaocleanchat"}, "latiaocleanchat.", function()
-    chat.send_message("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", false, true, true)
-end)
 
 menu.action(server, "无效a_c_rat动作崩溃", {""}, ".", function()
-    local pos = v3.new(0,0,75)
+    local pos = v3.new(0, 0, 75)
     local ped = util.joaat('a_c_rat')
-    STREAMING.REQUEST_MODEL(ped)
-    local createped  = entities.create_ped(28,ped,pos,0)
-    WEAPON.GIVE_WEAPON_TO_PED(createped,util.joaat('weapon_grenade'),INT_MAX,true,true)
+    util.request_model(ped)
+    local createped = entities.create_ped(28, ped, pos, 0)
+    WEAPON.GIVE_WEAPON_TO_PED(createped, util.joaat('weapon_grenade'), INT_MAX, true, true)
     util.yield(1000)
-    TASK.TASK_THROW_PROJECTILE(createped,pos.x,pos.y,pos.z,0,0)
-
+    TASK.TASK_THROW_PROJECTILE(createped, pos.x, pos.y, pos.z, 0, 0)
 
 end)
 menu.action(server, "无效u_m_m_jesus_01驾驶动作崩溃", {""}, ".", function()
-    local pos = v3.new(0,0,75)
-		local mdl = util.joaat("u_m_m_jesus_01")
-		local veh_mdl = util.joaat("oppressor")
-		util.request_model(veh_mdl)
-        util.request_model(mdl)
-				local veh = entities.create_vehicle(veh_mdl, pos, 0)
-				local jesus = entities.create_ped(2, mdl, pos, 0)
-				PED.SET_PED_INTO_VEHICLE(jesus, veh, -1)
-				util.yield(1000)
-				TASK.TASK_VEHICLE_HELI_PROTECT(jesus, veh, players.user_ped(), INT_MAX, 0, INT_MAX, 0, 0)
-
-
+    local pos = v3.new(0, 0, 75)
+    local mdl = util.joaat("u_m_m_jesus_01")
+    local veh_mdl = util.joaat("oppressor")
+    util.request_model(veh_mdl)
+    util.request_model(mdl)
+    local veh = entities.create_vehicle(veh_mdl, pos, 0)
+    local jesus = entities.create_ped(2, mdl, pos, 0)
+    PED.SET_PED_INTO_VEHICLE(jesus, veh, -1)
+    util.yield(1000)
+    TASK.TASK_VEHICLE_HELI_PROTECT(jesus, veh, players.user_ped(), INT_MAX, 0, INT_MAX, 0, 0)
 
 end)
 
@@ -3147,11 +3187,80 @@ menu.toggle_loop(server, "虚假stnad崩溃检查", {""}, ".", function()
     util.trigger_script_event(util.get_session_players_bitflag(), {-1604421397})
     util.trigger_script_event(util.get_session_players_bitflag(), {968269233})
 end)
-menu.toggle_loop(server, "NETWORK_PREVENT_SCRIPT_HOST_MIGRATION", {""}, ".", function()
-    NETWORK.NETWORK_PREVENT_SCRIPT_HOST_MIGRATION()
-end)
+
+
 menu.action(test, "menu.players.get_net_player()", {""}, ".", function()
-print(players.get_net_player(players.user()))
+    print(players.get_net_player(players.user()))
 
 end)
 
+
+menu.toggle_loop(test, "空收藏品脚本", {""}, "", function()
+    util.trigger_script_event(util.get_session_players_bitflag(), {968269233})
+
+end)
+
+menu.toggle_loop(server, "所有人循环踢出ceo", {""}, ".", function()
+    util.trigger_script_event(util.get_session_players_bitflag(), {-11681548})
+
+
+end)
+
+
+menu.toggle_loop(server, "过多实体vehicle掉帧/崩溃", {""}, "配合使用 线上/保护选项/同步信息/传出/克隆删除/阻止", function()
+        local pos = v3.new(0, 0, 1500)
+    local vehicletobj = util.joaat("tug")
+    util.request_model(vehicletobj)
+    local createobj = entities.create_vehicle(vehicletobj, pos,0)
+    
+    ENTITY.SET_ENTITY_COORDS(createobj, pos)
+    util.yield(0)
+    entities.delete(createobj)
+
+
+
+
+end)
+
+menu.toggle_loop(server, "过多object实体掉帧/崩溃", {""}, "配合使用 线上/保护选项/同步信息/传出/克隆删除/阻止", function()
+        local pos = v3.new(0, 0, 1500)
+    local objectobj = util.joaat("p_spinning_anus_s")
+    util.request_model(objectobj)
+    local createobj = entities.create_object(objectobj, pos)
+    
+    ENTITY.SET_ENTITY_COORDS(createobj, pos)
+    util.yield(0)
+    entities.delete(createobj)
+
+
+
+
+
+end)
+
+menu.toggle_loop(server, "过多ped实体掉帧/崩溃", {""}, "配合使用 线上/保护选项/同步信息/传出/克隆删除/阻止", function()
+        local pos = v3.new(0, 0, 1500)
+    local pedobj = util.joaat("s_m_y_cop_01")
+    util.request_model(pedobj)
+    local createpedobj = entities.create_ped(24,pedobj, pos, 0)
+    
+    ENTITY.SET_ENTITY_COORDS(createpedobj, pos)
+    util.yield(0)
+    entities.delete(createpedobj)
+
+
+
+
+
+end)
+
+menu.action(world, "summon ped", {""}, "", function()
+    local pos = players.get_position(players.user())
+local pedobj = util.joaat("s_f_y_hooker_02")
+util.request_model(pedobj)
+local createpedobj = entities.create_ped(23,pedobj, pos, 0)
+
+ENTITY.SET_ENTITY_COORDS(createpedobj, pos)
+
+
+end)
