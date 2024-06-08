@@ -1192,6 +1192,7 @@ menu.action(dividends_dc, "完成赌场前置", {""}, "", function()
     STAT_SET_INT("H3OPT_BITSET0", -1)
     STAT_SET_INT("H3OPT_KEYLEVELS", 2)
     STAT_SET_INT("H3OPT_DISRUPTSHIP", 3)
+    STAT_SET_INT("H3OPT_MODVEH", 3)
 end)
 
 menu.action(dividends_dc, "设置赌场抢劫npc为最高级", {""}, "    .", function()
@@ -1431,8 +1432,8 @@ local function latiaostandMenuSetup(pid)
     local connect_ip = int2ip(players.get_connect_ip(pid))
     local get_connect_port = players.get_connect_port(pid)
     -- local pos = players.get_position(pid)
-    util.log("玩家:" .. playername .. " 槽位:" .. pid .. " 游戏语言:" .. gameLANGUAGE .. " 连接ip:" ..
-                 connect_ip .. " 连接端口:" .. get_connect_port .. "加入了游戏")
+    util.log("玩家:" .. playername .. " 槽位:" .. pid .. " 连接ip:" .. connect_ip .. " 连接端口:" ..
+                 get_connect_port)
     menu.divider(menu.player_root(pid), "latiao's STAND menu")
 
     local latiaostandMenu = menu.list(menu.player_root(pid), "latiao's STAND menu", {}, "")
@@ -1985,23 +1986,22 @@ local function latiaostandMenuSetup(pid)
         end
     end)
 
-    menu.toggle_loop(latiaostandMenu, "用他名击杀npc ", {""}, "",
-        function()
-            for _, ped in entities.get_all_peds_as_handles() do
-                if not entities.is_player_ped(ped) and ENTITY.IS_ENTITY_DEAD(ped) == false then
+    menu.toggle_loop(latiaostandMenu, "用他名击杀npc ", {""}, "", function()
+        for _, ped in entities.get_all_peds_as_handles() do
+            if not entities.is_player_ped(ped) and ENTITY.IS_ENTITY_DEAD(ped) == false then
 
-                    -- if not  then
-                    local pos = v3.new(ENTITY.GET_ENTITY_COORDS(ped))
-                    FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), pos.x, pos.y, pos.z,
-                        math.random(0, 82), INT_MAX, false, true, 0.0)
-                    -- end
-                end
+                -- if not  then
+                local pos = v3.new(ENTITY.GET_ENTITY_COORDS(ped))
+                FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), pos.x, pos.y, pos.z,
+                    math.random(0, 82), INT_MAX, false, true, 0.0)
+                -- end
             end
+        end
 
-            if not players.exists(pid) then
-                util.stop_thread()
-            end
-        end)
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
 
     menu.toggle_loop(latiaostandMenu, "循环送经验", {""}, "", function()
         util.trigger_script_event(1 << pid, {968269233, -1, 4, 21, 1, 1, 1})
@@ -2236,6 +2236,11 @@ local function latiaostandMenuSetup(pid)
     menu.toggle_loop(latiaostandMenu, "传送到边界击杀", {""}, "", function()
         players.teleport_3d(pid, 10000, 10000, -100)
         util.yield(5000)
+    end)
+    menu.toggle_loop(latiaostandMenu, "无限修车", {""}, "", function()
+        -- players.give_pickup_reward(pid, "REWARD_HEALTH")
+        -- players.give_pickup_reward(pid, "REWARD_ARMOUR")
+        players.give_pickup_reward(pid, "REWARD_VEHICLE_FIX")
     end)
 end
 
@@ -2477,8 +2482,6 @@ menu.toggle_loop(self, "假死 SET_ENTITY_MAX_HEALTH 0", {""}, "", function()
 end, function()
     ENTITY.SET_ENTITY_MAX_HEALTH(players.user_ped(), 328)
 end)
-
-
 
 menu.action(about, "github:latiao-1337", {""}, "", function()
 
@@ -3206,16 +3209,7 @@ menu.action(world, "删除摄像头", {"latiaodelcops"}, "latiaodelcops", functi
         end
     end
 end)
-menu.toggle_loop(dividends_general, "所有任务最低玩家限制为0", {""}, "", function()
-    for i = 0, 2000 do
-        SET_INT_GLOBAL(794818 + i * 89, 0)
-        SET_INT_GLOBAL(803718, 1)
-        SET_INT_GLOBAL(4721848, 1)
-        SET_INT_GLOBAL(4895268, 0)
-        SET_INT_GLOBAL(4721844, 1)
-        SET_INT_GLOBAL(4721845, 1)
-    end
-end)
+
 menu.toggle_loop(test, "util.logIi", {""}, "", function()
 
     util.log("1l1l1l1l1l")
@@ -3309,45 +3303,6 @@ menu.toggle_loop(server, "所有人循环踢出ceo", {""}, "", function()
     util.trigger_script_event(util.get_session_players_bitflag(), {-11681548})
 
 end)
-
-menu.toggle_loop(server, "过多实体vehicle掉帧/崩溃", {""},
-    "配合使用 线上/保护选项/同步信息/传出/克隆删除/阻止", function()
-        local vehicletobj = util.joaat("tug")
-        util.request_model(vehicletobj)
-        local pos = v3.new(0, 0, 1500)
-        local createobj = entities.create_vehicle(vehicletobj, pos, 0)
-
-        ENTITY.SET_ENTITY_AS_MISSION_ENTITY(createobj, true, true)
-        util.yield(0)
-        entities.delete(createobj)
-
-    end)
-
-menu.toggle_loop(server, "过多object实体掉帧/崩溃", {""},
-    "配合使用 线上/保护选项/同步信息/传出/克隆删除/阻止", function()
-        local pos = v3.new(0, 0, 1500)
-        local objectobj = util.joaat("p_spinning_anus_s")
-        util.request_model(objectobj)
-        local createobj = entities.create_object(objectobj, pos)
-
-        ENTITY.SET_ENTITY_AS_MISSION_ENTITY(createobj, true, true)
-        util.yield(0)
-        entities.delete(createobj)
-
-    end)
-
-menu.toggle_loop(server, "过多ped实体掉帧/崩溃", {""},
-    "配合使用 线上/保护选项/同步信息/传出/克隆删除/阻止", function()
-        local pos = v3.new(0, 0, 1500)
-        local pedobj = util.joaat("s_m_y_cop_01")
-        util.request_model(pedobj)
-        local createpedobj = entities.create_ped(24, pedobj, pos, 0)
-
-        ENTITY.SET_ENTITY_AS_MISSION_ENTITY(createpedobj, true, true)
-        util.yield(0)
-        entities.delete(createpedobj)
-
-    end)
 
 menu.action(world, "summon ped", {""}, "", function()
     local pos = players.get_position(players.user())
@@ -3743,7 +3698,6 @@ menu.toggle_loop(server, "禁止别人抢夺公文包", {""}, "", function()
 
 end)
 
-
 menu.toggle_loop(dividends_general, "禁止任务失败", {""}, "", function()
     SET_LOCAL_BIT("fm_mission_controller", 15149, 7)
 end)
@@ -3778,20 +3732,19 @@ menu.toggle_loop(server, "查询是否为启动的游戏脚本主机NETWORK_IS_H
             end)
         end
     end)
-menu.toggle_loop(server, "查询谁是否为启动的游戏脚本主机NETWORK_GET_HOST_OF_SCRIPT", {""}, "",
-    function()
-        for _, script in ipairs(ALL_script) do
-            util.spoof_script(script, function()
-                local POSITION = NETWORK.NETWORK_GET_POSITION_HASH_OF_THIS_SCRIPT()
-                local INSTANCE = NETWORK.NETWORK_GET_INSTANCE_ID_OF_THIS_SCRIPT()
-                local Host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, INSTANCE, POSITION)
-                if Host ~= -1 then
-                    local HostName = players.get_name(Host)
-                    util.draw_debug_text(script .. "=" .. HostName)
-                end
-            end)
-        end
-    end)
+menu.toggle_loop(server, "查询谁是否为启动的游戏脚本主机NETWORK_GET_HOST_OF_SCRIPT", {""}, "", function()
+    for _, script in ipairs(ALL_script) do
+        util.spoof_script(script, function()
+            local POSITION = NETWORK.NETWORK_GET_POSITION_HASH_OF_THIS_SCRIPT()
+            local INSTANCE = NETWORK.NETWORK_GET_INSTANCE_ID_OF_THIS_SCRIPT()
+            local Host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, INSTANCE, POSITION)
+            if Host ~= -1 then
+                local HostName = players.get_name(Host)
+                util.draw_debug_text(script .. "=" .. HostName)
+            end
+        end)
+    end
+end)
 menu.toggle_loop(server, "自动获取所有脚本主机2", {""}, "", function()
     for _, script in ipairs(ALL_script) do
         util.spoof_script(script, function()
@@ -3811,5 +3764,182 @@ menu.toggle_loop(server, "自动获取所有脚本主机2阻止主机迁移", {"
             end
 
         end)
+    end
+end)
+
+menu.action(server, "所有人刷手办", {""}, "", function()
+    local pickup = util.joaat("vw_prop_vw_colle_prbubble")
+    util.request_model(pickup)
+
+    util.create_thread(function()
+        for k, pid in pairs(players.list(true, true, true)) do
+            local pos = players.get_position(pid)
+            OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT"), pos.x, pos.y, pos.z, 0, 0, pickup, true,
+                false)
+        end
+    end)
+end)
+
+menu.action(server, "所有人刷纸牌", {""}, "", function()
+    local pickup = util.joaat("vw_prop_vw_lux_card_01a")
+    util.request_model(pickup)
+
+    util.create_thread(function()
+        for k, pid in pairs(players.list(true, true, true)) do
+            local pos = players.get_position(pid)
+            OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT"), pos.x, pos.y, pos.z, 0, 0, pickup, true,
+                false)
+        end
+    end)
+end)
+
+menu.toggle_loop(server, "所有人刷手办", {""}, "", function()
+    local pickup = util.joaat("vw_prop_vw_colle_prbubble")
+    util.request_model(pickup)
+
+        for k, pid in pairs(players.list(true, true, true)) do
+            local pos = players.get_position(pid)
+            OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT"), pos.x, pos.y, pos.z, 0, 0, pickup, true,
+                false)
+
+    end
+end)
+
+menu.toggle_loop(server, "所有人刷纸牌", {""}, "", function()
+    local pickup = util.joaat("vw_prop_vw_lux_card_01a")
+    util.request_model(pickup)
+
+
+        for k, pid in pairs(players.list(true, true, true)) do
+            local pos = players.get_position(pid)
+            OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT"), pos.x, pos.y, pos.z, 0, 0, pickup, true,
+                false)
+        end
+end)
+
+menu.toggle_loop(server, "过多实体vehicle掉帧/崩溃", {""},
+    "配合使用 线上/保护选项/同步信息/传出/克隆删除/阻止", function()
+        local vehicletobj = util.joaat("tug")
+        util.request_model(vehicletobj)
+        local pos = v3.new(0, 0, 1500)
+        local createobj = entities.create_vehicle(vehicletobj, pos, 0)
+        util.create_thread(function()
+            ENTITY.SET_ENTITY_AS_MISSION_ENTITY(createobj, true, true)
+            util.yield(0)
+            entities.delete(createobj)
+        end)
+
+    end)
+
+menu.toggle_loop(server, "过多object实体掉帧/崩溃", {""},
+    "配合使用 线上/保护选项/同步信息/传出/克隆删除/阻止", function()
+        local pos = v3.new(0, 0, 1500)
+        local objectobj = util.joaat("p_spinning_anus_s")
+        util.request_model(objectobj)
+        local createobj = entities.create_object(objectobj, pos)
+
+        ENTITY.SET_ENTITY_AS_MISSION_ENTITY(createobj, true, true)
+        util.yield(0)
+        entities.delete(createobj)
+
+    end)
+
+menu.toggle_loop(server, "过多ped实体掉帧/崩溃", {""},
+    "配合使用 线上/保护选项/同步信息/传出/克隆删除/阻止", function()
+        local pos = v3.new(0, 0, 1500)
+        local pedobj = util.joaat("s_m_y_cop_01")
+        util.request_model(pedobj)
+        local createpedobj = entities.create_ped(24, pedobj, pos, 0)
+        util.create_thread(function()
+            ENTITY.SET_ENTITY_AS_MISSION_ENTITY(createpedobj, true, true)
+            util.yield(0)
+            entities.delete(createpedobj)
+        end)
+    end)
+
+menu.toggle_loop(server, "过多实体vehicle掉帧2", {""}, "", function()
+    local vehicletobj = util.joaat("tug")
+    util.request_model(vehicletobj)
+
+    util.create_thread(function()
+        for k, pid in pairs(players.list(true, true, true)) do
+            local pos = players.get_position(pid)
+            local createobj = entities.create_vehicle(vehicletobj, pos, 0)
+            ENTITY.SET_ENTITY_AS_MISSION_ENTITY(createobj, true, true)
+            util.yield(0)
+            entities.delete(createobj)
+        end
+    end)
+end)
+
+menu.toggle_loop(dividends_general, "所有任务最低玩家限制为0", {""}, "", function()
+    local status, err = pcall(function()
+        SET_INT_GLOBAL(794744 + 4 + 1 + GET_INT_LOCAL("fmmc_launcher", 19331 + 34) * 89 + 69, 1)
+        SET_INT_LOCAL("fmmc_launcher", 19331 + 15, 1)
+        SET_INT_GLOBAL(4718592 + 3249, 1)
+        SET_INT_GLOBAL(4718592 + 3255 + 1, 1)
+        SET_INT_GLOBAL(4718592 + 176675 + 1, 0)
+        SET_INT_GLOBAL(4718592 + 3252, 1)
+        SET_INT_GLOBAL(4718592 + 3253, 1)
+    end)
+    if not status then
+        -- print(err)
+    end
+end)
+menu.action(dividends_general, "跳过检查点", {""}, "", function()
+    local status, err = pcall(function()
+        SET_LOCAL_BIT("fm_mission_controller", 19728 + 2, 17)
+    end)
+    if not status then
+        -- print(err)
+    end
+end)
+
+menu.toggle_loop(dividends_general, "无限生命", {""}, "", function()
+    local status, err = pcall(function()
+        for i = 0, 3 do
+            SET_INT_LOCAL("fm_mission_controller", 26154 + 1325 + 1 + i, 100)
+        end
+    end)
+    if not status then
+        -- print(err)
+    end
+end)
+
+menu.action(test, "ATTACH_ENTITY_TO_ENTITY all", {""}, ".", function()
+    for _, entity in ipairs(ALL_Entities()) do
+        ENTITY.ATTACH_ENTITY_TO_ENTITY(entity, players.user_ped(), 0, 0, 0, 0, 0, 0, 0, false, false, false, false, 0,
+            false, 0)
+
+    end
+end)
+
+menu.action(test, "START_CUTSCENE", {""}, ".", function()
+    CUTSCENE.REQUEST_CUTSCENE("fin_a_int", 0)
+
+    CUTSCENE.START_CUTSCENE(0)
+
+
+end)
+
+menu.action(test, "EXPLODE_VEHICLE_IN_CUTSCENE", {""}, ".", function()
+
+    for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
+    VEHICLE.EXPLODE_VEHICLE_IN_CUTSCENE(target)
+    end
+end)
+
+menu.action(test, "NETWORK_EXPLODE_VEHICLE", {""}, ".", function()
+
+    for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
+        NETWORK.NETWORK_EXPLODE_VEHICLE(target,true,false,0 )
+    end
+end)
+
+
+menu.action(test, "EXPLODE_VEHICLE", {""}, ".", function()
+
+    for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
+        VEHICLE.EXPLODE_VEHICLE(target,true,false)
     end
 end)
