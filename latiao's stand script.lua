@@ -4142,13 +4142,7 @@ end)
 
 local servermoney = menu.list(menu.my_root(), "服务器交易", {}, "")
 
-menu.action(servermoney, "直接获取赌场豪杰直接分红3600000(30分钟冷却)", {"30分钟冷却"}, "", function()
-    latiao_server_TRANSACTION(0xB703ED29, 3600000)
-end)
 
-menu.action(servermoney, "直接获取赌场豪杰直接分红500000(5分钟冷却)", {"5分钟冷却"}, "", function()
-    latiao_server_TRANSACTION(0xB703ED29, 500000)
-end)
 
 
 menu.toggle_loop(server, "对无敌玩家被动", {""}, "", function()
@@ -4190,13 +4184,36 @@ end)
 
 -- )
 
-menu.action(servermoney, "直接获取佩里克岛直接分红2550000(30分钟冷却)", {""}, "30分钟冷却", function()
-    latiao_server_TRANSACTION(0xDBF39508, 2550000)
-end)
-menu.action(servermoney, "直接获取佩里克岛直接分红500000(5分钟冷却)", {""}, "5分钟冷却", function()
-    latiao_server_TRANSACTION(0xDBF39508, 5000000)
-end)
-menu.action(servermoney, "普通任务奖励, 180000(无冷却)", {""}, "无冷却", function()
-    latiao_server_TRANSACTION(-0x3D3A1CC7, 180000)
+
+
+local servermoneylow = menu.list(servermoney, "几乎无风险", {}, "")
+local servermoneyhigh = menu.list(servermoney, "中高风险", {}, "")
+
+menu.action(servermoneylow, "直接获取赌场豪杰直接分红3600000(30分钟冷却)", {""}, "30分钟冷却", function()
+    latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_CASINO_HEIST_FINALE"), 3600000)
 end)
 
+
+
+menu.action(servermoneylow, "直接获取佩里克岛直接分红2550000(30分钟冷却)", {""}, "30分钟冷却", function()
+    latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_ISLAND_HEIST_FINALE"), 2550000)
+end)
+
+
+
+menu.action(servermoneylow, "直接获取末日豪直接分红2550000(5分钟冷却)", {""}, "5分钟冷却", function()
+    latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_GANGOPS_FINALE"), 2550000)
+end)
+
+
+
+menu.action(servermoneylow, "普通任务奖励, 180000(无冷却)", {""}, "无冷却", function()
+    latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_JOBS"), 180000)
+end)
+
+menu.action(servermoneyhigh, "SERVICE_EARN_JOB_BONUS, 15000000", {""}, "未知冷却小时", function()
+    latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_JOB_BONUS"), 15000000)
+end)
+menu.action(servermoneyhigh, "SERVICE_EARN_BEND_JOB, 15000000", {""}, "未知冷却小时", function()
+    latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_BEND_JOB"), 15000000)
+end)
