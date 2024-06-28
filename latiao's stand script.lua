@@ -4194,7 +4194,7 @@ menu.action(servermoney, "直接获取佩里克岛直接分红2550000(30分钟�
     latiao_server_TRANSACTION(0xDBF39508, 2550000)
 end)
 menu.action(servermoney, "直接获取佩里克岛直接分红500000(5分钟冷却)", {""}, "5分钟冷却", function()
-    latiao_server_TRANSACTION(0xDBF39508, 2550000)
+    latiao_server_TRANSACTION(0xDBF39508, 5000000)
 end)
 menu.action(servermoney, "普通任务奖励, 180000(无冷却)", {""}, "无冷却", function()
     latiao_server_TRANSACTION(-0x3D3A1CC7, 180000)
