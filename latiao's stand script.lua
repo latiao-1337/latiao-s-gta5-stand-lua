@@ -2,7 +2,6 @@
 -- chat gpt
 -- JinxScript
 -- Heist Control
--- 将整数转换为ip地址
 function latiao_server_TRANSACTION(hash, amount)
     SET_INT_GLOBAL(4537311 + 1, 2147483646)
     SET_INT_GLOBAL(4537311 + 7, 2147483647)
@@ -15,12 +14,12 @@ end
 
 function latiao_log(message)
 
-    util.toast(message, TOAST_ALL)
+    print(message, TOAST_ALL)
 end
 latiao_log("start")
 function latiao_filter_log(message)
     if message ~= last_message then
-        util.toast(message, TOAST_ALL)
+        print(message, TOAST_ALL)
         last_message = message
     end
 
@@ -101,9 +100,9 @@ local ALL_script = {"abigail1", "abigail2", "achievement_controller", "activity_
                     "am_mp_arcade", "am_mp_arcade_claw_crane", "am_mp_arcade_fortune_teller", "am_mp_arcade_love_meter",
                     "am_mp_arcade_peds", "am_mp_arcade_strength_test", "am_mp_arc_cab_manager", "am_mp_arena_box",
                     "am_mp_arena_garage", "am_mp_armory_aircraft", "am_mp_armory_truck", "am_mp_auto_shop",
-                    "am_mp_biker_warehouse", "am_mp_boardroom_seating", "am_mp_bunker", "am_mp_business_hub",
-                    "am_mp_carwash_launch", "am_mp_car_meet_property", "am_mp_car_meet_sandbox", "am_mp_casino",
-                    "am_mp_casino_apartment", "am_mp_casino_nightclub", "am_mp_casino_valet_garage",
+                    "am_mp_bail_office", "am_mp_biker_warehouse", "am_mp_boardroom_seating", "am_mp_bunker",
+                    "am_mp_business_hub", "am_mp_carwash_launch", "am_mp_car_meet_property", "am_mp_car_meet_sandbox",
+                    "am_mp_casino", "am_mp_casino_apartment", "am_mp_casino_nightclub", "am_mp_casino_valet_garage",
                     "am_mp_creator_aircraft", "am_mp_creator_trailer", "am_mp_defunct_base", "am_mp_drone",
                     "am_mp_fixer_hq", "am_mp_garage_control", "am_mp_hacker_truck", "am_mp_hangar",
                     "am_mp_ie_warehouse", "am_mp_island", "am_mp_juggalo_hideout", "am_mp_multistorey_garage",
@@ -112,35 +111,37 @@ local ALL_script = {"abigail1", "abigail2", "achievement_controller", "activity_
                     "am_mp_simeon_showroom", "am_mp_smoking_activity", "am_mp_smpl_interior_ext",
                     "am_mp_smpl_interior_int", "am_mp_social_club_garage", "am_mp_solomon_office", "am_mp_submarine",
                     "am_mp_vehicle_organization_menu", "am_mp_vehicle_reward", "am_mp_vehicle_weapon",
-                    "am_mp_vinewood_premium_garage", "am_mp_warehouse", "am_mp_yacht", "am_npc_invites",
-                    "am_pass_the_parcel", "am_penned_in", "am_penthouse_peds", "am_pi_menu", "am_plane_takedown",
-                    "am_prison", "am_prostitute", "am_rollercoaster", "am_rontrevor_cut", "am_taxi", "am_vehicle_spawn",
-                    "animal_controller", "apartment_minigame_launcher", "apparcadebusiness", "apparcadebusinesshub",
-                    "appavengeroperations", "appbikerbusiness", "appbroadcast", "appbunkerbusiness", "appbusinesshub",
-                    "appcamera", "appchecklist", "appcontacts", "appcovertops", "appemail", "appextraction",
-                    "appfixersecurity", "apphackertruck", "apphs_sleep", "appimportexport", "appinternet", "appjipmp",
-                    "appmedia", "appmpbossagency", "appmpemail", "appmpjoblistnew", "apporganiser", "appprogresshub",
+                    "am_mp_vinewood_premium_garage", "am_mp_vinewood_premium_modshop", "am_mp_warehouse", "am_mp_yacht",
+                    "am_npc_invites", "am_pass_the_parcel", "am_penned_in", "am_penthouse_peds", "am_pi_menu",
+                    "am_plane_takedown", "am_prison", "am_prostitute", "am_rollercoaster", "am_rontrevor_cut",
+                    "am_taxi", "am_vehicle_spawn", "animal_controller", "apartment_minigame_launcher",
+                    "apparcadebusiness", "apparcadebusinesshub", "appavengeroperations", "appbailoffice",
+                    "appbikerbusiness", "appbroadcast", "appbunkerbusiness", "appbusinesshub", "appcamera",
+                    "appchecklist", "appcontacts", "appcovertops", "appemail", "appextraction", "appfixersecurity",
+                    "apphackertruck", "apphs_sleep", "appimportexport", "appinternet", "appjipmp", "appmedia",
+                    "appmpbossagency", "appmpemail", "appmpjoblistnew", "apporganiser", "appprogresshub",
                     "apprepeatplay", "appsecurohack", "appsecuroserv", "appsettings", "appsidetask", "appsmuggler",
-                    "apptextmessage", "apptrackify", "appvlsi", "appzit", "arcade_seating", "arena_box_bench_seats",
-                    "arena_carmod", "arena_workshop_seats", "armenian1", "armenian2", "armenian3",
-                    "armory_aircraft_carmod", "assassin_bus", "assassin_construction", "assassin_hooker",
+                    "apptextmessage", "apptrackify", "appvinewoodmenu", "appvlsi", "appzit", "arcade_seating",
+                    "arena_box_bench_seats", "arena_carmod", "arena_workshop_seats", "armenian1", "armenian2",
+                    "armenian3", "armory_aircraft_carmod", "assassin_bus", "assassin_construction", "assassin_hooker",
                     "assassin_multi", "assassin_rankup", "assassin_valet", "atm_trigger", "audiotest",
                     "autosave_controller", "auto_shop_seating", "bailbond1", "bailbond2", "bailbond3", "bailbond4",
-                    "bailbond_launcher", "barry1", "barry2", "barry3", "barry3a", "barry3c", "barry4", "base_carmod",
-                    "base_corridor_seats", "base_entrance_seats", "base_heist_seats", "base_lounge_seats",
-                    "base_quaters_seats", "base_reception_seats", "basic_creator", "beach_exterior_seating",
-                    "benchmark", "bigwheel", "bj", "blackjack", "blimptest", "blip_controller", "bootycallhandler",
-                    "bootycall_debug_controller", "buddydeathresponse", "bugstar_mission_export",
-                    "buildingsiteambience", "building_controller", "business_battles", "business_battles_defend",
-                    "business_battles_sell", "business_hub_carmod", "business_hub_garage_seats", "cablecar",
-                    "camera_test", "camhedz_arcade", "cam_coord_sender", "candidate_controller", "carmod_shop",
-                    "carsteal1", "carsteal2", "carsteal3", "carsteal4", "carwash1", "carwash2", "car_meet_carmod",
-                    "car_meet_exterior_seating", "car_meet_interior_seating", "car_roof_test", "casinoroulette",
-                    "casino_bar_seating", "casino_exterior_seating", "casino_interior_seating", "casino_lucky_wheel",
-                    "casino_main_lounge_seating", "casino_nightclub_seating", "casino_penthouse_seating",
-                    "casino_slots", "celebrations", "celebration_editor", "cellphone_controller", "cellphone_flashhand",
-                    "charactergoals", "charanimtest", "cheat_controller", "chinese1", "chinese2", "chop",
-                    "clothes_shop_mp", "clothes_shop_sp", "code_controller", "combat_test", "comms_controller",
+                    "bailbond_launcher", "bail_office_seating", "barry1", "barry2", "barry3", "barry3a", "barry3c",
+                    "barry4", "base_carmod", "base_corridor_seats", "base_entrance_seats", "base_heist_seats",
+                    "base_lounge_seats", "base_quaters_seats", "base_reception_seats", "basic_creator",
+                    "beach_exterior_seating", "benchmark", "bigwheel", "bj", "blackjack", "blimptest",
+                    "blip_controller", "bootycallhandler", "bootycall_debug_controller", "buddydeathresponse",
+                    "bugstar_mission_export", "buildingsiteambience", "building_controller", "business_battles",
+                    "business_battles_defend", "business_battles_sell", "business_hub_carmod",
+                    "business_hub_garage_seats", "cablecar", "camera_test", "camhedz_arcade", "cam_coord_sender",
+                    "candidate_controller", "carmod_shop", "carsteal1", "carsteal2", "carsteal3", "carsteal4",
+                    "carwash1", "carwash2", "car_meet_carmod", "car_meet_exterior_seating", "car_meet_interior_seating",
+                    "car_roof_test", "casinoroulette", "casino_bar_seating", "casino_exterior_seating",
+                    "casino_interior_seating", "casino_lucky_wheel", "casino_main_lounge_seating",
+                    "casino_nightclub_seating", "casino_penthouse_seating", "casino_slots", "celebrations",
+                    "celebration_editor", "cellphone_controller", "cellphone_flashhand", "charactergoals",
+                    "charanimtest", "cheat_controller", "chinese1", "chinese2", "chop", "clothes_shop_mp",
+                    "clothes_shop_sp", "code_controller", "combat_test", "comms_controller",
                     "completionpercentage_controller", "component_checker", "context_controller",
                     "controller_ambientarea", "controller_races", "controller_taxi", "controller_towing",
                     "controller_trafficking", "coordinate_recorder", "country_race", "country_race_controller",
@@ -168,28 +169,28 @@ local ALL_script = {"abigail1", "abigail2", "achievement_controller", "activity_
                     "fm_content_acid_lab_sell", "fm_content_acid_lab_setup", "fm_content_acid_lab_source",
                     "fm_content_ammunation", "fm_content_armoured_truck", "fm_content_auto_shop_delivery",
                     "fm_content_bank_shootout", "fm_content_bar_resupply", "fm_content_bicycle_time_trial",
-                    "fm_content_bike_shop_delivery", "fm_content_business_battles", "fm_content_cargo",
-                    "fm_content_cerberus", "fm_content_chop_shop_delivery", "fm_content_clubhouse_contracts",
-                    "fm_content_club_management", "fm_content_club_odd_jobs", "fm_content_club_source",
-                    "fm_content_convoy", "fm_content_crime_scene", "fm_content_drug_lab_work",
-                    "fm_content_drug_vehicle", "fm_content_export_cargo", "fm_content_ghosthunt",
-                    "fm_content_golden_gun", "fm_content_gunrunning", "fm_content_hsw_setup",
-                    "fm_content_hsw_time_trial", "fm_content_island_dj", "fm_content_island_heist",
-                    "fm_content_metal_detector", "fm_content_movie_props", "fm_content_mp_intro",
-                    "fm_content_parachuter", "fm_content_payphone_hit", "fm_content_phantom_car",
-                    "fm_content_possessed_animals", "fm_content_robbery", "fm_content_security_contract",
-                    "fm_content_sightseeing", "fm_content_skydive", "fm_content_slasher", "fm_content_smuggler_ops",
-                    "fm_content_smuggler_plane", "fm_content_smuggler_resupply", "fm_content_smuggler_sell",
-                    "fm_content_smuggler_trail", "fm_content_source_research", "fm_content_stash_house",
-                    "fm_content_taxi_driver", "fm_content_test", "fm_content_tow_truck_work",
-                    "fm_content_tuner_robbery", "fm_content_vehicle_list", "fm_content_vehrob_arena",
-                    "fm_content_vehrob_cargo_ship", "fm_content_vehrob_casino_prize", "fm_content_vehrob_disrupt",
-                    "fm_content_vehrob_police", "fm_content_vehrob_prep", "fm_content_vehrob_scoping",
-                    "fm_content_vehrob_submarine", "fm_content_vehrob_task", "fm_content_vip_contract_1",
-                    "fm_content_xmas_mugger", "fm_content_xmas_truck", "fm_deathmatch_controler",
-                    "fm_deathmatch_creator", "fm_hideout_controler", "fm_hold_up_tut", "fm_horde_controler",
-                    "fm_impromptu_dm_controler", "fm_intro", "fm_intro_cut_dev", "fm_lts_creator",
-                    "fm_maintain_cloud_header_data", "fm_maintain_transition_players", "fm_main_menu",
+                    "fm_content_bike_shop_delivery", "fm_content_bounty_targets", "fm_content_business_battles",
+                    "fm_content_cargo", "fm_content_cerberus", "fm_content_chop_shop_delivery",
+                    "fm_content_clubhouse_contracts", "fm_content_club_management", "fm_content_club_odd_jobs",
+                    "fm_content_club_source", "fm_content_convoy", "fm_content_crime_scene", "fm_content_daily_bounty",
+                    "fm_content_dispatch_work", "fm_content_drug_lab_work", "fm_content_drug_vehicle",
+                    "fm_content_export_cargo", "fm_content_ghosthunt", "fm_content_golden_gun", "fm_content_gunrunning",
+                    "fm_content_hsw_setup", "fm_content_hsw_time_trial", "fm_content_island_dj",
+                    "fm_content_island_heist", "fm_content_metal_detector", "fm_content_movie_props",
+                    "fm_content_mp_intro", "fm_content_parachuter", "fm_content_payphone_hit", "fm_content_phantom_car",
+                    "fm_content_pizza_delivery", "fm_content_possessed_animals", "fm_content_robbery",
+                    "fm_content_security_contract", "fm_content_sightseeing", "fm_content_skydive",
+                    "fm_content_slasher", "fm_content_smuggler_ops", "fm_content_smuggler_plane",
+                    "fm_content_smuggler_resupply", "fm_content_smuggler_sell", "fm_content_smuggler_trail",
+                    "fm_content_source_research", "fm_content_stash_house", "fm_content_taxi_driver", "fm_content_test",
+                    "fm_content_tow_truck_work", "fm_content_tuner_robbery", "fm_content_ufo_abduction",
+                    "fm_content_vehicle_list", "fm_content_vehrob_arena", "fm_content_vehrob_cargo_ship",
+                    "fm_content_vehrob_casino_prize", "fm_content_vehrob_disrupt", "fm_content_vehrob_police",
+                    "fm_content_vehrob_prep", "fm_content_vehrob_scoping", "fm_content_vehrob_submarine",
+                    "fm_content_vehrob_task", "fm_content_vip_contract_1", "fm_content_xmas_mugger",
+                    "fm_content_xmas_truck", "fm_deathmatch_controler", "fm_deathmatch_creator", "fm_hideout_controler",
+                    "fm_hold_up_tut", "fm_horde_controler", "fm_impromptu_dm_controler", "fm_intro", "fm_intro_cut_dev",
+                    "fm_lts_creator", "fm_maintain_cloud_header_data", "fm_maintain_transition_players", "fm_main_menu",
                     "fm_mission_controller", "fm_mission_controller_2020", "fm_mission_creator", "fm_race_controler",
                     "fm_race_creator", "fm_street_dealer", "fm_survival_controller", "fm_survival_creator",
                     "forsalesigns", "fps_test", "fps_test_mag", "franklin0", "franklin1", "franklin2", "freemode",
@@ -233,10 +234,10 @@ local ALL_script = {"abigail1", "abigail2", "achievement_controller", "activity_
                     "launcher_omega", "launcher_paparazzo", "launcher_pilotschool", "launcher_racing",
                     "launcher_rampage", "launcher_range", "launcher_stunts", "launcher_tennis", "launcher_thelastone",
                     "launcher_tonya", "launcher_triathlon", "launcher_yoga", "lester1", "lesterhandler", "letterscraps",
-                    "line_activation_test", "liverecorder", "locates_tester", "luxe_veh_activity", "magdemo",
-                    "magdemo2", "main", "maintransition", "main_install", "main_persistent", "martin1", "maude1",
-                    "maude_postbailbond", "me_amanda1", "me_jimmy1", "me_tracey1", "mg_race_to_point", "michael1",
-                    "michael2", "michael3", "michael4", "michael4leadout", "minigame_ending_stinger",
+                    "line_activation_test", "liverecorder", "localpopulator", "locates_tester", "luxe_veh_activity",
+                    "magdemo", "magdemo2", "main", "maintransition", "main_install", "main_persistent", "martin1",
+                    "maude1", "maude_postbailbond", "me_amanda1", "me_jimmy1", "me_tracey1", "mg_race_to_point",
+                    "michael1", "michael2", "michael3", "michael4", "michael4leadout", "minigame_ending_stinger",
                     "minigame_stats_tracker", "minute1", "minute2", "minute3", "missioniaaturret", "mission_race",
                     "mission_repeat_controller", "mission_stat_alerter", "mission_stat_watcher", "mission_triggerer_a",
                     "mission_triggerer_b", "mission_triggerer_c", "mission_triggerer_d", "mmmm", "mpstatsinit",
@@ -248,40 +249,41 @@ local ALL_script = {"abigail1", "abigail2", "achievement_controller", "activity_
                     "music_studio_seating_external", "music_studio_smoking", "navmeshtest", "net_activity_creator_ui",
                     "net_apartment_activity", "net_apartment_activity_light", "net_bot_brain", "net_bot_simplebrain",
                     "net_cloud_mission_loader", "net_combat_soaktest", "net_freemode_debug_2023",
-                    "net_freemode_debug_stat_2023", "net_jacking_soaktest", "net_session_soaktest", "net_test_drive",
-                    "net_tunable_check", "nigel1", "nigel1a", "nigel1b", "nigel1c", "nigel1d", "nigel2", "nigel3",
-                    "nightclubpeds", "nightclub_ground_floor_seats", "nightclub_office_seats", "nightclub_vip_seats",
-                    "nodemenututorial", "nodeviewer", "ob_abatdoor", "ob_abattoircut", "ob_airdancer", "ob_bong",
-                    "ob_cashregister", "ob_drinking_shots", "ob_foundry_cauldron", "ob_franklin_beer", "ob_franklin_tv",
-                    "ob_franklin_wine", "ob_huffing_gas", "ob_jukebox", "ob_mp_bed_high", "ob_mp_bed_low",
-                    "ob_mp_bed_med", "ob_mp_shower_med", "ob_mp_stripper", "ob_mr_raspberry_jam", "ob_poledancer",
-                    "ob_sofa_franklin", "ob_sofa_michael", "ob_telescope", "ob_tv", "ob_vend1", "ob_vend2",
-                    "ob_wheatgrass", "offroad_races", "omega1", "omega2", "paparazzo1", "paparazzo2", "paparazzo3",
-                    "paparazzo3a", "paparazzo3b", "paparazzo4", "paradise", "paradise2", "pausemenu",
-                    "pausemenucareerhublaunch", "pausemenu_example", "pausemenu_map", "pausemenu_multiplayer",
-                    "pausemenu_sp_repeat", "pb_busker", "pb_homeless", "pb_preacher", "pb_prostitute",
-                    "personal_carmod_shop", "photographymonkey", "photographywildlife", "physics_perf_test",
-                    "physics_perf_test_launcher", "pickuptest", "pickupvehicles", "pickup_controller", "pilot_school",
-                    "pilot_school_mp", "pi_menu", "placeholdermission", "placementtest", "planewarptest",
-                    "player_controller", "player_controller_b", "player_scene_ft_franklin1", "player_scene_f_lamgraff",
-                    "player_scene_f_lamtaunt", "player_scene_f_taxi", "player_scene_mf_traffic",
-                    "player_scene_m_cinema", "player_scene_m_fbi2", "player_scene_m_kids", "player_scene_m_shopping",
-                    "player_scene_t_bbfight", "player_scene_t_chasecar", "player_scene_t_insult", "player_scene_t_park",
-                    "player_scene_t_tie", "player_timetable_scene", "playthrough_builder", "pm_defend", "pm_delivery",
-                    "pm_gang_attack", "pm_plane_promotion", "pm_recover_stolen", "postkilled_bailbond2",
-                    "postrc_barry1and2", "postrc_barry4", "postrc_epsilon4", "postrc_nigel3", "profiler_registration",
-                    "prologue1", "prop_drop", "puzzle", "racetest", "rampage1", "rampage2", "rampage3", "rampage4",
-                    "rampage5", "rampage_controller", "randomchar_controller", "range_modern", "range_modern_mp",
-                    "replay_controller", "rerecord_recording", "respawn_controller", "restrictedareas",
-                    "re_abandonedcar", "re_accident", "re_armybase", "re_arrests", "re_atmrobbery", "re_bikethief",
-                    "re_border", "re_burials", "re_bus_tours", "re_cartheft", "re_chasethieves", "re_crashrescue",
-                    "re_cultshootout", "re_dealgonewrong", "re_domestic", "re_drunkdriver", "re_duel", "re_gangfight",
-                    "re_gang_intimidation", "re_getaway_driver", "re_hitch_lift", "re_homeland_security",
-                    "re_lossantosintl", "re_lured", "re_monkey", "re_mountdance", "re_muggings", "re_paparazzi",
-                    "re_prison", "re_prisonerlift", "re_prisonvanbreak", "re_rescuehostage", "re_seaplane",
-                    "re_securityvan", "re_shoprobbery", "re_snatched", "re_stag_do", "re_yetarian", "rng_output",
-                    "road_arcade", "rollercoaster", "rural_bank_heist", "rural_bank_prep1", "rural_bank_setup",
-                    "salvage_yard_seating", "savegame_bed", "save_anywhere", "scaleformgraphictest",
+                    "net_freemode_debug_stat_2023", "net_jacking_soaktest", "net_rank_tunable_loader",
+                    "net_session_soaktest", "net_test_drive", "net_tunable_check", "nigel1", "nigel1a", "nigel1b",
+                    "nigel1c", "nigel1d", "nigel2", "nigel3", "nightclubpeds", "nightclub_ground_floor_seats",
+                    "nightclub_office_seats", "nightclub_vip_seats", "nodemenututorial", "nodeviewer", "ob_abatdoor",
+                    "ob_abattoircut", "ob_airdancer", "ob_bong", "ob_cashregister", "ob_drinking_shots",
+                    "ob_foundry_cauldron", "ob_franklin_beer", "ob_franklin_tv", "ob_franklin_wine", "ob_huffing_gas",
+                    "ob_jukebox", "ob_mp_bed_high", "ob_mp_bed_low", "ob_mp_bed_med", "ob_mp_shower_med",
+                    "ob_mp_stripper", "ob_mr_raspberry_jam", "ob_poledancer", "ob_sofa_franklin", "ob_sofa_michael",
+                    "ob_telescope", "ob_tv", "ob_vend1", "ob_vend2", "ob_wheatgrass", "offroad_races", "omega1",
+                    "omega2", "paparazzo1", "paparazzo2", "paparazzo3", "paparazzo3a", "paparazzo3b", "paparazzo4",
+                    "paradise", "paradise2", "pausemenu", "pausemenucareerhublaunch", "pausemenu_example",
+                    "pausemenu_map", "pausemenu_multiplayer", "pausemenu_sp_repeat", "pb_busker", "pb_homeless",
+                    "pb_preacher", "pb_prostitute", "personal_carmod_shop", "photographymonkey", "photographywildlife",
+                    "physics_perf_test", "physics_perf_test_launcher", "pickuptest", "pickupvehicles",
+                    "pickup_controller", "pilot_school", "pilot_school_mp", "pi_menu", "placeholdermission",
+                    "placementtest", "planewarptest", "player_controller", "player_controller_b",
+                    "player_scene_ft_franklin1", "player_scene_f_lamgraff", "player_scene_f_lamtaunt",
+                    "player_scene_f_taxi", "player_scene_mf_traffic", "player_scene_m_cinema", "player_scene_m_fbi2",
+                    "player_scene_m_kids", "player_scene_m_shopping", "player_scene_t_bbfight",
+                    "player_scene_t_chasecar", "player_scene_t_insult", "player_scene_t_park", "player_scene_t_tie",
+                    "player_timetable_scene", "playthrough_builder", "pm_defend", "pm_delivery", "pm_gang_attack",
+                    "pm_plane_promotion", "pm_recover_stolen", "postkilled_bailbond2", "postrc_barry1and2",
+                    "postrc_barry4", "postrc_epsilon4", "postrc_nigel3", "profiler_registration", "prologue1",
+                    "prop_drop", "public_mission_creator", "puzzle", "racetest", "rampage1", "rampage2", "rampage3",
+                    "rampage4", "rampage5", "rampage_controller", "randomchar_controller", "range_modern",
+                    "range_modern_mp", "rcpdata", "replay_controller", "rerecord_recording", "respawn_controller",
+                    "restrictedareas", "re_abandonedcar", "re_accident", "re_armybase", "re_arrests", "re_atmrobbery",
+                    "re_bikethief", "re_border", "re_burials", "re_bus_tours", "re_cartheft", "re_chasethieves",
+                    "re_crashrescue", "re_cultshootout", "re_dealgonewrong", "re_domestic", "re_drunkdriver", "re_duel",
+                    "re_gangfight", "re_gang_intimidation", "re_getaway_driver", "re_hitch_lift",
+                    "re_homeland_security", "re_lossantosintl", "re_lured", "re_monkey", "re_mountdance", "re_muggings",
+                    "re_paparazzi", "re_prison", "re_prisonerlift", "re_prisonvanbreak", "re_rescuehostage",
+                    "re_seaplane", "re_securityvan", "re_shoprobbery", "re_snatched", "re_stag_do", "re_yetarian",
+                    "rng_output", "road_arcade", "rollercoaster", "rural_bank_heist", "rural_bank_prep1",
+                    "rural_bank_setup", "salvage_yard_seating", "savegame_bed", "save_anywhere", "scaleformgraphictest",
                     "scaleformminigametest", "scaleformprofiling", "scaleformtest", "scene_builder",
                     "sclub_front_bouncer", "scripted_cam_editor", "scriptplayground", "scripttest1", "scripttest2",
                     "scripttest3", "scripttest4", "script_metrics", "scroll_arcade_cabinet", "sctv",
@@ -305,8 +307,9 @@ local ALL_script = {"abigail1", "abigail2", "achievement_controller", "activity_
                     "tuner_sandbox_activity", "turret_cam_script", "ufo", "ugc_global_registration",
                     "ugc_global_registration_2", "underwaterpickups", "utvc", "vehiclespawning", "vehicle_ai_test",
                     "vehicle_force_widget", "vehicle_gen_controller", "vehicle_plate", "vehicle_stealth_mode",
-                    "vehrob_planning", "veh_play_widget", "walking_ped", "wardrobe_mp", "wardrobe_sp",
-                    "weapon_audio_widget", "wizard_arcade", "wp_partyboombox", "xml_menus", "yoga"}
+                    "vehrob_planning", "veh_play_widget", "vinewood_premium_garage_carmod", "walking_ped",
+                    "wardrobe_mp", "wardrobe_sp", "weapon_audio_widget", "wizard_arcade", "wp_partyboombox",
+                    "xml_menus", "yoga"}
 
 function ADD_MP_INDEX(stat)
     local Exceptions = {"MP_CHAR_STAT_RALLY_ANIM", "MP_CHAR_ARMOUR_1_COUNT", "MP_CHAR_ARMOUR_2_COUNT",
@@ -981,22 +984,6 @@ menu.action(server, "Camera_Shoot SOUND 声音所有l", {""}, "latiaobadsoundfor
 
     -- util.yield(50)
 end)
--- menu.toggle_loop(server, "请求所有 ", {"latiaoREQUES_ENTITYped"}, "latiaoREQUES_ENTITYped.", function()
---     local outptr = memory.alloc(4)
---    local handle = memory.read_int(outptr)sc
--- --    latiao_log(handle)
---         local owner = entities.get_owner(handle)
---         if not entities.is_player_ped(handle) and owner ~= players.user() then
---             local success, error_message = pcall(function()
---                 local require = NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(handle)
---             end)
-
---                  latiao_log(success,error_message)
---             end
---         -- end
---     -- end
-
--- end)
 
 menu.toggle_loop(server, "请求所有 行人", {"latiaoREQUES_ENTITYped"}, "latiaoREQUES_ENTITYped.", function()
     for _, target in ipairs(entities.get_all_peds_as_handles()) do
@@ -1115,21 +1102,21 @@ local dividends_brdr = menu.list(dividends, "事务所", {}, "")
 local dividends_gzp = menu.list(dividends, "改装铺", {}, "")
 local dividends_hsz = menu.list(dividends, "回收站", {}, "")
 local dividends_bjbgs = menu.list(dividends, "保金办公室", {}, "")
-menu.toggle_loop(dividends_general, "跳过所有黑客内容", {"latiaojumphack"}, "latiaojumphack.", function()
-    SET_INT_LOCAL("fm_mission_controller_2020", 24333, 5)
-    SET_FLOAT_LOCAL("fm_mission_controller_2020", 30357 + 3, 100)
-    SET_INT_LOCAL("fm_mission_controller_2020", 1721, GET_INT_LOCAL("fm_mission_controller_2020", 1722))
-    SET_INT_LOCAL("fm_mission_controller_2020", 978 + 135, 3)
-    SET_INT_LOCAL("fm_mission_controller", 52985, 5)
-    SET_INT_LOCAL("fm_mission_controller", 54047, 5)
-    SET_INT_LOCAL("fm_mission_controller", 10107 + 7, GET_INT_LOCAL("fm_mission_controller", 10107 + 37))
-    SET_INT_LOCAL("fm_mission_controller", 1512, 3) -- For ACT I, Setup: Server Farm (Lester), https://www.unknowncheats.me/forum/3687245-post112.html
-    SET_INT_LOCAL("fm_mission_controller", 1543, 2)
-    SET_INT_LOCAL("fm_mission_controller", 1269 + 135, 3) -- For ACT III, https://www.unknowncheats.me/forum/3455828-post8.html
-    SET_INT_LOCAL("fm_mission_controller", 11776 + 24, 7)
-    SET_FLOAT_LOCAL("fm_mission_controller", 10067 + 11, 100)
+-- menu.toggle_loop(dividends_general, "跳过所有黑客内容", {"latiaojumphack"}, "latiaojumphack.", function()
+--     SET_INT_LOCAL("fm_mission_controller_2020", 24333, 5)
+--     SET_FLOAT_LOCAL("fm_mission_controller_2020", 30357 + 3, 100)
+--     SET_INT_LOCAL("fm_mission_controller_2020", 1721, GET_INT_LOCAL("fm_mission_controller_2020", 1722))
+--     SET_INT_LOCAL("fm_mission_controller_2020", 978 + 135, 3)
+--     SET_INT_LOCAL("fm_mission_controller", 52985, 5)
+--     SET_INT_LOCAL("fm_mission_controller", 54047, 5)
+--     SET_INT_LOCAL("fm_mission_controller", 10107 + 7, GET_INT_LOCAL("fm_mission_controller", 10107 + 37))
+--     SET_INT_LOCAL("fm_mission_controller", 1512, 3) -- For ACT I, Setup: Server Farm (Lester), https://www.unknowncheats.me/forum/3687245-post112.html
+--     SET_INT_LOCAL("fm_mission_controller", 1543, 2)
+--     SET_INT_LOCAL("fm_mission_controller", 1269 + 135, 3) -- For ACT III, https://www.unknowncheats.me/forum/3455828-post8.html
+--     SET_INT_LOCAL("fm_mission_controller", 11776 + 24, 7)
+--     SET_FLOAT_LOCAL("fm_mission_controller", 10067 + 11, 100)
 
-end)
+-- end)
 menu.action(dividends_dc, "跳过赌场手机匹配冷却", {""}, "", function()
     STAT_SET_INT("MPPLY_H3_COOLDOWN", -1)
 end)
@@ -1137,66 +1124,6 @@ menu.action(dividends_dc, "跳过赌场冷却", {}, "", function()
     STAT_SET_INT("H3_COMPLETEDPOSIX", -1)
 
 end)
-local nohostalldividends = menu.slider(dividends_general, "不是主机本地分红", {"nohostcasino"}, "", INT_MIN,
-    INT_MAX, 100, 5, function()
-
-    end)
-
-menu.toggle_loop(dividends_general, "设置不是主机本地分红", {""}, "latiaonohost.", function()
-    SET_INT_GLOBAL(2685249 + 6615, menu.get_value(nohostalldividends))
-end)
-
-menu.toggle_loop(dividends_dc, "一键设置赌场前置和分红 1-4人(冷却30分钟250万+)", {""}, "", function()
-    STAT_SET_INT("H3OPT_TARGET", 2)
-    STAT_SET_INT("H3OPT_ACCESSPOINTS", -1)
-    STAT_SET_INT("H3OPT_POI", -1)
-    STAT_SET_INT("H3OPT_BITSET1", -1)
-    STAT_SET_INT("H3OPT_BITSET0", -1)
-    STAT_SET_INT("H3OPT_APPROACH", 3)
-    STAT_SET_INT("H3OPT_KEYLEVELS", 2)
-    STAT_SET_INT("H3OPT_DISRUPTSHIP", 3)
-
-    STAT_SET_INT("H3OPT_CREWWEAP", 4)
-    STAT_SET_INT("H3OPT_CREWDRIVER", 3)
-    STAT_SET_INT("H3OPT_CREWHACKER", 4)
-    STAT_SET_INT("H3OPT_WEAPS", 1)
-    STAT_SET_INT("H3OPT_VEHS", 3)
-
-    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 1, 150)
-
-    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 2, 150)
-
-    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 3, 150)
-
-    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 4, 150)
-end)
-
-menu.toggle_loop(dividends_dc, "一键设置赌场前置和分红 1-4人(无冷却50万+)", {""}, "", function()
-    STAT_SET_INT("H3OPT_TARGET", 2)
-    STAT_SET_INT("H3OPT_ACCESSPOINTS", -1)
-    STAT_SET_INT("H3OPT_POI", -1)
-    STAT_SET_INT("H3OPT_BITSET1", -1)
-    STAT_SET_INT("H3OPT_BITSET0", -1)
-    STAT_SET_INT("H3OPT_APPROACH", 3)
-    STAT_SET_INT("H3OPT_KEYLEVELS", 2)
-    STAT_SET_INT("H3OPT_DISRUPTSHIP", 3)
-
-    STAT_SET_INT("H3OPT_CREWWEAP", 4)
-    STAT_SET_INT("H3OPT_CREWDRIVER", 3)
-    STAT_SET_INT("H3OPT_CREWHACKER", 4)
-    STAT_SET_INT("H3OPT_WEAPS", 1)
-    STAT_SET_INT("H3OPT_VEHS", 3)
-
-    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 1, 50)
-
-    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 2, 150)
-
-    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 3, 150)
-
-    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 4, 150)
-end)
--- =
--- end)
 
 menu.action(dividends_dc, "完成赌场前置", {""}, "", function()
     STAT_SET_INT("H3OPT_ACCESSPOINTS", -1)
@@ -1220,33 +1147,13 @@ end)
 local casino = menu.slider(dividends_dc, "赌场抢劫分红", {""}, "", -100000, 100000, 100, 5, function()
 end)
 menu.toggle_loop(dividends_dc, "设置赌场抢劫分红", {""}, "    .", function()
-    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 1, menu.get_value(casino))
+    SET_INT_GLOBAL(1964849 + 1497 + 736 + 92 + 1, menu.get_value(casino))
 
-    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 2, menu.get_value(casino))
+    SET_INT_GLOBAL(1964849 + 1497 + 736 + 92 + 2, menu.get_value(casino))
 
-    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 3, menu.get_value(casino))
+    SET_INT_GLOBAL(1964849 + 1497 + 736 + 92 + 3, menu.get_value(casino))
 
-    SET_INT_GLOBAL(1963945 + 1497 + 736 + 92 + 4, menu.get_value(casino))
-end)
-
-menu.toggle_loop(dividends_dc, "删除赌场npc分红", {""}, "", function()
-    SET_INT_GLOBAL(262145 + 29068, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 1, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 2, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 3, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 4, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 5, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 6, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 7, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 8, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 9, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 10, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 11, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 12, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 13, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 14, 0)
-    SET_INT_GLOBAL(262145 + 29093 + 15, 0)
-
+    SET_INT_GLOBAL(1964849 + 1497 + 736 + 92 + 4, menu.get_value(casino))
 end)
 
 menu.action(dividends_dc, "刷新赌场面板", {""}, "", function()
@@ -1267,13 +1174,13 @@ local Doomsday = menu.slider(dividends_mr, "末日分红", {""}, "2400000", -100
 end)
 
 menu.toggle_loop(dividends_mr, "设置末日分红", {"设置末日分红"}, "设置末日分红.", function()
-    SET_INT_GLOBAL(1959865 + 812 + 50 + 1, menu.get_value(Doomsday))
+    SET_INT_GLOBAL(1960755 + 812 + 50 + 1, menu.get_value(Doomsday))
 
-    SET_INT_GLOBAL(1959865 + 812 + 50 + 2, menu.get_value(Doomsday))
+    SET_INT_GLOBAL(1960755 + 812 + 50 + 2, menu.get_value(Doomsday))
 
-    SET_INT_GLOBAL(1959865 + 812 + 50 + 3, menu.get_value(Doomsday))
+    SET_INT_GLOBAL(1960755 + 812 + 50 + 3, menu.get_value(Doomsday))
 
-    SET_INT_GLOBAL(1959865 + 812 + 50 + 4, menu.get_value(Doomsday))
+    SET_INT_GLOBAL(1960755 + 812 + 50 + 4, menu.get_value(Doomsday))
 end)
 
 menu.action(dividends_plkd, "跳过小岛冷却", {}, "", function()
@@ -1290,105 +1197,14 @@ menu.action(dividends_plkd, "完成小岛前置", {}, "", function()
 
 end)
 
-menu.toggle_loop(dividends_plkd, "一键设置小岛前置和分红 1-4人(200万+)", {}, "", function()
-    STAT_SET_INT("H4_PROGRESS", 126823)
-
-    STAT_SET_INT("H4CNF_BS_ENTR", -1)
-    STAT_SET_INT("H4CNF_BS_GEN", -1)
-    STAT_SET_INT("H4CNF_BS_ABIL", -1)
-    STAT_SET_INT("H4CNF_APPROACH", -1)
-    STAT_SET_INT("H4_MISSIONS", -1)
-
-    STAT_SET_INT("H4CNF_TARGET", 1)
-
-    STAT_SET_INT("H4LOOT_CASH_I", 0)
-    STAT_SET_INT("H4LOOT_CASH_C", 0)
-    STAT_SET_INT("H4LOOT_CASH_V", 0)
-    STAT_SET_INT("H4LOOT_WEED_I", 0)
-    STAT_SET_INT("H4LOOT_WEED_C", 0)
-    STAT_SET_INT("H4LOOT_WEED_V", 0)
-    STAT_SET_INT("H4LOOT_COKE_I", 0)
-    STAT_SET_INT("H4LOOT_COKE_C", 0)
-    STAT_SET_INT("H4LOOT_COKE_V", 0)
-    STAT_SET_INT("H4LOOT_GOLD_I", 0)
-    STAT_SET_INT("H4LOOT_GOLD_C", 0)
-    STAT_SET_INT("H4LOOT_GOLD_V", 0)
-    STAT_SET_INT("H4LOOT_PAINT", 0)
-    STAT_SET_INT("H4LOOT_PAINT_V", 0)
-
-    SET_INT_GLOBAL(1970744 + 831 + 56 + 1, 300)
-    SET_INT_GLOBAL(1970744 + 831 + 56 + 2, 300)
-    SET_INT_GLOBAL(1970744 + 831 + 56 + 3, 300)
-    SET_INT_GLOBAL(1970744 + 831 + 56 + 4, 300)
-
-    SET_INT_GLOBAL(262145 + 30259 + 9, 0)
-    SET_INT_GLOBAL(262145 + 30259 + 10, 0)
-
-end)
-
-menu.toggle_loop(dividends_plkd, "一键设置小岛前置和分红 1-4人(无冷却50万+)", {}, "", function()
-    STAT_SET_INT("H4_PROGRESS", 126823)
-
-    STAT_SET_INT("H4CNF_BS_ENTR", -1)
-    STAT_SET_INT("H4CNF_BS_GEN", -1)
-    STAT_SET_INT("H4CNF_BS_ABIL", -1)
-    STAT_SET_INT("H4CNF_APPROACH", -1)
-    STAT_SET_INT("H4_MISSIONS", -1)
-
-    STAT_SET_INT("H4CNF_TARGET", 1)
-
-    STAT_SET_INT("H4LOOT_CASH_I", 0)
-    STAT_SET_INT("H4LOOT_CASH_C", 0)
-    STAT_SET_INT("H4LOOT_CASH_V", 0)
-    STAT_SET_INT("H4LOOT_WEED_I", 0)
-    STAT_SET_INT("H4LOOT_WEED_C", 0)
-    STAT_SET_INT("H4LOOT_WEED_V", 0)
-    STAT_SET_INT("H4LOOT_COKE_I", 0)
-    STAT_SET_INT("H4LOOT_COKE_C", 0)
-    STAT_SET_INT("H4LOOT_COKE_V", 0)
-    STAT_SET_INT("H4LOOT_GOLD_I", 0)
-    STAT_SET_INT("H4LOOT_GOLD_C", 0)
-    STAT_SET_INT("H4LOOT_GOLD_V", 0)
-    STAT_SET_INT("H4LOOT_PAINT", 0)
-    STAT_SET_INT("H4LOOT_PAINT_V", 0)
-
-    SET_INT_GLOBAL(1970744 + 831 + 56 + 1, 50)
-    SET_INT_GLOBAL(1970744 + 831 + 56 + 2, 300)
-    SET_INT_GLOBAL(1970744 + 831 + 56 + 3, 300)
-    SET_INT_GLOBAL(1970744 + 831 + 56 + 4, 300)
-
-    SET_INT_GLOBAL(262145 + 30259 + 9, 0)
-    SET_INT_GLOBAL(262145 + 30259 + 10, 0)
-
-end)
-
 local Perico = menu.slider(dividends_plkd, "小岛分红", {""}, "", INT_MIN, INT_MAX, 100, 5, function()
 end)
 
 menu.toggle_loop(dividends_plkd, "设置小岛分红", {""}, "", function()
-    SET_INT_GLOBAL(1970744 + 831 + 56 + 1, menu.get_value(Perico))
-    SET_INT_GLOBAL(1970744 + 831 + 56 + 2, menu.get_value(Perico))
-    SET_INT_GLOBAL(1970744 + 831 + 56 + 3, menu.get_value(Perico))
-    SET_INT_GLOBAL(1970744 + 831 + 56 + 4, menu.get_value(Perico))
-end)
-menu.toggle_loop(dividends_plkd, "删除小岛npc分红", {""}, "", function()
-    SET_INT_GLOBAL(262145 + 30259 + 9, 0)
-    SET_INT_GLOBAL(262145 + 30259 + 10, 0)
-
-end)
-local Pericotarget = menu.slider(dividends_plkd, "小岛目标价值", {"CayoMain"}, "CayoMain", INT_MIN, INT_MAX, 1000,
-    100000, function()
-    end)
-menu.action(dividends_plkd, "设置小岛目标价值", {""}, "", function()
-    SET_INT_GLOBAL(262145 + 30259 + 0, menu.get_value(Pericotarget))
-    SET_INT_GLOBAL(262145 + 30259 + 1, menu.get_value(Pericotarget))
-    SET_INT_GLOBAL(262145 + 30259 + 2, menu.get_value(Pericotarget))
-    SET_INT_GLOBAL(262145 + 30259 + 3, menu.get_value(Pericotarget))
-    SET_INT_GLOBAL(262145 + 30259 + 4, menu.get_value(Pericotarget))
-    SET_INT_GLOBAL(262145 + 30259 + 5, menu.get_value(Pericotarget))
-end)
-menu.action(dividends_plkd, "小岛无限背包 ", {""}, "", function()
-    SET_INT_GLOBAL(262145 + 30009, 100000000)
+    SET_INT_GLOBAL(1971648 + 831 + 56 + 1, menu.get_value(Perico))
+    SET_INT_GLOBAL(1971648 + 831 + 56 + 2, menu.get_value(Perico))
+    SET_INT_GLOBAL(1971648 + 831 + 56 + 3, menu.get_value(Perico))
+    SET_INT_GLOBAL(1971648 + 831 + 56 + 4, menu.get_value(Perico))
 end)
 
 menu.action(dividends_gy, "完成公寓抢劫", {""}, "", function()
@@ -1399,34 +1215,25 @@ local Apartment = menu.slider(dividends_gy, "公寓抢劫分红", {"dividends_gy
     100, 100, function()
     end)
 menu.toggle_loop(dividends_gy, "设置公寓抢劫分红 (you host)", {""}, "", function()
-    SET_INT_GLOBAL(1930201 + 3008 + 1, menu.get_value(Apartment))
-    SET_INT_GLOBAL(1930201 + 3008 + 2, menu.get_value(Apartment))
-    SET_INT_GLOBAL(1930201 + 3008 + 3, menu.get_value(Apartment))
-    SET_INT_GLOBAL(1930201 + 3008 + 4, menu.get_value(Apartment))
+    SET_INT_GLOBAL(1930926 + 3008 + 1, menu.get_value(Apartment))
+    SET_INT_GLOBAL(1930926 + 3008 + 2, menu.get_value(Apartment))
+    SET_INT_GLOBAL(1930926 + 3008 + 3, menu.get_value(Apartment))
+    SET_INT_GLOBAL(1930926 + 3008 + 4, menu.get_value(Apartment))
 end)
 
-menu.action(dividends_general, "一键完成任务_2020 ", {"fin fm_mission_controller_2020"},
-    "finfm_mission_controller_2020", function()
-        -- util.request_script_host("fm_mission_controller_2020")
-        -- util.request_script_host("fm_mission_controller")
-        SET_INT_LOCAL("fm_mission_controller_2020", 48513 + 1, 17784544)
-        SET_INT_LOCAL("fm_mission_controller_2020", 48513 + 1765 + 1, 2000)
-    end)
-
-local money = menu.slider(dividends_general, "设置抢劫金钱", {"fm_mission_controllermoney"},
-    "fm_mission_controllermoney", INT_MIN, INT_MAX, 3000000, 100000, function()
-    end)
-menu.toggle_loop(dividends_general, "设置抢劫金钱", {"moneyfm_mission_controller"},
-    "moneyfinfm_mission_controller", function()
-        SET_INT_LOCAL("fm_mission_controller", 19728 + 2686, menu.get_value(money))
-    end)
+menu.action(dividends_general, "一键完成任务_2020 ", {"finfmc2020"}, "finfm_mission_controller_2020", function()
+    for i = 1, 3 do
+        SET_INT_LOCAL("fm_mission_controller_2020", 50150 + 1770 + 1 + i, 264666)
+    end
+    SET_INT_LOCAL("fm_mission_controller_2020", 50150, 9)
+end)
 
 menu.action(dividends_general, "一键完成任务", {"finfmc"}, "finfm_mission_controller", function()
-    -- util.request_script_host("fm_mission_controller_2020")
-    -- util.request_script_host("fm_mission_controller")
-    SET_INT_LOCAL("fm_mission_controller", 19728 + 2686, menu.get_value(money))
-    SET_INT_LOCAL("fm_mission_controller", 27489 + 859, 100000000)
-    SET_INT_LOCAL("fm_mission_controller", 31603 + 69, 100000000)
+    for i = 0, 3 do
+        SET_INT_LOCAL("fm_mission_controller", 19746 + 1232 + 1 + i, 264666)
+    end
+
+    SET_INT_LOCAL("fm_mission_controller", 19746, 12)
 end)
 
 menu.toggle_loop(server, "是主机踢广告机", {}, "", function()
@@ -1451,58 +1258,6 @@ local function latiaostandMenuSetup(pid)
     menu.divider(menu.player_root(pid), "latiao's STAND menu")
 
     local latiaostandMenu = menu.list(menu.player_root(pid), "latiao's STAND menu", {}, "")
-    -- local latiao_trigger_script_event = menu.list(latiaostandMenu, "自定义发送脚本事件", {}, "")
-
-    -- local latiao_trigger_script_event_1 = menu.slider(latiao_trigger_script_event, "参数1",
-    --     {"latiao_trigger_script_event_1"}, "latiao_trigger_script_event_1", INT_MIN, INT_MAX, -1, 1, function()
-
-    --     end)
-    -- local latiao_trigger_script_event_2 = menu.slider(latiao_trigger_script_event, "参数2",
-    --     {"latiao_trigger_script_event_2"}, "latiao_trigger_script_event_2", INT_MIN, INT_MAX, -1, 1, function()
-
-    --     end)
-    -- local latiao_trigger_script_event_3 = menu.slider(latiao_trigger_script_event, "参数3",
-    --     {"latiao_trigger_script_event_3"}, "latiao_trigger_script_event_3", INT_MIN, INT_MAX, -1, 1, function()
-
-    --     end)
-
-    -- local latiao_trigger_script_event_4 = menu.slider(latiao_trigger_script_event, "参数4",
-    --     {"latiao_trigger_script_event_4"}, "latiao_trigger_script_event_4", INT_MIN, INT_MAX, -1, 1, function()
-
-    --     end)
-    -- local latiao_trigger_script_event_5 = menu.slider(latiao_trigger_script_event, "参数5",
-    --     {"latiao_trigger_script_event_5"}, "latiao_trigger_script_event_5", INT_MIN, INT_MAX, -1, 1, function()
-
-    --     end)
-    -- local latiao_trigger_script_event_6 = menu.slider(latiao_trigger_script_event, "参数6",
-    --     {"latiao_trigger_script_event_6"}, "latiao_trigger_script_event_6", INT_MIN, INT_MAX, -1, 1, function()
-
-    --     end)
-    -- local latiao_trigger_script_event_7 = menu.slider(latiao_trigger_script_event, "参数7",
-    --     {"latiao_trigger_script_event_7"}, "latiao_trigger_script_event_7", INT_MIN, INT_MAX, -1, 1, function()
-
-    --     end)
-    -- local latiao_trigger_script_event_8 = menu.slider(latiao_trigger_script_event, "参数8",
-    --     {"latiao_trigger_script_event_8"}, "latiao_trigger_script_event_8", INT_MIN, INT_MAX, -1, 1, function()
-
-    --     end)
-    -- local latiao_trigger_script_event_9 = menu.slider(latiao_trigger_script_event, "参数9",
-    --     {"latiao_trigger_script_event_9"}, "latiao_trigger_script_event_9", INT_MIN, INT_MAX, -1, 1, function()
-
-    --     end)
-    -- local latiao_trigger_script_event_10 = menu.slider(latiao_trigger_script_event, "参数10",
-    --     {"latiao_trigger_script_event_10"}, "latiao_trigger_script_event_10", INT_MIN, INT_MAX, -1, 1, function()
-
-    --     end)
-
-    -- menu.toggle_loop(latiao_trigger_script_event, "发送", {""}, "latiaonohost.", function()
-    --     -- latiao_log("")
-    --     util.trigger_script_event(1 << pid,
-    --         {menu.get_value(latiao_trigger_script_event_1, latiao_trigger_script_event_2, latiao_trigger_script_event_3,
-    --             latiao_trigger_script_event_4, latiao_trigger_script_event_5, latiao_trigger_script_event_6,
-    --             latiao_trigger_script_event_7, latiao_trigger_script_event_8, latiao_trigger_script_event_9,
-    --             latiao_trigger_script_event_10)})
-    -- end)
 
     menu.action(latiaostandMenu, "WastedSounds  声音轰炸", {""}, "latiaobadsoundforall", function()
         for i = 1, 10, 1 do
@@ -1721,18 +1476,6 @@ local function latiaostandMenuSetup(pid)
 
     end)
 
-    -- menu.toggle_loop(latiaostandMenu, "掉帧", {"latiaoscr_as_trans_smoke"}, "", function()
-
-    --     local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-    --     STREAMING.REQUEST_NAMED_PTFX_ASSET("scr_as_trans")
-    --     GRAPHICS.USE_PARTICLE_FX_ASSET("scr_as_trans")
-
-    --             ptfx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY("scr_as_trans_smoke", ped, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 5.0, false, false, false, 0, 0, 0, 255)
-
-    -- end, function()
-
-    -- end)
-
     menu.toggle_loop(latiaostandMenu, "匿名爆炸", {"latiaoNickEXPLOSION"}, "", function()
         local pos = players.get_position(pid)
         FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, math.random(0, 82), INT_MAX, false, true, 0.0)
@@ -1772,24 +1515,16 @@ local function latiaostandMenuSetup(pid)
         end
     end)
 
-    menu.toggle_loop(latiaostandMenu, "CREATE_OBJECT_NO_OFFSET", {""}, "", function()
-        util.request_model(util.joaat("02gate3_l"))
-        local pos = players.get_cam_pos(pid)
-        OBJECT.CREATE_OBJECT_NO_OFFSET(util.joaat("02gate3_l"), pos.x, pos.y, pos.z, true, true, true)
-        if not players.exists(pid) then
-            util.stop_thread()
-        end
-    end)
-
-    menu.toggle_loop(latiaostandMenu, "无效行人动作崩溃", {}, "", function()
+    menu.action(latiaostandMenu, "无效行人动作崩溃", {}, "", function()
         local ped = util.joaat('cs_manuel')
         util.request_model(ped)
 
         local pos = players.get_cam_pos(pid)
         local createped = entities.create_ped(4, ped, pos, 0)
+
         WEAPON.GIVE_WEAPON_TO_PED(createped, util.joaat('WEAPON_HOMINGLAUNCHER'), INT_MAX, true, true)
         util.yield()
-        FIRE.ADD_EXPLOSION(pos, math.random(0, 82), 100.0, false, true, 100.0)
+        ENTITY.SET_ENTITY_HEALTH(createped, 0, -1, -1)
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1814,13 +1549,6 @@ local function latiaostandMenuSetup(pid)
             end
         end)
 
-    menu.action(latiaostandMenu, "删除船", {""}, "", function()
-        for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
-            if ENTITY.GET_ENTITY_MODEL(ent) == util.joaat("tug") then
-                entities.delete(ent)
-            end
-        end
-    end)
     menu.toggle_loop(latiaostandMenu, "踢出载具", {"latiaokickvehicles"}, "latiaokickvehicles.", function()
         util.trigger_script_event(1 << pid, {-503325966})
         if not players.exists(pid) then
@@ -1843,14 +1571,6 @@ local function latiaostandMenuSetup(pid)
             util.stop_thread()
         end
     end)
-    -- menu.action(latiaostandMenu, "无效公寓踢", {""}, "", function()
-    --     -- 0 (公寓邀请): -1321657966, 1: 8, 2: 0, 3 (Owner): 12, 4: -1, 5: 1, 6 (Property): 115, 7: 0, 8: 0, 9: 0, 10: 0
-    --     util.trigger_script_event(1 << pid, {-1321657966,0, pid, -1, 1,INT_MAX,0,0,0,0})
-
-    --     if not players.exists(pid) then
-    --         util.stop_thread()
-    --     end
-    -- end)
 
     menu.action(latiaostandMenu, "无效收藏品踢", {""}, "", function()
         util.trigger_script_event(1 << pid, {968269233, -1, 4, INT_MAX, 1, 1, 1})
@@ -2003,7 +1723,7 @@ local function latiaostandMenuSetup(pid)
             util.stop_thread()
         end
     end)
-    menu.toggle_loop(latiaostandMenu, "循环传送自身", {""}, "", function()
+    menu.toggle_loop(latiaostandMenu, "附加自身", {""}, "", function()
         local pos = players.get_position(pid)
         local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
         ENTITY.ATTACH_ENTITY_TO_ENTITY(players.user_ped(), playerped, 0, 0, 0, 0, 0, 0, 0, false, false, false, false,
@@ -2121,13 +1841,6 @@ local function latiaostandMenuSetup(pid)
         end
     end)
 
-    menu.action(latiaostandMenu, "ceo ban", {""}, "", function()
-        util.trigger_script_event(1 << pid, {1531565154})
-
-        if not players.exists(pid) then
-            util.stop_thread()
-        end
-    end)
     menu.action(latiaostandMenu, "关取消传出所有人", {"latiaodesyncoff"}, "只对他同步超时其他人",
         function()
             menu.trigger_commands("latiaodesyncoff")
@@ -2207,23 +1920,6 @@ local function latiaostandMenuSetup(pid)
         end
     end)
 
-    menu.action(latiaostandMenu, "GtaBanner", {""}, "", function()
-        util.trigger_script_event(1 << pid, {-330501227})
-
-        if not players.exists(pid) then
-            util.stop_thread()
-        end
-
-    end)
-
-    menu.action(latiaostandMenu, "NetworkBail", {""}, "", function()
-        util.trigger_script_event(1 << pid, {-901348601})
-
-        if not players.exists(pid) then
-            util.stop_thread()
-        end
-
-    end)
     menu.action(latiaostandMenu, "只对他同步(超时其他人)", {""}, "只对他同步超时其他人", function()
         for k, newpid in pairs(players.list(false, true, true)) do
             if newpid == pid then
@@ -2244,14 +1940,7 @@ local function latiaostandMenuSetup(pid)
 
     end)
 
-    menu.toggle_loop(latiaostandMenu, "chat.send_targeted_message", {""}, "", function()
-        chat.send_targeted_message(pid, players.user(), math.random(INT_MIN, INT_MAX), false)
-        if not players.exists(pid) then
-            util.stop_thread()
-        end
-
-    end)
-    menu.toggle_loop(latiaostandMenu, "sendpm", {""}, "", function()
+    menu.toggle_loop(latiaostandMenu, "对他聊天刷屏", {""}, "", function()
         local player = players.get_name(pid)
         menu.trigger_commands("sendpm" .. player .. " " .. math.random(INT_MIN, INT_MAX))
         if not players.exists(pid) then
@@ -2305,31 +1994,6 @@ local function latiaostandMenuSetup(pid)
 
     end)
 
-    menu.action(latiaostandMenu, "拖车拖走", {""}, "", function()
-        local pos = players.get_cam_pos(pid)
-        local pedobj = util.joaat("s_f_y_hooker_01")
-        local towtruckMdl = util.joaat("towtruck3")
-        util.request_model(pedobj)
-        util.request_model(towtruckMdl)
-        local createpedobj = entities.create_ped(6, pedobj, pos, 0)
-        local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        local vehicle = PED.GET_VEHICLE_PED_IS_USING(playerped)
-        local towtruck = entities.create_vehicle(towtruckMdl, pos, 0)
-
-        -- entities.set_can_migrate(createpedobj, false)
-        -- PED.SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(createpedobj, true)
-        PED.SET_PED_INTO_VEHICLE(createpedobj, towtruck, -2)
-
-        VEHICLE.ATTACH_VEHICLE_TO_TOW_TRUCK(towtruck, vehicle, false, 90.0, 90.0, -180.0)
-
-    end)
-    menu.action(latiaostandMenu, "NETWORK_SET_IN_SPECTATOR_MODE", {""}, "", function()
-        local pos = players.get_cam_pos(pid)
-        local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        NETWORK.NETWORK_SET_IN_SPECTATOR_MODE(true, playerped)
-
-    end)
-
     menu.toggle_loop(latiaostandMenu, "踢出载具SET_VEHICLE_EXCLUSIVE_DRIVER", {""}, "", function()
         local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
         local vehicle = PED.GET_VEHICLE_PED_IS_USING(ped)
@@ -2339,42 +2003,61 @@ local function latiaostandMenuSetup(pid)
         end
     end)
 
-    menu.action(latiaostandMenu, "SET_PED_CONFIG_FLAG", {""}, "", function()
-        local pos = players.get_cam_pos(pid)
-        local pedobj = util.joaat("s_f_y_hooker_01")
-        util.request_model(pedobj)
-        local createpedobj = entities.create_ped(6, pedobj, pos, 0)
-        local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        local vehicle = PED.GET_VEHICLE_PED_IS_USING(playerped)
+    menu.toggle_loop(latiaostandMenu, "栽赃击杀自己", {""}, "", function()
 
-        entities.set_can_migrate(createpedobj, false)
-        PED.SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(createpedobj, true)
-        PED.SET_PED_CONFIG_FLAG(createpedobj, 366, true)
+        local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
 
-        util.yield(2500)
-        entities.delete(createpedobj)
+        local pos = v3.new(players.get_position(players.user()))
+        FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
 
-    end)
-    menu.action(latiaostandMenu, "转移所有脚本主机到他", {""}, "", function()
-        for _, script in ipairs(ALL_script) do
-            util.create_thread(function()
-                util.spoof_script(script, function()
-                    util.request_script_host(script)
-                    util.yield()
-                    util.give_script_host(script, pid)
-                end)
-            end)
-        end
-
-    end)
-    menu.action(latiaostandMenu, "800157557通知", {""}, "", function()
-        util.trigger_script_event(1 << pid, {800157557, players.user(), 385726943, 1758547705})
         if not players.exists(pid) then
             util.stop_thread()
         end
     end)
-end
 
+    menu.action(latiaostandMenu, "无效行人动作崩溃2", {}, "", function()
+        local ped = util.joaat('cs_taostranslator')
+        util.request_model(ped)
+
+        local pos = players.get_cam_pos(pid)
+        local createped = entities.create_ped(4, ped, pos, 0)
+        WEAPON.GIVE_WEAPON_TO_PED(createped, util.joaat('WEAPON_HOMINGLAUNCHER'), INT_MAX, true, true)
+        util.yield(1000)
+        ENTITY.SET_ENTITY_HEALTH(createped, 0, -1, -1)
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
+    menu.action(latiaostandMenu, "test", {}, "", function()
+        local ped = util.joaat('ig_wade')
+        util.request_model(ped)
+
+        local pos = players.get_cam_pos(pid)
+        local createped = entities.create_ped(4, ped, pos, 0)
+        PED.SET_PED_COMPONENT_VARIATION(createped)
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
+    menu.toggle_loop(latiaostandMenu, "开启拉机能量跳伞", {""}, "", function()
+        util.trigger_script_event(1 << pid, {1450115979, players.user(), 267, -1})
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+
+    end)
+
+
+    menu.action(latiaostandMenu, "1669592503", {""}, "", function()
+        util.trigger_script_event(1 << pid, {1669592503,players.user(),0,0,4,0})
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+
+    end)
+end
 for _, pid in ipairs(players.list()) do
     latiaostandMenuSetup(pid)
 end
@@ -2398,13 +2081,6 @@ end, function()
         NETWORK.SET_REMOTE_PLAYER_AS_GHOST(pid, false)
     end
 end)
-menu.toggle_loop(server, "载具被动模式", {"latiaoGHOSTMode"}, "", function()
-    NETWORK.SET_NETWORK_VEHICLE_AS_GHOST(entities.get_user_vehicle_as_handle(), true)
-
-end, function()
-    NETWORK.SET_NETWORK_VEHICLE_AS_GHOST(entities.get_user_vehicle_as_handle(), false)
-
-end)
 
 menu.toggle_loop(server, "显示谁在开麦克风", {"LATIAOTALKINGTEST"}, "", function()
     for k, pid in pairs(players.list()) do
@@ -2412,18 +2088,6 @@ menu.toggle_loop(server, "显示谁在开麦克风", {"LATIAOTALKINGTEST"}, "", 
             util.draw_debug_text(players.get_name(pid) .. " 在说话")
         end
     end
-end)
-
-menu.toggle_loop(server, "阻止变成野兽", {""}, "", function()
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(util.joaat("am_hunt_the_Beast")) > 0 then
-        latiao_log("stop am_hunt_the_Beast")
-        MISC.TERMINATE_ALL_SCRIPTS_WITH_THIS_NAME("am_hunt_the_Beast")
-
-    end
-end)
-
-menu.toggle_loop(server, "block am_gang_call", {"latiaoblockam_gang_call"}, "latiaoblockam_gang_call", function()
-    MISC.TERMINATE_ALL_SCRIPTS_WITH_THIS_NAME("am_gang_call")
 end)
 
 menu.action(server, "启动子战局", {"latiaoNETWORK_START_SOLO_TUTORIAL_SESSION"},
@@ -2475,30 +2139,30 @@ end
 menu.action(admin, "远控地堡", {""}, "", function()
     START_SCRIPT("appbunkerbusiness")
 end)
-menu.action(admin, ("远控机库"), {""}, "", function()
+menu.action(admin, "远控机库", {""}, "", function()
     START_SCRIPT("appsmuggler")
 end)
-menu.action(admin, ("远控夜总会"), {""}, "", function()
+menu.action(admin, "远控夜总会", {""}, "", function()
     START_SCRIPT("appbusinesshub")
 end)
-menu.action(admin, ("远控摩托帮"), {""}, "(" .. ("") .. ")", function()
+menu.action(admin, "远控摩托帮", {""}, "", function()
     START_SCRIPT("appbikerbusiness")
 end)
-menu.action(admin, ("远控莱斯特面板"), {""}, "", function()
+menu.action(admin, "远控莱斯特面板", {""}, "", function()
     START_SCRIPT("apparcadebusinesshub")
 end)
-menu.action(admin, ("远控恐霸"), {""}, "(" .. ("") .. ")", function()
+menu.action(admin, "远控恐霸", {""}, "", function()
     START_SCRIPT("apphackertruck")
 end)
 
-menu.action(admin, ("远控事务所"), {""}, "(" .. ("") .. ")", function()
+menu.action(admin, "远控事务所", {""}, "", function()
     START_SCRIPT("appfixersecurity")
 end)
 
-menu.toggle_loop(admin, ("摩托帮出货为最简单"), {""}, "(" .. ("") .. ")", function()
+menu.toggle_loop(admin, "摩托帮出货为最简单", {""}, "", function()
     SET_INT_LOCAL("gb_biker_contraband_sell", 704 + 17, 0)
 end)
-menu.toggle_loop(admin, ("ceo出货为最简单"), {""}, "(" .. ("") .. ")", function()
+menu.toggle_loop(admin, "ceo出货为最简单", {""}, "", function()
     SET_INT_LOCAL("gb_contraband_sell", 550, 12)
 end)
 
@@ -2508,14 +2172,14 @@ menu.action(dividends_brdr, "开启别惹德瑞", {}, "", function()
     STAT_SET_INT("FIXER_STORY_BS", -1)
 end)
 
-local ContractPayout = menu.slider(dividends_brdr, "别惹德瑞分红", {"ContractPayout"}, "", 0, INT_MAX, 0, 1,
-    function()
+-- local ContractPayout = menu.slider(dividends_brdr, "别惹德瑞分红", {"ContractPayout"}, "", 0, INT_MAX, 0, 1,
+--     function()
 
-    end)
+--     end)
 
-menu.toggle_loop(dividends_brdr, "设置别惹德瑞分红", {""}, "最大2000000", function()
-    SET_INT_GLOBAL(262145 + 32071, menu.get_value(ContractPayout))
-end)
+-- menu.toggle_loop(dividends_brdr, "设置别惹德瑞分红", {""}, "最大2000000", function()
+--     SET_INT_GLOBAL(262145 + 32071, menu.get_value(ContractPayout))
+-- end)
 
 menu.toggle_loop(test, "CLEAR_AREA", {""}, "", function()
     MISC.CLEAR_AREA(0, 0, 0, INT_MAX, false, false, false, false)
@@ -2535,19 +2199,6 @@ menu.toggle_loop(test, "CLEAR_AREA_OF_COPS", {""}, "", function()
     MISC.CLEAR_AREA_OF_COPS(0, 0, 0, INT_MAX, 0)
 end)
 
-menu.toggle_loop(test, "NETWORK_DO_TRANSITION_TO_NEW_FREEMODE", {}, "", function()
-    NETWORK.NETWORK_DO_TRANSITION_TO_FREEMODE(0, 0, true, 1000, true)
-end)
-menu.toggle_loop(test, "NETWORK_DO_TRANSITION_TO_NEW_GAME", {}, "", function()
-    NETWORK.NETWORK_DO_TRANSITION_TO_GAME(1000, true)
-end)
-
-menu.action(test, "kill freemode", {"latiaoblockfreemode"}, "", function()
-    util.spoof_script("freemode", function()
-        SCRIPT.TERMINATE_THIS_THREAD()
-    end)
-end)
-
 menu.action(test, "刷新当前区块(tp and back)", {"latiaotpback"}, "", function()
     local pos = players.get_position(players.user())
 
@@ -2558,15 +2209,6 @@ menu.action(test, "刷新当前区块(tp and back)", {"latiaotpback"}, "", funct
     -- )
 end)
 
-menu.action(test, "刷新当前区块(tp and back)", {"latiaotpback"}, "", function()
-    local pos = players.get_position(players.user())
-
-    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(players.user_ped(), pos.x, pos.y, -260)
-    util.yield()
-    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(players.user_ped(), pos.x, pos.y, pos.z)
-
-    -- )
-end)
 menu.toggle_loop(test, "脚本声音轰炸", {""}, "", function()
     -- util.yield(1500)
     util.trigger_script_event(util.get_session_players_bitflag(), {996099702})
@@ -2587,7 +2229,7 @@ menu.toggle_loop(test, "信息轰炸", {"test1"}, "tet2", function()
 
 end)
 
-menu.toggle_loop(world, "STOP_FIRE_IN_RANGE", {""}, "", function()
+menu.toggle_loop(world, "停止世界所有火焰STOP_FIRE_IN_RANGE", {""}, "", function()
     FIRE.STOP_FIRE_IN_RANGE(0, 0, 0, INT_MAX)
 end)
 
@@ -2618,8 +2260,8 @@ menu.action(about, "github:latiao-1337", {""}, "", function()
 
 end)
 
-menu.toggle_loop(self, "SET_PLAYER_LOCKON_RANGE_OVERRIDE", {"SET_PLAYER_LOCKON_RANGE_OVERRIDE"}, "", function()
-    PLAYER.SET_PLAYER_LOCKON_RANGE_OVERRIDE(players.user(), 100000000)
+menu.toggle_loop(self, "设置玩家锁定范围覆盖最大", {"SET_PLAYER_LOCKON_RANGE_OVERRIDE"}, "", function()
+    PLAYER.SET_PLAYER_LOCKON_RANGE_OVERRIDE(players.user(), INT_MAX)
 end)
 
 menu.toggle_loop(server, "爆炸声音轰炸", {""}, "", function()
@@ -2659,62 +2301,6 @@ menu.toggle_loop(test, "BREAK_OBJECT_FRAGMENT_CHILD all", {"latiaobadBBREAK_OBJE
     end
 end)
 
--- menu.toggle_loop(server, "所有脚本主机测试", {"latiaoALL_script_test"}, "latiaoALL_script_test.", function()
---     for _, script in ipairs(ALL_script) do
---         for x = -1, 0 do
---             for y = 0, 0 do
---                 local host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, x, y)
-
---                 local name = PLAYER.GET_PLAYER_NAME(host)
---                 if name ~= "**Invalid**" then
---                     local hostinfo = script .. "," .. x .. "," .. y .. "=" .. name
---                     util.draw_debug_text(hostinfo)
---                     --  latiao_log(hostinfo)
---                 end
---             end
---         end
---     end
-
--- end)
-
--- menu.toggle_loop(server, "auto super request_script_host for all ", {"autorequest_script_hostall"},
---     "autorequest_script_hostall.", function()
---         for _, script in ipairs(ALL_script) do
---             for x = -1, 0 do
---                 for y = 0, 0 do
---                     local host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT(script, x, y)
---                     if host ~= -1 and not (host == players.user()) then
---                         util.request_script_host(script, x, y)
---                     end
---                 end
---             end
---         end
-
---     end)
-
-menu.action(test, "所有实体SET_ENTITY_AS_MISSION_ENTITY", {}, "", function()
-
-    for k, ent in ipairs(ALL_Entities()) do
-        local success, error_message = pcall(function()
-            ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ent, false, false)
-        end)
-        if not success then
-
-        end
-    end
-end)
-menu.action(test, "所有实体SET_ENTITY_AS_NO_LONGER_NEEDED", {}, "", function()
-
-    for k, ent in ipairs(ALL_Entities()) do
-        local success, error_message = pcall(function()
-            ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(ent)
-        end)
-        if not success then
-
-        end
-    end
-end)
-
 menu.toggle_loop(test, "所有实体不无敌", {}, "", function()
 
     for k, ent in ipairs(ALL_Entities()) do
@@ -2739,20 +2325,16 @@ menu.toggle_loop(test, "所有实体无敌", {}, "", function()
     end
 end)
 
-menu.toggle_loop(world, "解锁所有车", {""}, "", function()
+menu.toggle_loop(world, "解锁周围所有车", {""}, "", function()
     for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
         VEHICLE.SET_VEHICLE_DOORS_LOCKED(ent, 0)
     end
 end)
 
-menu.toggle_loop(world, "锁定所有车", {""}, "", function()
+menu.toggle_loop(world, "锁定周围所有车", {""}, "", function()
     for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
         VEHICLE.SET_VEHICLE_DOORS_LOCKED(ent, 2)
     end
-end)
-
-menu.toggle_loop(test, "保存", {"latiaosave"}, "latiaosave", function()
-    STATS.STAT_SAVE(0, 0, 3, 0);
 end)
 
 menu.toggle_loop(server, "循环给予收藏品", {""}, "", function()
@@ -2805,31 +2387,6 @@ menu.action(world, "刷新室内", {""}, "", function()
     INTERIOR.REFRESH_INTERIOR(myINTERIOR)
 end)
 
-menu.toggle_loop(server, "自动送温暖", {""}, "", function()
-
-    if memory.read_int(memory.script_global(1575008)) == 66 then
-        -- util.yield(5000)
-        latiao_log("give")
-
-        menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give Collectibles>All"))
-        menu.trigger_command(menu.ref_by_path("Players>All Players>Friendly>Give RP"))
-        menu.trigger_command(menu.ref_by_path("Players>All Players>Weapons>Give Weapons>Give All Weapons"))
-        menu.trigger_command(menu.ref_by_path("Players>All Players>Weapons>Give Ammo"))
-        menu.trigger_command(menu.ref_by_path("Players>All Players>Weapons>Give Parachute"))
-        -- chat.send_message("Players>All Players>", false, true, true)
-        latiao_log("give Wait for 15 seconds")
-        util.yield(15000)
-
-        latiao_log("go")
-        menu.trigger_command(menu.ref_by_path("Online>New Session>Find Public Session"))
-        util.yield()
-    else
-        latiao_log("loding")
-        util.yield()
-    end
-
-end)
-
 menu.toggle_loop(server, "giverpforall", {""}, "", function()
     util.trigger_script_event(util.get_session_players_bitflag(), {968269233, -1, 4, 21, 1, 1, 1})
     util.trigger_script_event(util.get_session_players_bitflag(), {968269233, -1, 4, 22, 1, 1, 1})
@@ -2861,60 +2418,6 @@ menu.toggle_loop(world, "超级npc无视", {""}, "", function()
         PED.SET_PED_HEARING_RANGE(ent, 0)
     end
 end)
-
-menu.toggle_loop(world, "重新注册网络实体 objects", {"latiaoNETWORK_REGISTER_ENTITY_AS_NETWORKEDobjects"},
-    "NETWORK_REGISTER_ENTITY_AS_NETWORKEDobjects.", function()
-        for k, ent in pairs(entities.get_all_objects_as_handles()) do
-            local success, error_message = pcall(function()
-                NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED(ent)
-            end)
-            if not success then
-
-            end
-
-        end
-    end)
-
-menu.toggle_loop(world, "重新注册网络实体 ped", {"latiaoNETWORK_REGISTER_ENTITY_AS_NETWORKEDpeds"},
-    "NETWORK_REGISTER_ENTITY_AS_NETWORKEDpeds.", function()
-        for k, ent in pairs(entities.get_all_peds_as_handles()) do
-            if not entities.is_player_ped(ent) then
-                local success, error_message = pcall(function()
-                    NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED(ent)
-                end)
-                if not success then
-
-                end
-            end
-
-        end
-    end)
-
-menu.toggle_loop(world, "重新注册网络实体 vehicles", {"latiaoNETWORK_REGISTER_ENTITY_AS_NETWORKEDvehicles"},
-    "NETWORK_REGISTER_ENTITY_AS_NETWORKEDvehicles.", function()
-        for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
-            local success, error_message = pcall(function()
-                NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED(ent)
-            end)
-            if not success then
-
-            end
-
-        end
-    end)
-
-menu.toggle_loop(world, "重新注册网络实体 pickups", {"latiaoNETWORK_REGISTER_ENTITY_AS_NETWORKEDvehicles"},
-    "NETWORK_REGISTER_ENTITY_AS_NETWORKEDvehicles.", function()
-        for k, ent in pairs(entities.get_all_pickups_as_handles()) do
-            local success, error_message = pcall(function()
-                NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED(ent)
-            end)
-            if not success then
-
-            end
-
-        end
-    end)
 
 menu.toggle_loop(world, "传送 物体 到我 ", {"latiaotpobjects"}, "tp objects.", function()
     local pos = players.get_position(players.user())
@@ -3086,21 +2589,21 @@ menu.action(dividends_gzp, "跳过改装铺前置", {""}, "", function()
     STAT_SET_INT("TUNER_GEN_BS", -1)
 end)
 
-local dividends_gzpfh = menu.slider(dividends_gzp, "改装分红", {"dividends_gzpfh"}, "最大2000000", 0, INT_MAX, 0,
-    1, function()
+-- local dividends_gzpfh = menu.slider(dividends_gzp, "改装分红", {"dividends_gzpfh"}, "最大2000000", 0, INT_MAX, 0,
+--     1, function()
 
-    end)
+--     end)
 
-menu.toggle_loop(dividends_gzp, "设置改装分红", {""}, "", function()
-    SET_INT_GLOBAL(262145 + 31323 + 1, menu.get_value(dividends_gzpfh))
-    SET_INT_GLOBAL(262145 + 31323 + 2, menu.get_value(dividends_gzpfh))
-    SET_INT_GLOBAL(262145 + 31323 + 3, menu.get_value(dividends_gzpfh))
-    SET_INT_GLOBAL(262145 + 31323 + 4, menu.get_value(dividends_gzpfh))
-    SET_INT_GLOBAL(262145 + 31323 + 5, menu.get_value(dividends_gzpfh))
-    SET_INT_GLOBAL(262145 + 31323 + 6, menu.get_value(dividends_gzpfh))
-    SET_INT_GLOBAL(262145 + 31323 + 7, menu.get_value(dividends_gzpfh))
-    SET_INT_GLOBAL(262145 + 31323 + 8, menu.get_value(dividends_gzpfh))
-end)
+-- menu.toggle_loop(dividends_gzp, "设置改装分红", {""}, "", function()
+--     SET_INT_GLOBAL(262145 + 31323 + 1, menu.get_value(dividends_gzpfh))
+--     SET_INT_GLOBAL(262145 + 31323 + 2, menu.get_value(dividends_gzpfh))
+--     SET_INT_GLOBAL(262145 + 31323 + 3, menu.get_value(dividends_gzpfh))
+--     SET_INT_GLOBAL(262145 + 31323 + 4, menu.get_value(dividends_gzpfh))
+--     SET_INT_GLOBAL(262145 + 31323 + 5, menu.get_value(dividends_gzpfh))
+--     SET_INT_GLOBAL(262145 + 31323 + 6, menu.get_value(dividends_gzpfh))
+--     SET_INT_GLOBAL(262145 + 31323 + 7, menu.get_value(dividends_gzpfh))
+--     SET_INT_GLOBAL(262145 + 31323 + 8, menu.get_value(dividends_gzpfh))
+-- end)
 
 menu.toggle_loop(test, "自动收集", {""}, "", function()
     PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 237, 1)
@@ -3172,33 +2675,6 @@ menu.toggle_loop(world, "过度测试", {""}, "", function()
     -- end
     latiao_log(memory.read_int(memory.script_global(1575008)))
 end)
-menu.toggle_loop(server, "快速加入", {""}, "", function()
-    if memory.read_int(memory.script_global(1575008)) == 25 then
-        menu.trigger_command(menu.ref_by_path("Stand>Experiments>Abort Transition"))
-        latiao_log("true")
-    end
-end)
-
-menu.toggle_loop(server, "快速加入2", {""}, "", function()
-    if memory.read_int(memory.script_global(1575008)) == 4 then
-        menu.trigger_command(menu.ref_by_path("Stand>Experiments>Abort Transition"))
-        latiao_log("true")
-    end
-end)
-
-menu.toggle_loop(server, "循环产业突袭", {""}, "", function()
-    for k, pid in pairs(players.list()) do
-        local attack = players.get_name(pid)
-        if not pid == players.get_boss(pid) then
-
-            goto out
-        end
-        -- latiao_log(pid)
-        menu.trigger_commands("raid" .. attack)
-        ::out::
-    end
-    util.yield(100000)
-end)
 
 menu.toggle_loop(world, "TASK_COMBAT_PED", {"TASK_COMBAT_PED"}, "TASK_COMBAT_PED.", function()
     for k, ent in pairs(entities.get_all_peds_ads_handles()) do
@@ -3214,24 +2690,6 @@ menu.action(server, "NETWORK_HASH_FROM_PLAYER_HANDLE", {""}, "", function()
         latiao_log(name .. "," .. NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid))
     end
 end)
-
--- menu.action(server, "传送所有人到机场", {""}, "", function()
---     for k, pid in pairs(players.list()) do
---         -- if not pid == players.user() then
-
---         util.trigger_script_event(1 << pid, {-1604421397, pid, 60,4,NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid)})
---         -- latiao_log(NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid))
---     -- end
---     end
--- end)
--- menu.action(test, "test memory ", {""}, "", function()
---     local outptr = memory.alloc(4)
---    local handle = memory.read_int(outptr)
--- latiao_log(handle)
---         -- end
---     -- end
-
--- end)
 
 menu.toggle_loop(test, "key test", {"keytest"}, "keytest.", function()
     if util.is_key_down(0x09) then
@@ -3311,17 +2769,6 @@ menu.toggle_loop(obinfo, "实体控制枪", {"latiaodebuggun"}, ("latiaodebuggun
     end
 end)
 
--- menu.toggle_loop(test, "循环刷警察", {}, "", function()
---     local ped = util.joaat('s_m_y_cop_01')
---     util.request_model(ped)
-
---     -- local pos = v3.new(0, 0, 0)
---     PED.CREATE_PED(4, util.joaat('s_m_y_cop_01'), 0,0,0, 0,true,true)
---     -- WEAPON.GIVE_WEAPON_TO_PED(createped, util.joaat('WEAPON_HOMINGLAUNCHER'), 100, true, true)
---     -- util.yield()
---     -- FIRE.ADD_EXPLOSION(pos, math.random(0, 82), 100.0, false, true, 100.0)
--- end)
-
 menu.toggle_loop(test, "SET_PED_DENSITY_MULTIPLIER_THIS_FRAME", {""}, "", function()
 
     PED.SET_PED_DENSITY_MULTIPLIER_THIS_FRAME(INT_MAX)
@@ -3351,10 +2798,6 @@ menu.toggle_loop(server, "刷屏", {"latiaocleanchat"}, "latiaocleanchat.", func
     chat.send_message((math.random(INT_MIN, INT_MAX)), false, true, true)
     util.yield(1000)
 end)
-menu.toggle_loop(server, "util.get_session_players_bitflag()", {"util.get_session_players_bitflag()"},
-    "util.get_session_players_bitflag().", function()
-        latiao_log(util.get_session_players_bitflag())
-    end)
 
 menu.action(server, "无效a_c_rat动作崩溃", {""}, "", function()
     local pos = v3.new(0, 0, 75)
@@ -3408,25 +2851,6 @@ end)
 
 menu.toggle_loop(server, "所有人循环踢出ceo", {""}, "", function()
     util.trigger_script_event(util.get_session_players_bitflag(), {-11681548})
-
-end)
-
-menu.action(world, "summon ped", {""}, "", function()
-    local pos = players.get_position(players.user())
-    local pedobj = util.joaat("s_f_y_hooker_02")
-    util.request_model(pedobj)
-    local createpedobj = entities.create_ped(23, pedobj, pos, 0)
-
-    ENTITY.SET_ENTITY_COORDS(createpedobj, pos)
-
-end)
-
-menu.toggle_loop(test, "chat.send_targeted_message", {""}, "", function()
-    chat.send_targeted_message(players.user(), players.user(), "test", false)
-
-end)
-menu.toggle_loop(test, "chat.send_message", {""}, "", function()
-    chat.send_message(players.user(), false, true, false)
 
 end)
 
@@ -3486,7 +2910,7 @@ menu.toggle_loop(server, "entities.request_control请求所有 可拾取2", {""}
     end
 end)
 
-menu.toggle_loop(server, "entities.set_can_migrate请求所有 行人", {"latiaoREQUES_ENTITYped"},
+menu.toggle_loop(server, "entities.set_can_migrate false请求所有 行人", {"latiaoREQUES_ENTITYped"},
     "latiaoREQUES_ENTITYped.", function()
         for _, target in ipairs(entities.get_all_peds_as_handles()) do
             local owner = entities.get_owner(target)
@@ -3506,7 +2930,7 @@ menu.toggle_loop(server, "entities.set_can_migrate请求所有 行人", {"latiao
 
     end)
 
-menu.toggle_loop(server, "entities.set_can_migrate所有 实体", {"latiaoREQUES_ENTITYobjects"},
+menu.toggle_loop(server, "entities.set_can_migrate false所有 实体", {"latiaoREQUES_ENTITYobjects"},
     "REQUES_ENTITYobjects.", function()
         for k, target in pairs(entities.get_all_objects_as_handles()) do
             local owner = entities.get_owner(target)
@@ -3526,7 +2950,7 @@ menu.toggle_loop(server, "entities.set_can_migrate所有 实体", {"latiaoREQUES
 
     end)
 
-menu.toggle_loop(server, "entities.set_can_migrate所有 载具", {"latiaoREQUES_ENTITYvehicles"},
+menu.toggle_loop(server, "entities.set_can_migrate false所有 载具", {"latiaoREQUES_ENTITYvehicles"},
     "REQUES_ENTITYvehicles.", function()
         for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
             local owner = entities.get_owner(target)
@@ -3543,7 +2967,7 @@ menu.toggle_loop(server, "entities.set_can_migrate所有 载具", {"latiaoREQUES
             end
         end
     end)
-menu.toggle_loop(server, "entities.set_can_migrate所有 可拾取", {""}, "", function()
+menu.toggle_loop(server, "entities.set_can_migrate false所有 可拾取", {""}, "", function()
     for k, target in pairs(entities.get_all_pickups_as_handles()) do
         local owner = entities.get_owner(target)
         if owner ~= players.user() then
@@ -3561,7 +2985,7 @@ menu.toggle_loop(server, "entities.set_can_migrate所有 可拾取", {""}, "", f
     end
 end)
 
-menu.toggle_loop(server, "取消所有控制权set_can_migrate 所有行人", {""}, "", function()
+menu.toggle_loop(server, "控制权迁移到其他玩家 所有行人", {""}, "", function()
     local list = players.list(false, true, true)
     local index = math.random(#list)
     for _, target in ipairs(entities.get_all_peds_as_handles()) do
@@ -3578,7 +3002,7 @@ menu.toggle_loop(server, "取消所有控制权set_can_migrate 所有行人", {"
 
 end)
 
-menu.toggle_loop(server, "取消所有控制权set_can_migrat 所有objects", {""}, "", function()
+menu.toggle_loop(server, "控制权迁移到其他玩家 所有objects", {""}, "", function()
     local list = players.list(false, true, true)
     local index = math.random(#list)
     for _, target in ipairs(entities.get_all_objects_as_handles()) do
@@ -3594,7 +3018,7 @@ menu.toggle_loop(server, "取消所有控制权set_can_migrat 所有objects", {"
 
 end)
 
-menu.toggle_loop(server, "取消所有控制权set_can_migrat 所有可拾取", {""}, "", function()
+menu.toggle_loop(server, "控制权迁移到其他玩家 所有可拾取", {""}, "", function()
     local list = players.list(false, true, true)
     local index = math.random(#list)
     for k, target in pairs(entities.get_all_pickups_as_handles()) do
@@ -3609,7 +3033,7 @@ menu.toggle_loop(server, "取消所有控制权set_can_migrat 所有可拾取", 
     end
 
 end)
-menu.toggle_loop(server, "取消所有控制权set_can_migrat 所有载具", {""}, "", function()
+menu.toggle_loop(server, "控制权迁移到其他玩家 所有载具", {""}, "", function()
     local list = players.list(false, true, true)
     local index = math.random(#list)
     for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
@@ -3638,15 +3062,6 @@ menu.action(server, "关取消传出所有人", {"latiaodesyncoff"}, "只对他�
 
 end)
 
-menu.action(test, "ATTACH_ENTITY_TO_ENTITY", {""}, "", function()
-    local pos = v3.new(players.get_position(players.user()))
-    local pedobj = util.joaat("a_c_fish")
-    util.request_model(pedobj)
-    local createpedobj = entities.create_ped(24, pedobj, pos, 0)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(players.user_ped(), createpedobj, 0, 0, 0, 0, 0, 0, 0, false, false, false, false, 0,
-        false, 0)
-end)
-
 menu.toggle_loop(server, "禁止别人抢夺公文包", {""}, "", function()
     for k, ent in pairs(entities.get_all_pickups_as_handles()) do
         if ENTITY.GET_ENTITY_MODEL(ent) == util.joaat("set_can_migrate") then
@@ -3666,7 +3081,7 @@ menu.toggle_loop(server, "禁止别人抢夺公文包", {""}, "", function()
 end)
 
 menu.toggle_loop(dividends_general, "禁止任务失败", {""}, "", function()
-    SET_LOCAL_BIT("fm_mission_controller", 15149, 7)
+    SET_LOCAL_BIT("fm_mission_controller", 15166, 7)
 end)
 menu.action(server, "NETWORK_PREVENT_SCRIPT_HOST_MIGRATION ", {""}, "", function()
     for _, script in ipairs(ALL_script) do
@@ -3690,17 +3105,6 @@ menu.action(server, "查询启动的游戏脚本 ", {""}, "", function()
         end)
     end
 end)
-
--- for _, script in ipairs(ALL_script) do
-
---     util.create_thread(function()
---         util.spoof_script(script, function()
---             latiao_log(script.."="..NETWORK.NETWORK_IS_HOST_OF_THIS_SCRIPT())
---             local hostinfo = script .. "=" .. NETWORK.NETWORK_IS_HOST_OF_THIS_SCRIPT()
---             -- util.draw_debug_text(hostinfo)
---         end)
---     end)
--- end
 
 menu.toggle_loop(server, "查询是否为启动的游戏脚本主机NETWORK_IS_HOST_OF_THIS_SCRIPT", {""}, "",
     function()
@@ -3792,15 +3196,6 @@ menu.toggle_loop(server, "自动获取所有脚本主机2阻止主机迁移", {"
     end
 end)
 
-menu.action(server, "spoof_script", {""}, "", function()
-    for _, script in ipairs(ALL_script) do
-        util.spoof_script(script, function()
-            latiao_log("nihao")
-
-        end)
-    end
-end)
-
 menu.toggle_loop(server, "所有人刷手办", {""}, "", function()
     local pickup = util.joaat("vw_prop_vw_colle_prbubble")
     util.request_model(pickup)
@@ -3840,18 +3235,6 @@ menu.toggle_loop(server, "刷纸牌给自己附近", {""}, "", function()
 
     local pos = players.get_position(players.user())
     OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_CUSTOM_SCRIPT"), pos.x, pos.y + 5, pos.z, 0, 0, pickup, true, false)
-
-end)
-menu.toggle_loop(server, "阻止传出所有作弊玩家", {""}, "", function()
-    for k, pid in pairs(players.list(false, true, true)) do
-        if players.is_marked_as_modder(pid) then
-            local attack = players.get_name(pid)
-            -- menu.trigger_commands("timeout" .. attack .. " on")
-            menu.trigger_commands("desync" .. attack .. " on")
-        end
-
-        ::out::
-    end
 
 end)
 
@@ -3899,13 +3282,14 @@ menu.toggle_loop(server, "过多ped实体掉帧/崩溃", {""},
 
 menu.toggle_loop(dividends_general, "所有任务最低玩家限制为0", {""}, "", function()
     local status, err = pcall(function()
-        SET_INT_GLOBAL(794744 + 4 + 1 + GET_INT_LOCAL("fmmc_launcher", 19331 + 34) * 89 + 69, 1)
-        SET_INT_LOCAL("fmmc_launcher", 19331 + 15, 1)
-        SET_INT_GLOBAL(4718592 + 3249, 1)
-        SET_INT_GLOBAL(4718592 + 3255 + 1, 1)
-        SET_INT_GLOBAL(4718592 + 176675 + 1, 0)
-        SET_INT_GLOBAL(4718592 + 3252, 1)
-        SET_INT_GLOBAL(4718592 + 3253, 1)
+        local iArrayPos = GET_INT_LOCAL("fmmc_launcher", 19709 + 34)
+        SET_INT_GLOBAL(794744 + 4 + 1 + iArrayPos * 89 + 69, 1)
+        SET_INT_LOCAL("fmmc_launcher", 19709 + 15, 1)
+        SET_INT_GLOBAL(4718592 + 3523, 1)
+        SET_INT_GLOBAL(4718592 + 3529 + 1, 1)
+        SET_INT_GLOBAL(4718592 + 178821 + 1, 0)
+        SET_INT_GLOBAL(4718592 + 3526, 1)
+        SET_INT_GLOBAL(4718592 + 3527, 1)
     end)
     if not status then
         -- latiao_log(err)
@@ -3913,25 +3297,14 @@ menu.toggle_loop(dividends_general, "所有任务最低玩家限制为0", {""}, 
 end)
 menu.action(dividends_general, "跳过检查点", {""}, "", function()
     local status, err = pcall(function()
-        SET_LOCAL_BIT("fm_mission_controller", 19728 + 2, 17)
+        SET_LOCAL_BIT("fm_mission_controller", 19746 + 2, 17)
     end)
     if not status then
         -- latiao_log(err)
     end
 end)
 
-menu.toggle_loop(dividends_general, "无限生命", {""}, "", function()
-    local status, err = pcall(function()
-        for i = 0, 3 do
-            SET_INT_LOCAL("fm_mission_controller", 26154 + 1325 + 1 + i, 100000000)
-        end
-    end)
-    if not status then
-        -- latiao_log(err)
-    end
-end)
-
-menu.action(test, "ATTACH_ENTITY_TO_ENTITY all", {""}, ".", function()
+menu.action(test, "绑定所有实体到自己ATTACH_ENTITY_TO_ENTITY all", {""}, ".", function()
     for _, entity in ipairs(ALL_Entities()) do
         ENTITY.ATTACH_ENTITY_TO_ENTITY(entity, players.user_ped(), 0, 0, 0, 0, 0, 0, 0, false, false, false, false, 0,
             false, 0)
@@ -3939,56 +3312,49 @@ menu.action(test, "ATTACH_ENTITY_TO_ENTITY all", {""}, ".", function()
     end
 end)
 
-menu.action(test, "START_CUTSCENE", {""}, ".", function()
+menu.action(test, "触发过场动画START_CUTSCENE", {""}, ".", function()
     CUTSCENE.REQUEST_CUTSCENE("fin_a_int", 0)
 
     CUTSCENE.START_CUTSCENE(0)
 
 end)
 
-menu.action(test, "EXPLODE_VEHICLE_IN_CUTSCENE", {""}, ".", function()
+menu.action(test, "爆炸所有车EXPLODE_VEHICLE_IN_CUTSCENE", {""}, ".", function()
 
     for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
         VEHICLE.EXPLODE_VEHICLE_IN_CUTSCENE(target)
     end
 end)
 
-menu.action(test, "NETWORK_EXPLODE_VEHICLE", {""}, ".", function()
+menu.action(test, "爆炸所有车NETWORK_EXPLODE_VEHICLE", {""}, ".", function()
 
     for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
         NETWORK.NETWORK_EXPLODE_VEHICLE(target, true, false, 0)
     end
 end)
 
-menu.action(test, "EXPLODE_VEHICLE", {""}, ".", function()
-
-    for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
-        VEHICLE.EXPLODE_VEHICLE(target, true, false)
-    end
-end)
-
 menu.toggle_loop(server, "所有人无限加血give_pickup_reward", {""}, "", function()
     for k, pid in pairs(players.list(false, true, true)) do
-        -- util.create_thread(function()
+
         players.give_pickup_reward(pid, "REWARD_HEALTH")
         util.yield()
-        -- end)
+
     end
 end)
 menu.toggle_loop(server, "所有人无限加防弹衣give_pickup_reward", {""}, "", function()
     for k, pid in pairs(players.list(false, true, true)) do
-        -- util.create_thread(function()
+
         players.give_pickup_reward(pid, "REWARD_ARMOUR")
         util.yield()
-        -- end)
+
     end
 end)
 menu.toggle_loop(server, "所有人无限修车give_pickup_reward", {""}, "", function()
     for k, pid in pairs(players.list(false, true, true)) do
-        -- util.create_thread(function()
+
         players.give_pickup_reward(pid, "REWARD_VEHICLE_FIX")
         util.yield()
-        -- end)
+
     end
 end)
 
@@ -4012,57 +3378,17 @@ menu.action(server, "无效人物伞崩", {""}, "", function()
     WEAPON.GIVE_DELAYED_WEAPON_TO_PED(players.user_ped(), util.joaat("gadget_parachute"), INT_MAX, false)
     PLAYER.SET_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(players.user(), util.joaat("v_ind_meatpacks_03"))
     TASK.TASK_PARACHUTE_TO_TARGET(players.user_ped(), 0, 0, 0)
-    -- util.yield(10000)
-    -- TASK.CLEAR_PED_TASKS_IMMEDIATELY(players.user_ped())
-    -- PLAYER.CLEAR_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(players.user())
 
 end)
-menu.action(server, "CLEAR_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE", {""}, "", function()
-    -- WEAPON.GIVE_DELAYED_WEAPON_TO_PED(players.user_ped(), util.joaat("gadget_parachute"), INT_MAX, false)
-    -- PLAYER.SET_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(players.user(), util.joaat("v_ind_meatpacks_03"))
-    -- TASK.TASK_PARACHUTE_TO_TARGET(players.user_ped(), 0, 0, 0)
-    -- util.yield(10000)
+menu.action(server, "清理无效人物伞崩CLEAR_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE", {""}, "", function()
+
     TASK.CLEAR_PED_TASKS_IMMEDIATELY(players.user_ped())
     PLAYER.CLEAR_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(players.user())
 
 end)
 
-menu.action(server, "trigger_script_event", {""}, "", function()
-
-    util.trigger_script_event(util.get_session_players_bitflag(), {1735064874})
-
-end)
-
---     menu.action(test, "ATTACH_ENTITY_TO_ENTITY", {""}, "", function()
-
---     ENTITY.ATTACH_ENTITY_TO_ENTITY(players.user_ped(), players.user_ped(), 0, 0, 0, 0, 0, 0, 0, false, false, false, false, 0,
---         false, 0)
-
--- end) 
-
-menu.action(server, "TIMER_STOP SOUND 声音所有人", {""}, "", function()
-    for i = 1, 100, 1 do
-        -- latiao_log(players.user_ped())
-        AUDIO.PLAY_SOUND_FROM_ENTITY(-1, "Bed", players.user_ped(), "WastedSounds", true, 0)
-    end
-
-    -- util.yield(50)
-end)
-menu.action(server, "NETWORK_RESURRECT_LOCAL_PLAYER", {""}, "", function()
+menu.action(server, "重新生成自身NETWORK_RESURRECT_LOCAL_PLAYER", {""}, "", function()
     NETWORK.NETWORK_RESURRECT_LOCAL_PLAYER(0, 0, 100, 0, false, false, false, 0, 0)
-end)
-
--- for k, pid in pairs(players.list(false, true, true)) do
--- util.trigger_script_event(util.get_session_players_bitflag(), {-1253241415, players.user(), 0,0,0})
--- end
-menu.toggle_loop(server, "random", {""}, "", function()
-    local list = players.list(false, true, true)
-    local index = math.random(#list)
-    -- latiao_log(index)
-    local replay = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(index)
-    local pos = players.get_position(players.user())
-    -- FIRE.ADD_OWNED_EXPLOSION(index, pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
-    FIRE.ADD_OWNED_EXPLOSION(replay, pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
 end)
 
 menu.toggle_loop(server, "打印观看玩家记录到控制台", {""}, "", function()
@@ -4076,23 +3402,12 @@ menu.toggle_loop(server, "打印观看玩家记录到控制台", {""}, "", funct
 
 end)
 
-menu.toggle_loop(world, "VEHICLE.SET_VEHICLE_EXCLUSIVE_DRIVER 所有载具", {""}, "", function()
-
-    for _, target in ipairs(entities.get_all_vehicles_as_handles()) do
-        VEHICLE.SET_VEHICLE_EXCLUSIVE_DRIVER(target, players.user_ped(), 0)
-    end
-
-end)
 menu.action(server, "无效收藏品脚本事件踢所有人", {"latiaokickallexcludehost"}, "latiaokickallexcludehost",
     function()
 
         util.trigger_script_event(util.get_session_players_bitflag(), {968269233, players.user(), 4, 233, 1, 1, 1})
 
     end)
-
-menu.toggle_loop(server, "players.get_script_host()", {""}, "", function()
-    latiao_log(players.get_script_host())
-end)
 
 latiao_log("end")
 
@@ -4101,13 +3416,6 @@ menu.toggle_loop(dividends_bjbgs, "所有目标奖励40000", {""}, "", function(
     STAT_SET_INT("BOUNTY24_STD_TARG_RWD_0", 40000)
     STAT_SET_INT("BOUNTY24_STD_TARG_RWD_1", 40000)
     STAT_SET_INT("BOUNTY24_STD_TARG_RWD_2", 40000)
-end)
-
-menu.toggle_loop(dividends_bjbgs, "BOUNTY24_STD_TARG_MIS", {""}, "", function()
-
-    STAT_SET_INT("BOUNTY24_STD_TARG_MIS_0", 0)
-    STAT_SET_INT("BOUNTY24_STD_TARG_MIS_1", 0)
-    STAT_SET_INT("BOUNTY24_STD_TARG_MIS_2", 0)
 end)
 
 menu.toggle_loop(world, "GIVE_WEAPON_TO_PED all", {}, "", function()
@@ -4130,20 +3438,7 @@ menu.toggle_loop(server, "对作弊玩家被动", {""}, "", function()
 
 end)
 
-menu.action(server, "ww", {""}, "", function()
-    util.trigger_script_event(players.user(), {-901348601})
-
-end)
-menu.toggle_loop(server, "NETWORK_SESSION_GET_KICK_VOTE", {""}, "", function()
-    local test = NETWORK.NETWORK_SESSION_GET_KICK_VOTE(players.user())
-
-    latiao_log("NETWORK.NETWORK_SESSION_GET_KICK_VOTE=" .. test)
-end)
-
 local servermoney = menu.list(menu.my_root(), "服务器交易", {}, "")
-
-
-
 
 menu.toggle_loop(server, "对无敌玩家被动", {""}, "", function()
     for k, pid in pairs(players.list(false, true, true)) do
@@ -4169,51 +3464,190 @@ menu.action(server, "取消对所有玩家被动", {""}, "", function()
 
 end)
 
-
 -- menu.action(test,"entities.player_info_get_game_state",{""},"",function()
 --     for k, pid in pairs(players(false,true,true)) do
 --         local playersped = players.get
-        
+
 --     end
-    
+
 -- end
-
-
-
-
 
 -- )
 
+menu.action(servermoney, "直接获取赌场豪杰直接分红3600000(30分钟冷却)", {""}, "30分钟冷却",
+    function()
+        latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_CASINO_HEIST_FINALE"), 3600000)
+    end)
 
+menu.action(servermoney, "直接获取佩里克岛直接分红2550000(30分钟冷却)", {""}, "30分钟冷却",
+    function()
+        latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_ISLAND_HEIST_FINALE"), 2550000)
+    end)
 
-local servermoneylow = menu.list(servermoney, "几乎无风险", {}, "")
-local servermoneyhigh = menu.list(servermoney, "中高风险", {}, "")
-
-menu.action(servermoneylow, "直接获取赌场豪杰直接分红3600000(30分钟冷却)", {""}, "30分钟冷却", function()
-    latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_CASINO_HEIST_FINALE"), 3600000)
-end)
-
-
-
-menu.action(servermoneylow, "直接获取佩里克岛直接分红2550000(30分钟冷却)", {""}, "30分钟冷却", function()
-    latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_ISLAND_HEIST_FINALE"), 2550000)
-end)
-
-
-
-menu.action(servermoneylow, "直接获取末日豪直接分红2550000(5分钟冷却)", {""}, "5分钟冷却", function()
+menu.action(servermoney, "直接获取末日豪直接分红2550000(5分钟冷却)", {""}, "5分钟冷却", function()
     latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_GANGOPS_FINALE"), 2550000)
 end)
 
-
-
-menu.action(servermoneylow, "普通任务奖励, 180000(无冷却)", {""}, "无冷却", function()
+menu.toggle_loop(servermoney, "普通任务奖励, 180000(无冷却)", {""}, "无冷却", function()
     latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_JOBS"), 180000)
 end)
-
-menu.action(servermoneyhigh, "SERVICE_EARN_JOB_BONUS, 15000000", {""}, "未知冷却小时", function()
+menu.toggle_loop(servermoney, "随机普通任务奖励, 100000-180000(无冷却)", {""}, "无冷却", function()
+    latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_JOBS"), math.random(100000, 150000))
+end)
+menu.action(servermoney, "SERVICE_EARN_JOB_BONUS, 15000000", {""}, "未知冷却小时", function()
     latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_JOB_BONUS"), 15000000)
 end)
-menu.action(servermoneyhigh, "SERVICE_EARN_BEND_JOB, 15000000", {""}, "未知冷却小时", function()
+menu.action(servermoney, "SERVICE_EARN_BEND_JOB, 15000000", {""}, "未知冷却小时", function()
     latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_BEND_JOB"), 15000000)
+end)
+
+menu.toggle_loop(world, "删除拥有网络所有权的所有物体", {""}, "delallobjects.", function()
+    for k, ent in pairs(entities.get_all_objects_as_handles()) do
+        util.create_thread(function()
+            if entities.get_owner(ent) == players.user() and NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(ent) then
+
+                entities.delete(ent)
+
+            end
+        end)
+    end
+end)
+
+menu.toggle_loop(world, "删除拥有网络所有权的所有npc", {""}, "delallpeds.", function()
+    for k, ent in pairs(entities.get_all_peds_as_handles()) do
+        util.create_thread(function()
+            if entities.get_owner(ent) == players.user() and NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(ent) then
+
+                entities.delete(ent)
+
+            end
+        end)
+    end
+end)
+
+menu.toggle_loop(world, "删除拥有网络所有权的所有车", {""}, "delallvehicles.", function()
+    for k, ent in pairs(entities.get_all_vehicles_as_handles()) do
+        util.create_thread(function()
+            if entities.get_owner(ent) == players.user() and NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(ent) then
+
+                entities.delete(ent)
+            end
+        end)
+    end
+end)
+
+menu.toggle_loop(world, "删除拥有网络所有权的可拾取物品", {""}, "delallvehicles.", function()
+    for k, ent in pairs(entities.get_all_pickups_as_handles()) do
+        util.create_thread(function()
+            if entities.get_owner(ent) == players.user() and NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(ent) then
+
+                entities.delete(ent)
+            end
+        end)
+    end
+end)
+
+menu.toggle_loop(world, "删除拥有网络所有权的所有", {""}, "delall.", function()
+
+    for _, ent in ipairs(ALL_Entities()) do
+        util.create_thread(function()
+            if entities.get_owner(ent) == players.user() and NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(ent) then
+
+                entities.delete(ent)
+
+            end
+        end)
+    end
+end)
+
+menu.toggle_loop(world, "随机玩家击杀 自己 ", {""}, "", function()
+    local list = players.list()
+    local index = math.random(#list)
+
+    local randomPid = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(list[index])
+
+    local pos = v3.new(players.get_position(players.user()))
+    FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, INT_MAX, false, true, 0.0)
+
+end)
+
+menu.toggle_loop(world, "删除网络所有权异常的所有", {""}, "delall.", function()
+
+    for _, ent in ipairs(ALL_Entities()) do
+        util.create_thread(function()
+            if entities.get_owner(ent) == 255 then
+
+                entities.delete(ent)
+
+            end
+        end)
+    end
+end)
+
+menu.toggle_loop(server, "随机假身作弊", {"latiaofakepos"}, ("latiaofakepos"), function()
+    menu.trigger_commands(
+        "spoofedposition " .. math.random(-10000, 10000) .. "," .. math.random(-10000, 10000) .. "," ..
+            math.random(-200, 1500))
+    util.yield(100)
+
+end)
+
+menu.action(server, "超时所有绿色玩家", {""}, "", function()
+    for k, pid in pairs(players.list(false, true, true)) do
+        if not players.is_marked_as_modder(pid) then
+            local attack = players.get_name(pid)
+            menu.trigger_commands("desync" .. attack .. " on")
+        end
+
+        ::out::
+    end
+
+end)
+
+menu.action(server, "阻止传出所有作弊玩家", {""}, "", function()
+    for k, pid in pairs(players.list(false, true, true)) do
+        if players.is_marked_as_modder(pid) then
+            local attack = players.get_name(pid)
+            -- menu.trigger_commands("timeout" .. attack .. " on")
+            menu.trigger_commands("desync" .. attack .. " on")
+        end
+
+        ::out::
+    end
+
+end)
+
+menu.action(dividends_general, "设置抢劫金钱", {"finfmc"}, "finfm_mission_controller", function()
+
+    SET_INT_LOCAL("fm_mission_controller", 19746 + 2686, INT_MAX)
+end)
+
+menu.action(server, "所有人强制开启拉机能量跳伞", {""}, "", function()
+
+    util.trigger_script_event(util.get_session_players_bitflag(), {1450115979, players.user(), 267, -1})
+
+end)
+
+menu.action(world, "自动驾驶LONGRANGE", {""}, "", function()
+    local pos = players.get_cam_pos(players.user())
+    local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user())
+    local mdl = util.joaat("cs_manuel")
+    local veh_mdl = util.joaat("oppressor")
+    util.request_model(veh_mdl)
+    util.request_model(mdl)
+    local veh = entities.create_vehicle(veh_mdl, pos, 0)
+    local jesus = entities.create_ped(2, mdl, pos, 0)
+    PED.SET_PED_INTO_VEHICLE(jesus, veh, -1)
+    util.yield(1000)
+    TASK.TASK_VEHICLE_HELI_PROTECT(jesus, veh, playerped, INT_MAX, 0, INT_MAX, 0, 0)
+
+end)
+
+menu.toggle_loop(server, "给与小于125等级的人刷经验(直到他等级达到125)", {""}, "", function()
+    for k, pid in pairs(players.list(true, true, true)) do
+        if players.get_rank(pid) < 125 then
+            util.trigger_script_event(1 << pid, {968269233, pid, 4, 21, 1, 1, 1})
+        end
+
+    end
 end)
