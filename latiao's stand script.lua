@@ -2049,15 +2049,92 @@ local function latiaostandMenuSetup(pid)
 
     end)
 
-
     menu.action(latiaostandMenu, "1669592503", {""}, "", function()
-        util.trigger_script_event(1 << pid, {1669592503,players.user(),0,0,4,0})
+        util.trigger_script_event(1 << pid, {1669592503, players.user(), 0, 0, 4, 0})
         if not players.exists(pid) then
             util.stop_thread()
         end
 
     end)
+
+    menu.toggle_loop(latiaostandMenu, "设置假身作弊到他", {"latiaofakepos"}, ("latiaofakepos"), function()
+        local pos = v3.new(players.get_position(pid))
+
+        menu.trigger_commands("spoofedposition " .. pos.x .. "," .. pos.y .. "," .. pos.z)
+        -- util.yield(100)
+
+    end)
+
+    menu.toggle_loop(latiaostandMenu, "骚扰sms", {""}, (""), function()
+        players.send_sms(pid, "sb")
+
+    end)
+    menu.toggle_loop(latiaostandMenu, "随机载具填充池", {""}, (""), function()
+        local vehicles = util.get_vehicles()
+
+        local random_index = math.random(1, #vehicles)
+        local random_vehicle = vehicles[random_index]
+
+        local vehicletobj = util.joaat(random_vehicle.name)
+        util.request_model(vehicletobj)
+        local createobj = entities.create_vehicle(vehicletobj, players.get_position(pid), 0)
+        util.yield()
+        entities.delete(createobj)
+
+    end)
+
+    menu.action(latiaostandMenu, "无效TASK_VEHICLE_HELI_PROTECT动作崩溃", {""}, "", function()
+        local pos = players.get_cam_pos(pid)
+        local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+        local mdl = util.joaat("a_m_y_stlat_01")
+        local veh_mdl = util.joaat("dilettante")
+        util.request_model(veh_mdl)
+        util.request_model(mdl)
+        local veh = entities.create_vehicle(veh_mdl, pos, 0)
+        local jesus = entities.create_ped(2, mdl, pos, 0)
+        PED.SET_PED_INTO_VEHICLE(jesus, veh, -1)
+        util.yield(1000)
+        TASK.TASK_VEHICLE_HELI_PROTECT(jesus, veh, playerped, INT_MAX, 0, INT_MAX, 0, 0)
+
+    end)
+
+    menu.action(latiaostandMenu, "无效TASK_SUBMARINE_GOTO_AND_STOP动作崩溃", {""}, "", function()
+        local pos = players.get_cam_pos(pid)
+        local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+        local pos = players.get_position(pid)
+        local mdl = util.joaat("a_m_y_stlat_01")
+        local veh_mdl = util.joaat("dilettante")
+        util.request_model(veh_mdl)
+        util.request_model(mdl)
+
+        local veh = entities.create_vehicle(veh_mdl, pos, 0)
+        local jesus = entities.create_ped(2, mdl, pos, 0)
+
+        PED.SET_PED_INTO_VEHICLE(jesus, veh, -1)
+        util.yield(1000)
+        TASK.TASK_SUBMARINE_GOTO_AND_STOP(mdl, veh, 0, 0, 0, true)
+
+    end)
+
+    menu.action(latiaostandMenu, "无效TASK_PLANE_LAND动作崩溃", {""}, "", function()
+        local pos = players.get_cam_pos(pid)
+        local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+        local pos = players.get_position(pid)
+        local mdl = util.joaat("a_m_y_stlat_01")
+        local veh_mdl = util.joaat("dilettante")
+        util.request_model(veh_mdl)
+        util.request_model(mdl)
+
+        local veh = entities.create_vehicle(veh_mdl, pos, 0)
+        local jesus = entities.create_ped(2, mdl, pos, 0)
+
+        PED.SET_PED_INTO_VEHICLE(jesus, veh, -1)
+        util.yield(1000)
+        TASK.TASK_PLANE_LAND(jesus, veh, 0, 0, 0, 0, 0, 0)
+
+    end)
 end
+
 for _, pid in ipairs(players.list()) do
     latiaostandMenuSetup(pid)
 end
@@ -2714,12 +2791,14 @@ menu.toggle_loop(obinfo, "实体控制枪", {"latiaodebuggun"}, ("latiaodebuggun
         aim_info.ISNETWORKED = NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(handle)
         aim_info.ISMISSION = ENTITY.IS_ENTITY_A_MISSION_ENTITY(handle)
         aim_info.CANmigrate = entities.get_can_migrate(handle)
-        local guninfo = "U请求实体 I传送到我 O删除 K爆炸 H设置实体无敌 J关闭实体无敌"
+        aim_info.IsInvulnerable = entities.is_invulnerable(handle)
+        local guninfo = "U请求实体 I传送到我 O删除 K爆炸 H设置实体无敌"
 
         local text = "Hash=" .. aim_info.hash .. "," .. "Model=" .. aim_info.model .. "," .. "Health=" ..
                          aim_info.health .. "," .. "Owner=" .. aim_info.OWNER .. "," .. "OwnerName=" ..
                          aim_info.OWNERName .. "," .. "NETWORKED=" .. aim_info.ISNETWORKED .. "," .. "MISSIONENTITY=" ..
-                         aim_info.ISMISSION .. "," .. "Handle=" .. handle .. "," .. "CANmigrate=" .. aim_info.CANmigrate
+                         aim_info.ISMISSION .. "," .. "Handle=" .. handle .. "," .. "CANmigrate=" .. aim_info.CANmigrate ..
+                         "," .. "无敌=" .. aim_info.IsInvulnerable
 
         directx.draw_text(0.5, 0.2, guninfo, 5, 0.5, {
             r = 1,
@@ -2739,9 +2818,10 @@ menu.toggle_loop(obinfo, "实体控制枪", {"latiaodebuggun"}, ("latiaodebuggun
         if util.is_key_down(0x49) then
             local pos = players.get_position(players.user())
             ENTITY.SET_ENTITY_COORDS(handle, pos.x, pos.y, pos.z, false)
+
         end
         if util.is_key_down(0x55) then
-            NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(handle)
+            entities.request_control(handle)
         end
         if util.is_key_down(0x4F) then
             entities.delete(handle)
@@ -2758,14 +2838,16 @@ menu.toggle_loop(obinfo, "实体控制枪", {"latiaodebuggun"}, ("latiaodebuggun
 
         end
         if util.is_key_down(0x48) then
-            ENTITY.SET_ENTITY_INVINCIBLE(handle, true)
+            if entities.is_invulnerable(handle) then
+                ENTITY.SET_ENTITY_INVINCIBLE(handle, false)
+                print("SET_ENTITY_INVINCIBLE=false")
+            else
+                ENTITY.SET_ENTITY_INVINCIBLE(handle, true)
+                print("SET_ENTITY_INVINCIBLE=true")
+            end
 
         end
-        if util.is_key_down(0x4A) then
 
-            ENTITY.SET_ENTITY_INVINCIBLE(handle, false)
-
-        end
     end
 end)
 
@@ -3651,3 +3733,107 @@ menu.toggle_loop(server, "给与小于125等级的人刷经验(直到他等级�
 
     end
 end)
+
+menu.action(world, "get_vehicles all", {""}, "", function()
+    local vehicles = util.get_vehicles()
+
+    for index, vehicle in ipairs(vehicles) do
+        print("Vehicle " .. index .. ":")
+        print("Name: " .. vehicle.name)
+        print("Manufacturer: " .. vehicle.manufacturer)
+        print("Class: " .. vehicle.class)
+
+    end
+
+end)
+
+menu.toggle_loop(world, "随机载具填充池", {""}, "", function()
+    local vehicles = util.get_vehicles()
+
+    local random_index = math.random(1, #vehicles)
+    local random_vehicle = vehicles[random_index]
+
+    local vehicletobj = util.joaat(random_vehicle.name)
+    util.request_model(vehicletobj)
+    local createobj = entities.create_vehicle(vehicletobj, players.get_position(players.user()), 0)
+    util.yield()
+    entities.delete(createobj)
+
+end)
+
+-- menu.action(world, "无效载具绳索", {""}, "", function()
+--     PHYSICS.ROPE_LOAD_TEXTURES()
+--     local pos = ENTITY.GET_ENTITY_COORDS(players.user_ped())
+--     local ppos = ENTITY.GET_ENTITY_COORDS(players.user_ped())
+--     pos.x = pos.x + 5
+--     ppos.z = ppos.z + 1
+--     cargobob = entities.create_vehicle(2132890591, pos, 0)
+--     cargobob_pos = ENTITY.GET_ENTITY_COORDS(cargobob)
+--     kur = entities.create_ped(26, 2727244247, ppos, 0)
+--     kur_pos = ENTITY.GET_ENTITY_COORDS(kur)
+
+-- end)
+menu.action(world, "all vehicles SET_MODEL_AS_NO_LONGER_NEEDED", {""}, "", function()
+    local vehicles = util.get_vehicles()
+
+    for index, vehicle in ipairs(vehicles) do
+        local vehicle = util.joaat(vehicle.name)
+        STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(vehicle)
+    end
+
+end)
+
+menu.action(world, "all vehicles util.request_model", {""}, "", function()
+    local vehicles = util.get_vehicles()
+
+    for index, vehicle in ipairs(vehicles) do
+        local vehicle = util.joaat(vehicle.name)
+        util.request_model(vehicle)
+
+    end
+
+end)
+
+menu.toggle_loop(server, "NETWORK_SESSION_GET_KICK_VOTE", {""}, "", function()
+    print(NETWORK.NETWORK_SESSION_GET_KICK_VOTE(players.user()))
+
+end)
+menu.toggle_loop(server, "", {""}, "", function()
+
+    util.trigger_script_event(util.get_session_players_bitflag(), {-972329058, players.user(), 0})
+
+end)
+
+menu.toggle_loop(world, "所有人不会射击你", {""}, "", function()
+    PED.SET_PED_RESET_FLAG(players.user_ped(), 124, true)
+
+end)
+
+menu.toggle_loop(world, "SET_RIOT_MODE_ENABLED", {""}, "", function()
+
+    MISC.SET_RIOT_MODE_ENABLED(true)
+end, function()
+    MISC.SET_RIOT_MODE_ENABLED(false)
+
+end)
+
+menu.action(server, "超时所有作弊玩家", {""}, "", function()
+    for k, pid in pairs(players.list(false, true, true)) do
+        if players.is_marked_as_modder(pid) then
+            local attack = players.get_name(pid)
+            menu.trigger_commands("timeout" .. attack .. " on")
+        end
+
+        ::out::
+    end
+
+end)
+
+menu.action(server, "绳子全局崩", {""}, "", function()
+
+    -- local rope = 
+    PHYSICS.ADD_ROPE(0, 0, 0, 0, 0, 0, INT_MAX, 4, 20, 0, 0, false, false, false, 0, false, -1)
+    -- print(rope)
+
+end)
+
