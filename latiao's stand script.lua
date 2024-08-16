@@ -12,21 +12,13 @@ function latiao_server_TRANSACTION(hash)
         -- end
 
         local alloc_max = memory.alloc_int()
-        local valid_max = NETSHOPPING.NET_GAMESERVER_BEGIN_SERVICE(alloc_max, util.joaat("CATEGORY_SERVICE_WITH_THRESHOLD"), hash, util.joaat("NET_SHOP_ACTION_EARN"), cash, 2)
+        local valid_max = NETSHOPPING.NET_GAMESERVER_BEGIN_SERVICE(alloc_max,
+            util.joaat("CATEGORY_SERVICE_WITH_THRESHOLD"), hash, util.joaat("NET_SHOP_ACTION_EARN"), cash, 2)
         if valid_max then
             NETSHOPPING.NET_GAMESERVER_CHECKOUT_START(memory.read_int(alloc_max))
         end
     end)
 
-    
-
-    -- SET_INT_GLOBAL(4537311 + 1, 2147483646)
-    -- SET_INT_GLOBAL(4537311 + 7, 2147483647)
-    -- SET_INT_GLOBAL(4537311 + 6, 0)
-    -- SET_INT_GLOBAL(4537311 + 5, 0)
-    -- SET_INT_GLOBAL(4537311 + 3, hash)
-    -- SET_INT_GLOBAL(4537311 + 2, amount)
-    -- SET_INT_GLOBAL(4537311, 2)
 end
 
 function latiao_log(message)
@@ -39,6 +31,35 @@ function latiao_filter_log(message)
         print(message, TOAST_ALL)
         last_message = message
     end
+
+end
+
+function getTeamID(pid)
+    -- if not isNetPlayerOk(pid) then return end
+    local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+    local pPed = entities.handle_to_pointer(ped)
+    local net_obj = memory.read_long(pPed + 0xD0)
+    if net_obj == 0 then
+        return
+    end
+    print(net_obj)
+    local teamID = memory.read_byte(net_obj + 0x469)
+
+    return teamID
+
+end
+
+function getInstanceID(pid)
+
+    local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+    local pPed = entities.handle_to_pointer(ped)
+    local net_obj = memory.read_long(pPed + 0xD0)
+    if net_obj == 0 then
+        return
+    end
+    local instanceID = memory.read_byte(net_obj + 0x46A)
+
+    return instanceID
 
 end
 
@@ -131,22 +152,21 @@ local ALL_script = {"abigail1", "abigail2", "achievement_controller", "activity_
                     "am_mp_vinewood_premium_garage", "am_mp_vinewood_premium_modshop", "am_mp_warehouse", "am_mp_yacht",
                     "am_npc_invites", "am_pass_the_parcel", "am_penned_in", "am_penthouse_peds", "am_pi_menu",
                     "am_plane_takedown", "am_prison", "am_prostitute", "am_rollercoaster", "am_rontrevor_cut",
-                    "am_taxi", "am_vehicle_spawn", "animal_controller", "value_minigame_launcher",
-                    "apparcadebusiness", "apparcadebusinesshub", "appavengeroperations", "appbailoffice",
-                    "appbikerbusiness", "appbroadcast", "appbunkerbusiness", "appbusinesshub", "appcamera",
-                    "appchecklist", "appcontacts", "appcovertops", "appemail", "appextraction", "appfixersecurity",
-                    "apphackertruck", "apphs_sleep", "appimportexport", "appinternet", "appjipmp", "appmedia",
-                    "appmpbossagency", "appmpemail", "appmpjoblistnew", "apporganiser", "appprogresshub",
-                    "apprepeatplay", "appsecurohack", "appsecuroserv", "appsettings", "appsidetask", "appsmuggler",
-                    "apptextmessage", "apptrackify", "appvinewoodmenu", "appvlsi", "appzit", "arcade_seating",
-                    "arena_box_bench_seats", "arena_carmod", "arena_workshop_seats", "armenian1", "armenian2",
-                    "armenian3", "armory_aircraft_carmod", "assassin_bus", "assassin_construction", "assassin_hooker",
-                    "assassin_multi", "assassin_rankup", "assassin_valet", "atm_trigger", "audiotest",
-                    "autosave_controller", "auto_shop_seating", "bailbond1", "bailbond2", "bailbond3", "bailbond4",
-                    "bailbond_launcher", "bail_office_seating", "barry1", "barry2", "barry3", "barry3a", "barry3c",
-                    "barry4", "base_carmod", "base_corridor_seats", "base_entrance_seats", "base_heist_seats",
-                    "base_lounge_seats", "base_quaters_seats", "base_reception_seats", "basic_creator",
-                    "beach_exterior_seating", "benchmark", "bigwheel", "bj", "blackjack", "blimptest",
+                    "am_taxi", "am_vehicle_spawn", "animal_controller", "value_minigame_launcher", "apparcadebusiness",
+                    "apparcadebusinesshub", "appavengeroperations", "appbailoffice", "appbikerbusiness", "appbroadcast",
+                    "appbunkerbusiness", "appbusinesshub", "appcamera", "appchecklist", "appcontacts", "appcovertops",
+                    "appemail", "appextraction", "appfixersecurity", "apphackertruck", "apphs_sleep", "appimportexport",
+                    "appinternet", "appjipmp", "appmedia", "appmpbossagency", "appmpemail", "appmpjoblistnew",
+                    "apporganiser", "appprogresshub", "apprepeatplay", "appsecurohack", "appsecuroserv", "appsettings",
+                    "appsidetask", "appsmuggler", "apptextmessage", "apptrackify", "appvinewoodmenu", "appvlsi",
+                    "appzit", "arcade_seating", "arena_box_bench_seats", "arena_carmod", "arena_workshop_seats",
+                    "armenian1", "armenian2", "armenian3", "armory_aircraft_carmod", "assassin_bus",
+                    "assassin_construction", "assassin_hooker", "assassin_multi", "assassin_rankup", "assassin_valet",
+                    "atm_trigger", "audiotest", "autosave_controller", "auto_shop_seating", "bailbond1", "bailbond2",
+                    "bailbond3", "bailbond4", "bailbond_launcher", "bail_office_seating", "barry1", "barry2", "barry3",
+                    "barry3a", "barry3c", "barry4", "base_carmod", "base_corridor_seats", "base_entrance_seats",
+                    "base_heist_seats", "base_lounge_seats", "base_quaters_seats", "base_reception_seats",
+                    "basic_creator", "beach_exterior_seating", "benchmark", "bigwheel", "bj", "blackjack", "blimptest",
                     "blip_controller", "bootycallhandler", "bootycall_debug_controller", "buddydeathresponse",
                     "bugstar_mission_export", "buildingsiteambience", "building_controller", "business_battles",
                     "business_battles_defend", "business_battles_sell", "business_hub_carmod",
@@ -328,15 +348,12 @@ local ALL_script = {"abigail1", "abigail2", "achievement_controller", "activity_
                     "wardrobe_mp", "wardrobe_sp", "weapon_audio_widget", "wizard_arcade", "wp_partyboombox",
                     "xml_menus", "yoga"}
 
-
-                    function ADD_MP_INDEX(stat)
-                        if not string.contains(stat, "MP_") and not string.contains(stat, "MPPLY_") then
-                            return "MP" .. util.get_char_slot() .. "_" .. stat
-                        end
-                        return stat
-                    end
-                    
-
+function ADD_MP_INDEX(stat)
+    if not string.contains(stat, "MP_") and not string.contains(stat, "MPPLY_") then
+        return "MP" .. util.get_char_slot() .. "_" .. stat
+    end
+    return stat
+end
 
 function STAT_SET_INT(stat, value)
     STATS.STAT_SET_INT(util.joaat(ADD_MP_INDEX(stat)), value, true)
@@ -347,7 +364,6 @@ end
 function STAT_SET_STRING(stat, value)
     STATS.STAT_SET_STRING(util.joaat(ADD_MP_INDEX(stat)), value, true)
 end
-
 
 function STAT_INCREMENT(stat, value)
     STATS.STAT_INCREMENT(util.joaat(ADD_MP_INDEX(stat)), value, true)
@@ -370,11 +386,9 @@ function SET_FLOAT_GLOBAL(global, value)
     memory.write_float(memory.script_global(global), value)
 end
 
-
 function GET_INT_GLOBAL(global)
     return memory.read_int(memory.script_global(global))
 end
-
 
 function SET_INT_LOCAL(script, script_local, value)
     if memory.script_local(script, script_local) ~= 0 then
@@ -421,7 +435,6 @@ local test = menu.list(menu.my_root(), "测试", {}, "")
 
 local admin = menu.list(menu.my_root(), "管理", {}, "")
 
-
 local about = menu.list(menu.my_root(), "关于", {}, "")
 
 menu.toggle(killaura, "死亡npc", {}, "", function(on)
@@ -456,13 +469,17 @@ menu.toggle(killaura, "用火", {}, "", function(on)
     kill_aura_fire_Loop = on
 end)
 
--- menu.toggle(killaura, "", {}, "", function(on)
---     killaura_random_player = on
--- end)
-
-menu.toggle(killaura, "随机玩家爆炸", {}, "", function(on)
-    killaura_random_player_explosion = on
+menu.toggle(killaura, "用weapon_tranquilizer", {}, "", function(on)
+    kill_aura_weapon_tranquilizer = on
 end)
+
+menu.toggle(killaura, "用手中武器", {}, "", function(on)
+    killaura_my_WEAPON = on
+end)
+
+-- menu.toggle(killaura, "随机玩家爆炸", {}, "", function(on)
+--     killaura_random_player_explosion = on
+-- end)
 
 local killauratime = menu.slider(killaura, "等待", {"killauratime"}, "", 0, INT_MAX, 0, 1, function()
 end)
@@ -475,6 +492,7 @@ end)
 -- end)
 
 menu.toggle_loop(killaura, "开启", {"latiaokillaura"}, ("SHOOT ALL"), function()
+    local my_WEAPON = WEAPON.GET_SELECTED_PED_WEAPON(players.user_ped())
     -- if kill_aura_peds or kill_aura_player or kill_aura_in_vehicle then
     for _, ped in pairs(entities.get_all_peds_as_handles()) do
         local list = players.list(true, true, true)
@@ -503,14 +521,19 @@ menu.toggle_loop(killaura, "开启", {"latiaokillaura"}, ("SHOOT ALL"), function
                     false, true, 0.0)
                 -- elseif killaura_random_player_explosion then
                 -- FIRE.ADD_OWNED_EXPLOSION(randomPid, pos.x, pos.y, pos.z, 0, menu.get_value(killauraDamage), false, true, 0.0)
-            elseif killaura_random_player then
+            elseif killaura_my_WEAPON then
                 --  latiao_log("killaura_random_player")
                 MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z,
-                    menu.get_value(killauraDamage), true, util.joaat("weapon_pistol"), randomPid, false, true, INT_MAX)
+                    menu.get_value(killauraDamage), true, my_WEAPON, randomPid, false, true, INT_MAX)
+            elseif kill_aura_weapon_tranquilizer then
+                MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z,
+                menu.get_value(killauraDamage), true, util.joaat("weapon_tranquilizer"), players.user_ped(), false, true, INT_MAX)
+            
+
             else
                 --  latiao_log("killaura_none")
                 MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1.5, pos.x, pos.y, pos.z,
-                    menu.get_value(killauraDamage), true, util.joaat("weapon_pistol"), players.user_ped(), false, true,
+                    menu.get_value(killauraDamage), true, util.joaat("WEAPON_HEAVYSNIPER"), players.user_ped(), false, true,
                     INT_MAX)
                 util.yield(menu.get_value(killauratime))
             end
@@ -1040,7 +1063,6 @@ menu.slider(dividends_dc, "赌场抢劫分红", {""}, "", INT_MIN, INT_MAX, 100,
     SET_INT_GLOBAL(1964849 + 1497 + 736 + 92 + 4, value)
 end)
 
-
 menu.action(dividends_dc, "刷新赌场面板", {""}, "", function()
     local Board1 = STAT_GET_INT("H3OPT_BITSET0")
     local Board2 = STAT_GET_INT("H3OPT_BITSET1")
@@ -1055,7 +1077,7 @@ menu.action(dividends_mr, "完成末日前置", {}, "", function()
     STAT_SET_INT("GANGOPS_FLOW_MISSION_PROG", -1)
 end)
 
-menu.slider(dividends_mr, "末日分红", {""}, "2400000", INT_MIN, INT_MAX, 100, 1, function(value)
+menu.slider(dividends_mr, "末日分红", {"mrfh"}, "2400000", INT_MIN, INT_MAX, 100, 1, function(value)
     SET_INT_GLOBAL(1960755 + 812 + 50 + 1, value)
 
     SET_INT_GLOBAL(1960755 + 812 + 50 + 2, value)
@@ -1064,8 +1086,6 @@ menu.slider(dividends_mr, "末日分红", {""}, "2400000", INT_MIN, INT_MAX, 100
 
     SET_INT_GLOBAL(1960755 + 812 + 50 + 4, value)
 end)
-
-
 
 menu.action(dividends_plkd, "跳过小岛冷却", {}, "", function()
     STAT_SET_INT("H4_PROGRESS", -1)
@@ -1077,6 +1097,7 @@ menu.action(dividends_plkd, "完成小岛前置", {}, "", function()
     STAT_SET_INT("H4CNF_BS_GEN", -1)
     STAT_SET_INT("H4CNF_BS_ABIL", -1)
     STAT_SET_INT("H4CNF_APPROACH", -1)
+    STAT_SET_INT("H4CNF_WEAPONS", 5)
     STAT_SET_INT("H4_MISSIONS", -1)
 
 end)
@@ -1096,14 +1117,13 @@ menu.action(dividends_gy, "完成公寓抢劫", {""}, "", function()
     STAT_SET_INT("HEIST_PLANNING_STAGE", -1)
 end)
 
-menu.slider(dividends_gy, "公寓抢劫分红", {"dividends_gy_fh"}, "15000000", INT_MIN, INT_MAX,
-    100, 1, function(value)
+menu.slider(dividends_gy, "公寓抢劫分红", {"dividends_gy_fh"}, "15000000", INT_MIN, INT_MAX, 100, 1,
+    function(value)
         SET_INT_GLOBAL(1930926 + 3008 + 1, value)
         SET_INT_GLOBAL(1930926 + 3008 + 2, value)
         SET_INT_GLOBAL(1930926 + 3008 + 3, value)
         SET_INT_GLOBAL(1930926 + 3008 + 4, value)
     end)
-
 
 menu.action(dividends_general, "一键完成任务_2020 ", {"finfmc2020"}, "finfm_mission_controller_2020", function()
     for i = 0, 3 do
@@ -1153,7 +1173,15 @@ local function latiaostandMenuSetup(pid)
     end)
 
     menu.toggle_loop(latiaostandMenu, "误报踢出检查", {""}, "", function()
-        util.trigger_script_event(1 << pid, {-901348601})
+        util.trigger_script_event(1 << pid, {-725328141})
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+
+    end)
+
+    menu.toggle_loop(latiaostandMenu, "test", {""}, "", function()
+        util.trigger_script_event(1 << pid, {-901348601, players.user(), 0, 35, 3, 0, 0})
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1197,6 +1225,12 @@ local function latiaostandMenuSetup(pid)
         if not players.exists(pid) then
             util.stop_thread()
         end
+    end)
+    menu.toggle_loop(latiaostandMenu, "普通爆炸", {}, "", function()
+        local pos = v3.new(players.get_position(pid))
+
+        FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, 0, INT_MAX, true, false, 0.0)
+
     end)
     menu.toggle_loop(latiaostandMenu, "超级爆炸击杀外挂玩家", {}, "", function()
         local pos = v3.new(players.get_position(pid))
@@ -1409,7 +1443,6 @@ local function latiaostandMenuSetup(pid)
 
         local pos = players.get_cam_pos(pid)
         local createped = entities.create_ped(4, ped, pos, 0)
-
 
         WEAPON.GIVE_WEAPON_TO_PED(createped, util.joaat('WEAPON_HOMINGLAUNCHER'), INT_MAX, true, true)
         util.yield()
@@ -1918,9 +1951,29 @@ local function latiaostandMenuSetup(pid)
         end
     end)
 
-
     menu.toggle_loop(latiaostandMenu, "开启拉机能量跳伞", {""}, "", function()
         util.trigger_script_event(1 << pid, {1450115979, players.user(), 267, -1})
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+
+    end)
+    menu.toggle_loop(latiaostandMenu, "送上ufo", {""}, "", function()
+        util.trigger_script_event(1 << pid, {1450115979, players.user(), 314, -1})
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+
+    end)
+    menu.toggle_loop(latiaostandMenu, "开启派遣工作", {""}, "", function()
+        util.trigger_script_event(1 << pid, {1450115979, players.user(), 339, -1})
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+
+    end)
+    menu.toggle_loop(latiaostandMenu, "152", {""}, "", function()
+        util.trigger_script_event(1 << pid, {1450115979, players.user(), 152, -1})
         if not players.exists(pid) then
             util.stop_thread()
         end
@@ -1929,9 +1982,7 @@ local function latiaostandMenuSetup(pid)
 
     menu.action(latiaostandMenu, "强制送披萨", {""}, "", function()
 
-
-            util.trigger_script_event(1 << pid, {1450115979, players.user(), 340, -1})
-
+        util.trigger_script_event(1 << pid, {1450115979, players.user(), 340, -1})
 
         if not players.exists(pid) then
             util.stop_thread()
@@ -1941,17 +1992,13 @@ local function latiaostandMenuSetup(pid)
 
     menu.action(latiaostandMenu, "无效开始任务踢", {""}, "", function()
 
+        util.trigger_script_event(1 << pid, {1450115979, players.user(), 1})
 
-            util.trigger_script_event(1 << pid, {1450115979, players.user(), 1})
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
 
-        
-
-
-    if not players.exists(pid) then
-        util.stop_thread()
-    end
-
-end)
+    end)
 
     menu.toggle_loop(latiaostandMenu, "设置假身作弊到他", {"latiaofakepos"}, ("latiaofakepos"), function()
         local pos = v3.new(players.get_position(pid))
@@ -1966,7 +2013,7 @@ end)
 
     end)
     menu.toggle_loop(latiaostandMenu, "随机载具填充池", {""}, (""), function()
-        
+
         local vehicles = util.get_vehicles()
 
         local random_index = math.random(1, #vehicles)
@@ -1978,9 +2025,9 @@ end)
             local createobj = entities.create_vehicle(vehicletobj, players.get_position(pid), 0)
             util.yield(1)
             entities.delete(createobj)
-            ENTITY.FREEZE_ENTITY_POSITION(vehicletobj,true)
+            ENTITY.FREEZE_ENTITY_POSITION(vehicletobj, true)
         end)
-        
+
     end)
 
     menu.action(latiaostandMenu, "无效TASK_VEHICLE_HELI_PROTECT动作崩溃", {""}, "", function()
@@ -2002,7 +2049,6 @@ end)
             entities.give_control(ped, pid)
             util.yield()
         end
-
 
     end)
 
@@ -2053,8 +2099,6 @@ end)
         end
     end)
 
-    
-
     menu.toggle_loop(latiaostandMenu, "蠢人帮差事", {""}, "", function()
         util.trigger_script_event(1 << pid, {1450115979, players.user(), 307, -1})
         if not players.exists(pid) then
@@ -2076,10 +2120,9 @@ end)
         local veh = entities.create_vehicle(veh_mdl, pos, 0)
         local jesus = entities.create_ped(2, mdl, pos, 0)
         local createped = entities.create_ped(4, ped, pos, 0)
-        PED.SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(createped,true)
+        PED.SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(createped, true)
         PED.SET_PED_INTO_VEHICLE(jesus, veh, -1)
         TASK.TASK_VEHICLE_HELI_PROTECT(jesus, veh, playerped, INT_MAX, 0, INT_MAX, 0, 0)
-
 
         entities.give_control(veh, pid)
         entities.give_control(jesus, pid)
@@ -2088,11 +2131,6 @@ end)
             entities.give_control(jesus, pid)
             util.yield()
         end
-
-
-
-
-       
 
         WEAPON.GIVE_WEAPON_TO_PED(createped, util.joaat('WEAPON_HOMINGLAUNCHER'), INT_MAX, true, true)
         util.yield(1000)
@@ -2103,85 +2141,34 @@ end)
     end)
     menu.action(latiaostandMenu, "无效开始任务踢", {""}, "", function()
 
-
         util.trigger_script_event(1 << pid, {1450115979, players.user(), 1})
-    
-    
-    
-    
-    
-    
+
     end)
     menu.action(latiaostandMenu, "火车池填充崩溃", {""}, "", function()
-        
-    local pos  = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)) pos.z = pos.z + 50
-    local allvehs = entities.get_all_vehicles_as_handles()
-        local model_array = {184361638,3186376089,410882957,1077420264,240201337}
+
+        local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
+        pos.z = pos.z + 50
+        local allvehs = entities.get_all_vehicles_as_handles()
+        local model_array = {184361638, 3186376089, 410882957, 1077420264, 240201337}
         local spawn_veh = {}
         for spawn_, vels in pairs(model_array) do
             for i = 1, 15, 1 do
                 util.request_model(vels)
-                spawn_veh[spawn_] = entities.create_vehicle(vels,pos,0)
-                ENTITY.FREEZE_ENTITY_POSITION(spawn_veh[spawn_],true)
+                spawn_veh[spawn_] = entities.create_vehicle(vels, pos, 0)
+                ENTITY.FREEZE_ENTITY_POSITION(spawn_veh[spawn_], true)
                 util.yield(0)
             end
         end
 
-
-
-    
     end)
 
-        menu.action(latiaostandMenu, "crash", {""}, "", function()
+    menu.action(latiaostandMenu, "crash", {""}, "", function()
 
-            -- local mdl = util.joaat('a_c_poodle')
-            -- local mdl1 = util.joaat('a_c_poodle')
-            -- local mdl2 = util.joaat('a_c_poodle')
-            -- if util.request_model(mdl, mdl1, mdl2, 2) then
-            --     local pos = players.get_position(pid)
-            --     local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-            --     local ped1 = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-            --     local ped2 = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-
-            --     ped1 = entities.create_ped(26, mdl, ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(
-            --         PLAYER.GET_PLAYER_PED(pid), 3, 0, 0), 0)
-            --     ped1 = entities.create_ped(26, mdl, ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(
-            --         PLAYER.GET_PLAYER_PED(pid), -3, 0, 0), 0)
-            --     local coords = ENTITY.GET_ENTITY_COORDS(ped1, true)
-            --     WEAPON.GIVE_WEAPON_TO_PED(ped1, util.joaat('WEAPON_HOMINGLAUNCHER'), 9999, true, true)
-            --     local obj
-            --     repeat
-
-            --         ped2 = entities.create_ped(26, mdl1, ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(
-            --             PLAYER.GET_PLAYER_PED(pid), 0, 3, 0), 0)
-            --         ped2 = entities.create_ped(26, mdl1, ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(
-            --             PLAYER.GET_PLAYER_PED(pid), 0, -3, 0), 0)
-            --         local coords = ENTITY.GET_ENTITY_COORDS(ped2, true)
-            --         WEAPON.GIVE_WEAPON_TO_PED(ped2, util.joaat('WEAPON_HOMINGLAUNCHER'), 9999, true, true)
-                    
-            --             obj = WEAPON.GET_CURRENT_PED_WEAPON_ENTITY_INDEX(ped2, 0)
-            --         until obj ~= 0 or util.yield()
-            --         ENTITY.DETACH_ENTITY(obj, true, true)
-            --         util.yield(0)
-            --         FIRE.ADD_EXPLOSION(coords.x, coords.y, coords.z, 0, 1.0, false, true, 0.0, false)
-            --         entities.delete_by_handle(ped2)
-            --         util.yield(0)
-
-            --         obj = WEAPON.GET_CURRENT_PED_WEAPON_ENTITY_INDEX(ped2, 0)
-
-            --     ENTITY.DETACH_ENTITY(obj, true, true)
-            --     util.yield(0)
-            --     FIRE.ADD_EXPLOSION(coords.x, coords.y, coords.z, 0, 1.0, false, true, 0.0, false)
-            --     entities.delete_by_handle(ped2)
-            --     util.yield(0)
-            -- end
-    
-            local ped = util.joaat('a_c_poodle')
+        local ped = util.joaat('a_c_poodle')
         util.request_model(ped)
 
         local pos = players.get_cam_pos(pid)
         local createped = entities.create_ped(4, ped, pos, 0)
-
 
         WEAPON.GIVE_WEAPON_TO_PED(createped, util.joaat('WEAPON_HOMINGLAUNCHER'), INT_MAX, true, true)
         util.yield()
@@ -2189,9 +2176,7 @@ end)
         if not players.exists(pid) then
             util.stop_thread()
         end
-    
-    
-    
+
     end)
 
     menu.toggle_loop(latiaostandMenu, "电线杆", {"latiaotunspammcrash"},
@@ -2208,7 +2193,7 @@ end)
             end
         end)
 
-        menu.toggle_loop(latiaostandMenu, "火车", {"latiaotunspammcrash"},
+    menu.toggle_loop(latiaostandMenu, "火车", {"latiaotunspammcrash"},
         "配合使用 线上/保护选项/同步信息/传出/克隆删除/阻止", function()
             local pos = players.get_cam_pos(pid)
             util.request_model(util.joaat("freightcar"))
@@ -2221,6 +2206,63 @@ end)
                 util.stop_thread()
             end
         end)
+
+    menu.action(latiaostandMenu, "中断fm脚本任务", {""}, "", function()
+
+        util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
+
+    end)
+
+    menu.slider(latiaostandMenu, "SET_ENTITY_MAX_HEALTH", {"SET_ENTITY_MAX_HEALTH"}, "SET_ENTITY_MAX_HEALTH", 0,
+        INT_MAX, 100, 1, function(value)
+            local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+            ENTITY.SET_ENTITY_MAX_HEALTH(playerped, value)
+
+        end)
+
+    menu.slider(latiaostandMenu, "SET_ENTITY_HEALTH", {"SET_ENTITY_HEALTH"}, "SET_ENTITY_HEALTH", 0, INT_MAX, 100, 1,
+        function(value)
+            local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+            ENTITY.SET_ENTITY_HEALTH(playerped, value, -1, -1)
+
+        end)
+    menu.toggle_loop(latiaostandMenu, "循环加入他的子战局", {""}, "", function()
+        NETWORK.NETWORK_ALLOW_GANG_TO_JOIN_TUTORIAL_SESSION(getTeamID(pid), getInstanceID(pid))
+    end, function()
+        NETWORK.NETWORK_END_TUTORIAL_SESSION()
+    end)
+
+    menu.toggle_loop(latiaostandMenu, "print", {""}, "", function()
+        local team = getTeamID(pid)
+        print(team)
+    end)
+
+    menu.toggle_loop(latiaostandMenu, "超级无限死亡击杀", {}, "", function()
+        util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
+        local pos = players.get_position(pid)
+        local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+        util.trigger_script_event(1 << pid, {-503325966})
+        -- TASK.CLEAR_PED_TASKS_IMMEDIATELY(playerped)
+        -- (Type: weapon_tranquilizer, Damage: 0, Flags: 540688, true, 3)
+
+        MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 0, true,
+            util.joaat("weapon_tranquilizer"), players.user_ped(), false, true, INT_MAX)
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
+    menu.toggle_loop(latiaostandMenu, "无限死亡击杀", {}, "", function()
+        -- util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
+        local pos = players.get_position(pid)
+        local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+-- // (Type: weapon_tranquilizer, Damage: 0, Flags: 513, true, 3)
+        MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 0, true,
+            util.joaat("weapon_tranquilizer"), players.user_ped(), false, true, INT_MAX)
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
 
 end
 
@@ -2337,7 +2379,6 @@ menu.action(dividends_brdr, "开启别惹德瑞", {}, "", function()
     STAT_SET_INT("FIXER_COMPLETED_BS", -1)
     STAT_SET_INT("FIXER_STORY_BS", -1)
 end)
-
 
 menu.toggle_loop(test, "CLEAR_AREA", {""}, "", function()
     MISC.CLEAR_AREA(0, 0, 0, INT_MAX, false, false, false, false)
@@ -2701,7 +2742,6 @@ menu.slider_float(world, "雨量", {"SET_RAIN"}, "", 0, 5, -1, 1, function(value
     MISC.SET_RAIN(value)
 end)
 
-
 menu.toggle_loop(world, "tp到附近的网络objects", {""}, "", function()
     for _, target in ipairs(entities.get_all_objects_as_handles()) do
         if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(target) then
@@ -2744,7 +2784,6 @@ end)
 menu.action(dividends_gzp, "跳过改装铺前置", {""}, "", function()
     STAT_SET_INT("TUNER_GEN_BS", -1)
 end)
-
 
 menu.toggle_loop(test, "自动收集(左键连点)", {""}, "", function()
     PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 237, 1)
@@ -2920,11 +2959,12 @@ menu.toggle_loop(test, "SET_PED_DENSITY_MULTIPLIER_THIS_FRAME", {""}, "", functi
     PED.SET_PED_DENSITY_MULTIPLIER_THIS_FRAME(INT_MAX)
 
 end)
-menu.toggle_loop(world, "删除摄像头", {"latiaodelcops"}, "latiaodelcops", function()
+menu.toggle_loop(dividends_general, "删除摄像头", {"latiaodelcctv"}, "latiaodelcctv", function()
     for k, ent in pairs(entities.get_all_objects_as_handles()) do
-        for _, Models in ipairs({util.joaat("xm_prop_x17_server_farm_cctv_01"),util.joaat("ch_prop_ch_cctv_cam_02a")}) do
+        for _, Models in ipairs({util.joaat("xm_prop_x17_server_farm_cctv_01"), util.joaat("ch_prop_ch_cctv_cam_02a"),
+                                 util.joaat("prop_cctv_cam_01b")}) do
             if ENTITY.GET_ENTITY_MODEL(ent) == Models then
-                NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(ent)
+                entities.request_control(ent)
                 if entities.get_owner(ent) == players.user() then
                     entities.delete(ent)
                 end
@@ -2932,12 +2972,6 @@ menu.toggle_loop(world, "删除摄像头", {"latiaodelcops"}, "latiaodelcops", f
             end
         end
     end
-end)
-
-menu.toggle_loop(test, "latiao_logIi", {""}, "", function()
-
-    latiao_log("1l1l1l1l1l")
-
 end)
 
 menu.toggle_loop(server, "刷屏", {"latiaocleanchat"}, "latiaocleanchat.", function()
@@ -3343,6 +3377,20 @@ menu.toggle_loop(server, "自动获取所有脚本主机2阻止主机迁移", {"
     end
 end)
 
+menu.action(server, "强制获取所有脚本主机阻止主机迁移", {""}, "", function()
+    for _, script in ipairs(ALL_script) do
+        util.spoof_script(script, function()
+            util.create_thread(function()
+
+                util.request_script_host(script)
+                NETWORK.NETWORK_PREVENT_SCRIPT_HOST_MIGRATION()
+
+            end)
+
+        end)
+    end
+end)
+
 menu.toggle_loop(server, "所有人刷手办", {""}, "", function()
     local pickup = util.joaat("vw_prop_vw_colle_prbubble")
     util.request_model(pickup)
@@ -3556,8 +3604,6 @@ menu.action(server, "无效收藏品脚本事件踢所有人", {"latiaokickallex
 
     end)
 
-
-
 menu.toggle_loop(dividends_bjbgs, "所有目标奖励40000", {""}, "", function()
 
     STAT_SET_INT("BOUNTY24_STD_TARG_RWD_0", 40000)
@@ -3623,17 +3669,13 @@ end)
 
 local servermoney = menu.list(servermoney, "中等服务器交易", {}, "")
 
+menu.action(servermoney, "赌场分红", {""}, "", function()
+    latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_CASINO_HEIST_FINALE"))
+end)
 
-
-menu.action(servermoney, "赌场分红", {""}, "",
-    function()
-        latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_CASINO_HEIST_FINALE"))
-    end)
-
-menu.action(servermoney, "佩里克岛直接分红", {""}, "",
-    function()
-        latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_ISLAND_HEIST_FINALE"))
-    end)
+menu.action(servermoney, "佩里克岛直接分红", {""}, "", function()
+    latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_ISLAND_HEIST_FINALE"))
+end)
 
 menu.action(servermoney, "末日豪直接分红", {""}, "", function()
     latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_GANGOPS_FINALE"))
@@ -3649,8 +3691,6 @@ end)
 menu.action(servermoney, "SERVICE_EARN_BEND_JOB", {""}, "", function()
     latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_BEND_JOB"))
 end)
-
-
 
 menu.toggle_loop(world, "删除拥有网络所有权的所有物体", {""}, "delallobjects.", function()
     for k, ent in pairs(entities.get_all_objects_as_handles()) do
@@ -3773,14 +3813,11 @@ menu.slider(dividends_general, "设置抢劫金钱", {"setfmccash"}, "", 0, INT_
 
 end)
 
-
-
 menu.action(server, "所有人强制开启拉机能量跳伞", {""}, "", function()
 
     util.trigger_script_event(util.get_session_players_bitflag(), {1450115979, players.user(), 267, -1})
 
 end)
-
 
 menu.toggle_loop(server, "给与小于125等级的人刷经验(直到他等级达到125)", {""}, "", function()
     for k, pid in pairs(players.list(true, true, true)) do
@@ -3805,7 +3842,7 @@ menu.action(world, "get_vehicles all", {""}, "", function()
 end)
 
 menu.toggle_loop(world, "随机载具填充池", {""}, "", function()
-    local pos = v3.new(0,0,0)
+    local pos = v3.new(0, 0, 0)
     local vehicles = util.get_vehicles()
 
     local random_index = math.random(1, #vehicles)
@@ -3814,15 +3851,14 @@ menu.toggle_loop(world, "随机载具填充池", {""}, "", function()
     local vehicletobj = util.joaat(random_vehicle.name)
     util.request_model(vehicletobj)
     util.create_thread(function()
-    local createobj = entities.create_vehicle(vehicletobj, pos, 0)
-    ENTITY.FREEZE_ENTITY_POSITION(createobj)
-    util.yield(1)
-    entities.delete(createobj)
-    
+        local createobj = entities.create_vehicle(vehicletobj, pos, 0)
+        ENTITY.FREEZE_ENTITY_POSITION(createobj)
+        util.yield(1)
+        entities.delete(createobj)
+
     end)
 
 end)
-
 
 menu.action(world, "all vehicles SET_MODEL_AS_NO_LONGER_NEEDED", {""}, "", function()
     local vehicles = util.get_vehicles()
@@ -3882,18 +3918,7 @@ end)
 
 menu.action(server, "绳子全局崩", {""}, "", function()
 
-    local pos = players.get_position(players.user())
-    PHYSICS.ADD_ROPE(pos.x, pos.y, pos.z, 0, 0, 0, INT_MAX, 4, 0, 0, 0, false, false, false, 0, false, -1)
-
-
-end)
-
-menu.action(server, "合法绳子", {""}, "", function()
-
-    -- local rope = 
-    local pos = players.get_position(players.user())
-    PHYSICS.ADD_ROPE(pos.x, pos.y, pos.z, 0, 0, 0, 5, 4, 20, 0, 0, false, false, false, 0, false, -1)
-    -- print(rope)
+    PHYSICS.ADD_ROPE(0, 0, 0, 0, 0, 0, INT_MAX, 4, INT_MAX, 0, INT_MAX, false, false, false, 0, false, 0)
 
 end)
 
@@ -3909,16 +3934,13 @@ menu.action(test, "ACTIVATE_PHYSICS", {""}, "", function()
 
 end)
 
+menu.toggle_loop(server, "get_all_objects_as_handles 实体", {"latiaoREQUES_ENTITYobjects"}, "REQUES_ENTITYobjects.",
+    function()
+        for k, ent in pairs(entities.get_all_objects_as_handles()) do
+            print(ent)
+        end
 
-
-
-
-menu.toggle_loop(server, "get_all_objects_as_handles 实体", {"latiaoREQUES_ENTITYobjects"}, "REQUES_ENTITYobjects.", function()
-    for k, ent in pairs(entities.get_all_objects_as_handles()) do
-    print(ent)
-    end
-
-end)
+    end)
 -- menu.slider_float(world, "变速", {"SET_RAIN"}, "", INT_MIN, INT_MAX, -1, 1, function(value)
 --     MISC.SET_TIME_SCALE(value)
 -- end)
@@ -3934,7 +3956,7 @@ menu.action(szc, "查询收支差", {""}, "", function()
     local SHOURU = STAT_GET_INT("MPPLY_TOTAL_EVC")
     local HUAFEI = STAT_GET_INT("MPPLY_TOTAL_SVC")
     local remaining_money = get_money - HUAFEI - SHOURU
-    util.toast(remaining_money,TOAST_ALL)
+    util.toast(remaining_money, TOAST_ALL)
 
 end)
 
@@ -3948,30 +3970,24 @@ end)
 --         print("MPPLY_TOTAL_SVC"..fix )
 --         STAT_SET_INT("MPPLY_TOTAL_SVC",fix)
 
-
 --     elseif remaining_money > 0 then
 --         local fix = SHOURU + remaining_money
 --         print("MPPLY_TOTAL_EVC"..fix)
 --         STAT_SET_INT("MPPLY_TOTAL_EVC", fix)
 
-
 --     end
 -- end)
 
-
-
 menu.toggle_loop(server, "随机假身作弊", {"latiaofakepos"}, ("latiaofakepos"), function()
     local pos = players.get_position(players.user())
-    local x = pos.x + math.random(1,5)
-    local y = pos.y + math.random(1,5)
-    local z = pos.z + math.random(1,5)
+    local x = pos.x + math.random(1, 5)
+    local y = pos.y + math.random(1, 5)
+    local z = pos.z + math.random(1, 5)
 
     menu.trigger_commands("spoofedposition " .. x .. "," .. y .. "," .. z)
     util.yield(100)
 
 end)
-
-
 
 -- menu.action(server, "循环抢劫所有人开", {""}, ".", function()
 --     for k, pid in pairs(players.list(false, true, true)) do
@@ -3989,205 +4005,174 @@ end)
 
 -- end)
 
-
 local dividends_Tunable = menu.list(dividends, "可调参数", {}, "")
 menu.action(dividends_Tunable, "刷新游戏可调参数", {""}, "", function()
- SET_INT_LOCAL("social_controller",65,1)
+    SET_INT_LOCAL("social_controller", 65, 1)
 
 end)
 
-NpcCut = {
-    28313, -- CH_LESTER_CUT
-    28339, -- HEIST3_PREPBOARD_GUNMEN_KARL_CUT
-    28340, -- HEIST3_PREPBOARD_GUNMEN_GUSTAVO_CUT
-    28341, -- HEIST3_PREPBOARD_GUNMEN_CHARLIE_CUT
-    28342, -- HEIST3_PREPBOARD_GUNMEN_CHESTER_CUT
-    28343, -- HEIST3_PREPBOARD_GUNMEN_PATRICK_CUT
-    28344, -- HEIST3_DRIVERS_KARIM_CUT
-    28345, -- HEIST3_DRIVERS_TALIANA_CUT
-    28346, -- HEIST3_DRIVERS_EDDIE_CUT
-    28347, -- HEIST3_DRIVERS_ZACH_CUT
-    28348, -- HEIST3_DRIVERS_CHESTER_CUT
-    28349, -- HEIST3_HACKERS_RICKIE_CUT
-    28350, -- HEIST3_HACKERS_CHRISTIAN_CUT
-    28351, -- HEIST3_HACKERS_YOHAN_CUT
-    28352, -- HEIST3_HACKERS_AVI_CUT
-    28353, -- HEIST3_HACKERS_PAIGE_CUT
-    22475, -- SMUG_SELL_RONS_CUT
-    24074, -- BB_SELL_MISSIONS_TONYS_CUT
-    29467, -- IH_DEDUCTION_FENCING_FEE
-    29468, -- IH_DEDUCTION_PAVEL_CUT
-    30334, -- TUNER_ROBBERY_CONTACT_FEE
+NpcCut = {28313, -- CH_LESTER_CUT
+28339, -- HEIST3_PREPBOARD_GUNMEN_KARL_CUT
+28340, -- HEIST3_PREPBOARD_GUNMEN_GUSTAVO_CUT
+28341, -- HEIST3_PREPBOARD_GUNMEN_CHARLIE_CUT
+28342, -- HEIST3_PREPBOARD_GUNMEN_CHESTER_CUT
+28343, -- HEIST3_PREPBOARD_GUNMEN_PATRICK_CUT
+28344, -- HEIST3_DRIVERS_KARIM_CUT
+28345, -- HEIST3_DRIVERS_TALIANA_CUT
+28346, -- HEIST3_DRIVERS_EDDIE_CUT
+28347, -- HEIST3_DRIVERS_ZACH_CUT
+28348, -- HEIST3_DRIVERS_CHESTER_CUT
+28349, -- HEIST3_HACKERS_RICKIE_CUT
+28350, -- HEIST3_HACKERS_CHRISTIAN_CUT
+28351, -- HEIST3_HACKERS_YOHAN_CUT
+28352, -- HEIST3_HACKERS_AVI_CUT
+28353, -- HEIST3_HACKERS_PAIGE_CUT
+22475, -- SMUG_SELL_RONS_CUT
+24074, -- BB_SELL_MISSIONS_TONYS_CUT
+29467, -- IH_DEDUCTION_FENCING_FEE
+29468, -- IH_DEDUCTION_PAVEL_CUT
+30334 -- TUNER_ROBBERY_CONTACT_FEE
 }
 
-MissionCooldowns = {
-    15499, -- EXEC_BUY_COOLDOWN
-    15500, -- EXEC_SELL_COOLDOWN
-
-    19077, -- IMPEXP_STEAL_COOLDOWN
-    19153, -- IMPEXP_SELL_COOLDOWN
-
-    19432, -- IMPEXP_SELL_1_CAR_COOLDOWN
-    19433, -- IMPEXP_SELL_2_CAR_COOLDOWN
-    19434, -- IMPEXP_SELL_3_CAR_COOLDOWN
-    19435, -- IMPEXP_SELL_4_CAR_COOLDOWN
-
-    22433, -- SMUG_STEAL_EASY_COOLDOWN_TIMER
-    22434, -- SMUG_STEAL_MED_COOLDOWN_TIMER
-    22435, -- SMUG_STEAL_HARD_COOLDOWN_TIMER
-    22436, -- SMUG_STEAL_ADDITIONAL_CRATE_COOLDOWN_TIME
-    22474, -- SMUG_SELL_SELL_COOLDOWN_TIMER
-
-    26794, -- VC_WORK_REQUEST_COOLDOWN
-    31038, -- FIXER_SECURITY_CONTRACT_COOLDOWN_TIME
-    31118, -- REQUEST_FRANKLIN_PAYPHONE_HIT_COOLDOWN
-    31892, -- EXPORT_CARGO_LAUNCH_CD_TIME
-    32005, -- SUM2_BUNKER_DUNELOADER_TIMER
-    32183, -- BUNKER_SOURCE_RESEARCH_CD_TIME
-    32184, -- NIGHTCLUB_SOURCE_GOODS_CD_TIME
-    33141, -- JUGALLO_BOSS_WORK_COOLDOWN_TIME
-
-    24026, -- BB_CLUB_MANAGEMENT_CLUB_MANAGEMENT_MISSION_COOLDOWN
-    24067, -- BB_SELL_MISSIONS_MISSION_COOLDOWN
-    31880, -- NC_TROUBLEMAKER_MIN_DELAY_IN_MINUTES
-    31881, -- NC_TROUBLEMAKER_MAX_DELAY_IN_MINUTES
-
-    24208, -- BB_HACKER_WORK_CLIENT_WORK_GLOBAL_COOLDOWN
-    24209, -- BB_HACKER_WORK_CLIENT_WORK_COOLDOWN_BANK_JOB
-    24210, -- BB_HACKER_WORK_CLIENT_WORK_COOLDOWN_DATA_HACK
-    24211, -- BB_HACKER_WORK_CLIENT_WORK_COOLDOWN_INFILTRATION
-    24212, -- BB_HACKER_WORK_CLIENT_WORK_COOLDOWN_JEWEL_STORE_GRAB
-
-    24213, -- BB_HACKER_WORK_HACKER_CHALLENGE_COOLDOWN_GLOBAL_COOLDOWN
-    24214, -- BB_HACKER_WORK_HACKER_CHALLENGE_COOLDOWN_SECURITY_VANS
-    24215, -- BB_HACKER_WORK_HACKER_CHALLENGE_COOLDOWN_TARGET_PURSUIT
-
-    18571, -- BIKER_CLUB_WORK_COOLDOWN_GLOBAL
-    31870, -- BIKER_RESUPPLY_MISSION_COOLDOWN
-    4382,  -- ON_CALL_HEIST_COOLDOWN
-    4387,  -- NEXT_TEXT_DELAY_H
-    4388,  -- PLAYED_NEXT_TEXT_DELAY_H
-
-    4383,  -- H2_ON_CALL_FINALE_COOLDOWN_2_PLAYER
-    4384,  -- H2_ON_CALL_FINALE_COOLDOWN_3_PLAYER
-    4385,  -- H2_ON_CALL_FINALE_COOLDOWN_4_PLAYER
-    23010, -- H2_IAA_REPLAY_COOLDOWN_TIME
-    23011, -- H2_SUB_REPLAY_COOLDOWN_TIME
-    23012, -- H2_REPLAY_COOLDOWN_2_PLAYER_IAA
-    23013, -- H2_REPLAY_COOLDOWN_2_PLAYER_SUB
-    23014, -- H2_REPLAY_COOLDOWN_2_PLAYER_SILO
-    23015, -- H2_REPLAY_COOLDOWN_3_PLAYER_IAA
-    23016, -- H2_REPLAY_COOLDOWN_3_PLAYER_SUB
-    23017, -- H2_REPLAY_COOLDOWN_3_PLAYER_SILO
-    23018, -- H2_REPLAY_COOLDOWN_4_PLAYER_IAA
-    23019, -- H2_REPLAY_COOLDOWN_4_PLAYER_SUB
-    23020, -- H2_REPLAY_COOLDOWN_4_PLAYER_SILO
-    23021, -- H2_SILO_REPLAY_COOLDOWN_TIME
-
-    4364,  -- CASINO_HEIST_ON_CALL_COOL_DOWN
-    28399, -- H3_HEIST_COOLDOWN_BEFORE_REPLAY
-
-    4365,  -- ISLAND_HEIST_ON_CALL_COOL_DOWN
-    29380, -- H4_COOLDOWN_TIME
-    29381, -- H4_COOLDOWN_HARD_TIME
-    29382, -- H4_SOLO_COOLDOWN
-
-    30357, -- TUNER_ROBBERY_COOLDOWN_TIME
-    31036, -- FIXER_STORY_COOLDOWN_POSIX
-    33064, -- SALV23_VEH_ROB_COOLDOWN_TIME
-    33065, -- SALV23_CFR_COOLDOWN_TIME
+MissionCooldowns = {15499, -- EXEC_BUY_COOLDOWN
+15500, -- EXEC_SELL_COOLDOWN
+19077, -- IMPEXP_STEAL_COOLDOWN
+19153, -- IMPEXP_SELL_COOLDOWN
+19432, -- IMPEXP_SELL_1_CAR_COOLDOWN
+19433, -- IMPEXP_SELL_2_CAR_COOLDOWN
+19434, -- IMPEXP_SELL_3_CAR_COOLDOWN
+19435, -- IMPEXP_SELL_4_CAR_COOLDOWN
+22433, -- SMUG_STEAL_EASY_COOLDOWN_TIMER
+22434, -- SMUG_STEAL_MED_COOLDOWN_TIMER
+22435, -- SMUG_STEAL_HARD_COOLDOWN_TIMER
+22436, -- SMUG_STEAL_ADDITIONAL_CRATE_COOLDOWN_TIME
+22474, -- SMUG_SELL_SELL_COOLDOWN_TIMER
+26794, -- VC_WORK_REQUEST_COOLDOWN
+31038, -- FIXER_SECURITY_CONTRACT_COOLDOWN_TIME
+31118, -- REQUEST_FRANKLIN_PAYPHONE_HIT_COOLDOWN
+31892, -- EXPORT_CARGO_LAUNCH_CD_TIME
+32005, -- SUM2_BUNKER_DUNELOADER_TIMER
+32183, -- BUNKER_SOURCE_RESEARCH_CD_TIME
+32184, -- NIGHTCLUB_SOURCE_GOODS_CD_TIME
+33141, -- JUGALLO_BOSS_WORK_COOLDOWN_TIME
+24026, -- BB_CLUB_MANAGEMENT_CLUB_MANAGEMENT_MISSION_COOLDOWN
+24067, -- BB_SELL_MISSIONS_MISSION_COOLDOWN
+31880, -- NC_TROUBLEMAKER_MIN_DELAY_IN_MINUTES
+31881, -- NC_TROUBLEMAKER_MAX_DELAY_IN_MINUTES
+24208, -- BB_HACKER_WORK_CLIENT_WORK_GLOBAL_COOLDOWN
+24209, -- BB_HACKER_WORK_CLIENT_WORK_COOLDOWN_BANK_JOB
+24210, -- BB_HACKER_WORK_CLIENT_WORK_COOLDOWN_DATA_HACK
+24211, -- BB_HACKER_WORK_CLIENT_WORK_COOLDOWN_INFILTRATION
+24212, -- BB_HACKER_WORK_CLIENT_WORK_COOLDOWN_JEWEL_STORE_GRAB
+24213, -- BB_HACKER_WORK_HACKER_CHALLENGE_COOLDOWN_GLOBAL_COOLDOWN
+24214, -- BB_HACKER_WORK_HACKER_CHALLENGE_COOLDOWN_SECURITY_VANS
+24215, -- BB_HACKER_WORK_HACKER_CHALLENGE_COOLDOWN_TARGET_PURSUIT
+18571, -- BIKER_CLUB_WORK_COOLDOWN_GLOBAL
+31870, -- BIKER_RESUPPLY_MISSION_COOLDOWN
+4382, -- ON_CALL_HEIST_COOLDOWN
+4387, -- NEXT_TEXT_DELAY_H
+4388, -- PLAYED_NEXT_TEXT_DELAY_H
+4383, -- H2_ON_CALL_FINALE_COOLDOWN_2_PLAYER
+4384, -- H2_ON_CALL_FINALE_COOLDOWN_3_PLAYER
+4385, -- H2_ON_CALL_FINALE_COOLDOWN_4_PLAYER
+23010, -- H2_IAA_REPLAY_COOLDOWN_TIME
+23011, -- H2_SUB_REPLAY_COOLDOWN_TIME
+23012, -- H2_REPLAY_COOLDOWN_2_PLAYER_IAA
+23013, -- H2_REPLAY_COOLDOWN_2_PLAYER_SUB
+23014, -- H2_REPLAY_COOLDOWN_2_PLAYER_SILO
+23015, -- H2_REPLAY_COOLDOWN_3_PLAYER_IAA
+23016, -- H2_REPLAY_COOLDOWN_3_PLAYER_SUB
+23017, -- H2_REPLAY_COOLDOWN_3_PLAYER_SILO
+23018, -- H2_REPLAY_COOLDOWN_4_PLAYER_IAA
+23019, -- H2_REPLAY_COOLDOWN_4_PLAYER_SUB
+23020, -- H2_REPLAY_COOLDOWN_4_PLAYER_SILO
+23021, -- H2_SILO_REPLAY_COOLDOWN_TIME
+4364, -- CASINO_HEIST_ON_CALL_COOL_DOWN
+28399, -- H3_HEIST_COOLDOWN_BEFORE_REPLAY
+4365, -- ISLAND_HEIST_ON_CALL_COOL_DOWN
+29380, -- H4_COOLDOWN_TIME
+29381, -- H4_COOLDOWN_HARD_TIME
+29382, -- H4_SOLO_COOLDOWN
+30357, -- TUNER_ROBBERY_COOLDOWN_TIME
+31036, -- FIXER_STORY_COOLDOWN_POSIX
+33064, -- SALV23_VEH_ROB_COOLDOWN_TIME
+33065 -- SALV23_CFR_COOLDOWN_TIME
 }
 
-RequestCooldowns = {
-    11708, -- PEGASUS_CRIM_COOL_DOWN
-    11942, -- LESTER_VEHICLE_CRIM_COOL_DOWN
-    12813, -- GB_CALL_VEHICLE_COOLDOWN
-    19018, -- SV_MECHANIC_COOLDOWN
-    21286, -- GR_MOBILE_OPERATIONS_CENTRE_COOLDOWN_TIMER
-    21289, -- AA_TRAILER_EQ_COOLDOWN_TIMER
-    21573, -- ACID_LAB_REQUEST_COOLDOWN
-    22371, -- SMUG_REQUEST_PERSONAL_AIRCRAFT_COOLDOWN
-    22743, -- H2_AVENGER_INTN_MENU_REQUEST_AVENGER_COOLDOWN
-    24068, -- BB_SELL_MISSIONS_DELIVERY_VEHICLE_COOLDOWN_AFTER_SELL_MISSION
-    24234, -- BB_TERRORBYTE_DRONE_COOLDOWN_TIME
-    24266, -- BB_TERRORBYTE_TERRORBYTE_COOLDOWN_TIMER
-    24282, -- BB_SUBMARINE_REQUEST_COOLDOWN_TIMER
-    24283, -- BB_SUBMARINE_DINGHY_REQUEST_COOLDOWN_TIMER
-    25373, -- BANDITO_COOLDOWN_TIME
-    25374, -- TANK_COOLDOWN_TIME
-    27932, -- VC_COOLDOWN_REQUEST_CAR_SERVICE
-    27933, -- VC_COOLDOWN_REQUEST_LIMO_SERVICE
-    27968, -- OPPRESSOR2CD
-    30224, -- IH_MOON_POOL_COOLDOWN
-    31119, -- REQUEST_COMPANY_SUV_SERVICE_COOLDOWN
-    31114, -- IMANI_SOURCE_MOTORCYCLE_COOLDOWN
-    32538, -- TONY_LIMO_COOLDOWN_TIME
-    32539, -- BUNKER_VEHICLE_COOLDOWN_TIME
-    33142, -- JUGALLO_BOSS_VEHICLE_COOLDOWN_TIME
-
-    12815, -- GB_DROP_AMMO_COOLDOWN
-    12816, -- GB_DROP_ARMOR_COOLDOWN
-    12817, -- GB_DROP_BULLSHARK_COOLDOWN
-    12818, -- GB_GHOST_ORG_COOLDOWN
-    12819, -- GB_BRIBE_AUTHORITIES_COOLDOWN
-
-    20906, -- BALLISTICARMOURREQUESTCOOLDOWN
-    23609, -- H2_STRIKE_TEAM_COOLDOWN_TIMER
-    31112, -- FRANKLIN_SUPPLY_STASH_COOLDOWN
-    31116, -- IMANI_OUT_OF_SIGHT_COOLDOWN
+RequestCooldowns = {11708, -- PEGASUS_CRIM_COOL_DOWN
+11942, -- LESTER_VEHICLE_CRIM_COOL_DOWN
+12813, -- GB_CALL_VEHICLE_COOLDOWN
+19018, -- SV_MECHANIC_COOLDOWN
+21286, -- GR_MOBILE_OPERATIONS_CENTRE_COOLDOWN_TIMER
+21289, -- AA_TRAILER_EQ_COOLDOWN_TIMER
+21573, -- ACID_LAB_REQUEST_COOLDOWN
+22371, -- SMUG_REQUEST_PERSONAL_AIRCRAFT_COOLDOWN
+22743, -- H2_AVENGER_INTN_MENU_REQUEST_AVENGER_COOLDOWN
+24068, -- BB_SELL_MISSIONS_DELIVERY_VEHICLE_COOLDOWN_AFTER_SELL_MISSION
+24234, -- BB_TERRORBYTE_DRONE_COOLDOWN_TIME
+24266, -- BB_TERRORBYTE_TERRORBYTE_COOLDOWN_TIMER
+24282, -- BB_SUBMARINE_REQUEST_COOLDOWN_TIMER
+24283, -- BB_SUBMARINE_DINGHY_REQUEST_COOLDOWN_TIMER
+25373, -- BANDITO_COOLDOWN_TIME
+25374, -- TANK_COOLDOWN_TIME
+27932, -- VC_COOLDOWN_REQUEST_CAR_SERVICE
+27933, -- VC_COOLDOWN_REQUEST_LIMO_SERVICE
+27968, -- OPPRESSOR2CD
+30224, -- IH_MOON_POOL_COOLDOWN
+31119, -- REQUEST_COMPANY_SUV_SERVICE_COOLDOWN
+31114, -- IMANI_SOURCE_MOTORCYCLE_COOLDOWN
+32538, -- TONY_LIMO_COOLDOWN_TIME
+32539, -- BUNKER_VEHICLE_COOLDOWN_TIME
+33142, -- JUGALLO_BOSS_VEHICLE_COOLDOWN_TIME
+12815, -- GB_DROP_AMMO_COOLDOWN
+12816, -- GB_DROP_ARMOR_COOLDOWN
+12817, -- GB_DROP_BULLSHARK_COOLDOWN
+12818, -- GB_GHOST_ORG_COOLDOWN
+12819, -- GB_BRIBE_AUTHORITIES_COOLDOWN
+20906, -- BALLISTICARMOURREQUESTCOOLDOWN
+23609, -- H2_STRIKE_TEAM_COOLDOWN_TIMER
+31112, -- FRANKLIN_SUPPLY_STASH_COOLDOWN
+31116 -- IMANI_OUT_OF_SIGHT_COOLDOWN
 }
 menu.toggle_loop(dividends_Tunable, "禁用npc分红", {""}, "", function()
-    
 
     for _, list in pairs(NpcCut) do
         SET_INT_GLOBAL(262145 + list, 0)
     end
-   
-   end)
-   
 
-   menu.toggle_loop(dividends_Tunable, "禁用任务和抢劫冷却", {""}, "", function()
-    
+end)
+
+menu.toggle_loop(dividends_Tunable, "禁用任务和抢劫冷却", {""}, "", function()
 
     for _, list in pairs(MissionCooldowns) do
         SET_INT_GLOBAL(262145 + list, 0)
     end
-   end)
-   
+end)
 
-   menu.toggle_loop(dividends_Tunable, "禁用请求冷却", {""}, "", function()
+menu.toggle_loop(dividends_Tunable, "禁用请求冷却", {""}, "", function()
     for _, list in pairs(RequestCooldowns) do
         SET_INT_GLOBAL(262145 + list, 0)
     end
 
-   
-   end)
-   
-   menu.slider(dividends_Tunable, "自定义所有任务分红金额", {"MISSIONS_MODIFIER"}, "MISSIONS_MODIFIER", 0, INT_MAX, 100, 1, function(value)
+end)
+
+menu.slider(dividends_Tunable, "自定义所有任务分红金额", {"MISSIONS_MODIFIER"}, "MISSIONS_MODIFIER", 0,
+    INT_MAX, 100, 1, function(value)
 
         SET_INT_GLOBAL(262145 + 2403, value)
         SET_INT_GLOBAL(262145 + 2407, value)
 
-   
-   end)
-   function GLOBAL_SET_BOOL(global, value)
+    end)
+function GLOBAL_SET_BOOL(global, value)
     memory.write_int(memory.script_global(global), value and 1 or 0)
 end
 function GLOBAL_GET_BOOL(global)
     return memory.read_int(memory.script_global(global)) == 1
 end
 
-
-   
-   menu.action(server, "无效开始任务踢所有人", {""}, "", function()
-
+menu.action(server, "无效开始任务踢所有人", {""}, "", function()
 
     util.trigger_script_event(util.get_session_players_bitflag(), {1450115979, players.user(), 1})
-
-
-
-
-
 
 end)
 
@@ -4197,30 +4182,18 @@ menu.action(server, "无效开始任务踢所有人排除主机和作弊", {""},
             goto out
         end
 
-    util.trigger_script_event(1 << pid, {1450115979, players.user(), 1})
-
+        util.trigger_script_event(1 << pid, {1450115979, players.user(), 1})
 
         ::out::
-
 
     end
 end)
 
-   
 menu.action(server, "所有人开始任务藏匿屋", {""}, "", function()
-
 
     util.trigger_script_event(util.get_session_players_bitflag(), {1450115979, players.user(), 308})
 
-
-
-
-
-
 end)
-
-
-
 
 menu.toggle_loop(world, "循环CREATE_RANDOM_PED池填充", {""}, "", function()
     local pos = players.get_position(players.user())
@@ -4229,7 +4202,6 @@ menu.toggle_loop(world, "循环CREATE_RANDOM_PED池填充", {""}, "", function()
 
     util.yield(1)
     entities.delete(createobj)
-
 
 end)
 
@@ -4240,20 +4212,4063 @@ end)
 --     latiao_server_TRANSACTION(util.joaat("SERVICE_EARN_JOB_BONUS_CRIMINAL_MASTERMIND"))
 -- end)
 
-
 menu.toggle_loop(world, "循环发送我的坐标", {""}, "", function()
     local pos = players.get_position(players.user())
-    print(pos.x..","..pos.y..","..pos.z)
-
+    print(pos.x .. "," .. pos.y .. "," .. pos.z)
 
 end)
-menu.toggle_loop(server, "暂停freemode", {""}, "", function()
+menu.toggle_loop(test, "暂停freemode", {""}, "", function()
     util.spoof_script("freemode", function()
         SYSTEM.WAIT("0")
     end)
 end)
--- menu.toggle_loop(server, "暂停所有游戏脚本", {""}, "", function()
---     util.spoof_script("freemode", function()
---         SYSTEM.WAIT("0")
---     end)
+menu.toggle_loop(test, "暂停所有游戏脚本", {""}, "", function()
+    for _, script in ipairs(ALL_script) do
+
+        util.spoof_script(script, function()
+            SYSTEM.WAIT("0")
+        end)
+    end
+end)
+menu.toggle_loop(test, "暂停fm_mission_controller", {""}, "", function()
+    util.spoof_script("fm_mission_controller", function()
+        SYSTEM.WAIT("0")
+    end)
+end)
+
+menu.toggle_loop(test, "暂停fm_mission_controller_2020", {""}, "", function()
+    util.spoof_script("fm_mission_controller_2020", function()
+        SYSTEM.WAIT("0")
+    end)
+end)
+
+menu.action(server, "开启派遣工作", {""}, "", function()
+
+    util.trigger_script_event(util.get_session_players_bitflag(), {1450115979, players.user(), 339, -1})
+
+end)
+
+menu.toggle_loop(server, "刷钱袋", {""}, "", function()
+    local pickup = util.joaat("prop_cash_pile_01")
+    util.request_model(pickup)
+    local pos = players.get_position(players.user())
+
+    OBJECT.CREATE_AMBIENT_PICKUP(util.joaat("PICKUP_MONEY_CASE"), pos.x, pos.y, pos.z, 0, math.random(1, 2000), pickup,
+        true, false)
+
+end)
+menu.action(server, "所有人送上ufo", {""}, "", function()
+    util.trigger_script_event(util.get_session_players_bitflag(), {1450115979, players.user(), 314, -1})
+
+end)
+
+menu.toggle_loop(server, "情书踢无敌玩家(误报几率大)", {""}, "", function()
+    for k, pid in pairs(players.list(false, true, true)) do
+        if pid == players.get_host() then
+            goto out
+        end
+        if players.is_godmode(pid) then
+            local attack = players.get_name(pid)
+            menu.trigger_commands("loveletterkick" .. attack)
+        end
+
+        ::out::
+    end
+
+end)
+menu.action(server, "送上ufo 排除主机和作弊玩家", {"latiaokickallexcludehost"}, "latiaokickallexcludehost",
+    function()
+        for k, pid in pairs(players.list(false, true, true)) do
+            if pid == players.get_host() or players.is_marked_as_modder(pid) then
+                goto out
+            end
+            util.trigger_script_event(1 << pid, {1450115979, players.user(), 314, -1})
+            ::out::
+        end
+
+    end)
+
+-- menu.action(server, "所有人送上ufo", {""}, "", function()
+--     util.trigger_script_event(util.get_session_players_bitflag(), {1450115979, players.user(), 314, -1})
+
 -- end)
+
+local   weapons = {
+    "WEAPON_UNARMED",
+    "WT_UNARMED",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_ANIMAL",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_COUGAR",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_KNIFE",
+    "WT_KNIFE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_KNIFE_VARMOD_XM3",
+    "WCT_KNIFE_XM3",
+    "WCD_VAR_DESC",
+    "COMPONENT_KNIFE_VARMOD_XM3_01",
+    "WCT_KNIFE_XM301",
+    "WCD_VAR_DESC",
+    "COMPONENT_KNIFE_VARMOD_XM3_02",
+    "WCT_KNIFE_XM302",
+    "WCD_VAR_DESC",
+    "COMPONENT_KNIFE_VARMOD_XM3_03",
+    "WCT_KNIFE_XM303",
+    "WCD_VAR_DESC",
+    "COMPONENT_KNIFE_VARMOD_XM3_04",
+    "WCT_KNIFE_XM304",
+    "WCD_VAR_DESC",
+    "COMPONENT_KNIFE_VARMOD_XM3_05",
+    "WCT_KNIFE_XM305",
+    "WCD_VAR_DESC",
+    "COMPONENT_KNIFE_VARMOD_XM3_06",
+    "WCT_KNIFE_XM306",
+    "WCD_VAR_DESC",
+    "COMPONENT_KNIFE_VARMOD_XM3_07",
+    "WCT_KNIFE_XM307",
+    "WCD_VAR_DESC",
+    "COMPONENT_KNIFE_VARMOD_XM3_08",
+    "WCT_KNIFE_XM308",
+    "WCD_VAR_DESC",
+    "COMPONENT_KNIFE_VARMOD_XM3_09",
+    "WCT_KNIFE_XM309",
+    "WCD_VAR_DESC",
+    "WEAPON_NIGHTSTICK",
+    "WT_NGTSTK",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_HAMMER",
+    "WT_HAMMER",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_BAT",
+    "WT_BAT",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_BAT_VARMOD_XM3",
+    "WCT_BAT_XM3",
+    "WCD_VAR_DESC",
+    "COMPONENT_BAT_VARMOD_XM3_01",
+    "WCT_BAT_XM301",
+    "WCD_VAR_DESC",
+    "COMPONENT_BAT_VARMOD_XM3_02",
+    "WCT_BAT_XM302",
+    "WCD_VAR_DESC",
+    "COMPONENT_BAT_VARMOD_XM3_03",
+    "WCT_BAT_XM303",
+    "WCD_VAR_DESC",
+    "COMPONENT_BAT_VARMOD_XM3_04",
+    "WCT_BAT_XM304",
+    "WCD_VAR_DESC",
+    "COMPONENT_BAT_VARMOD_XM3_05",
+    "WCT_BAT_XM305",
+    "WCD_VAR_DESC",
+    "COMPONENT_BAT_VARMOD_XM3_06",
+    "WCT_BAT_XM306",
+    "WCD_VAR_DESC",
+    "COMPONENT_BAT_VARMOD_XM3_07",
+    "WCT_BAT_XM307",
+    "WCD_VAR_DESC",
+    "COMPONENT_BAT_VARMOD_XM3_08",
+    "WCT_BAT_XM308",
+    "WCD_VAR_DESC",
+    "COMPONENT_BAT_VARMOD_XM3_09",
+    "WCT_BAT_XM309",
+    "WCD_VAR_DESC",
+    "WEAPON_GOLFCLUB",
+    "WT_GOLFCLUB",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_CROWBAR",
+    "WT_CROWBAR",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_PISTOL",
+    "WT_PIST",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_PISTOL_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_P_CLIP1",
+    "COMPONENT_PISTOL_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_P_CLIP2",
+    "COMPONENT_AT_PI_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_PI_SUPP_02",
+    "WCT_SUPP",
+    "WCD_PI_SUPP",
+    "COMPONENT_PISTOL_VARMOD_LUXE",
+    "WCT_VAR_GOLD",
+    "WCD_VAR_P",
+    "COMPONENT_PISTOL_CLIP_01",
+    "COMPONENT_PISTOL_CLIP_02",
+    "COMPONENT_AT_PI_FLSH",
+    "COMPONENT_AT_PI_SUPP_02",
+    "COMPONENT_GUNRUN_MK2_UPGRADE",
+    "WCT_VAR_GUN",
+    "WCD_VAR_GUN",
+    "WEAPON_COMBATPISTOL",
+    "WT_PIST_CBT",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_COMBATPISTOL_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CP_CLIP1",
+    "COMPONENT_COMBATPISTOL_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_CP_CLIP2",
+    "COMPONENT_AT_PI_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_PI_SUPP",
+    "WCT_SUPP",
+    "WCD_PI_SUPP",
+    "COMPONENT_COMBATPISTOL_VARMOD_LOWRIDER",
+    "WCT_VAR_GOLD",
+    "WCD_VAR_CBP",
+    "COMPONENT_COMBATPISTOL_CLIP_01",
+    "COMPONENT_COMBATPISTOL_CLIP_02",
+    "COMPONENT_AT_PI_FLSH",
+    "COMPONENT_AT_PI_SUPP",
+    "COMPONENT_COMBATPISTOL_VARMOD_XMAS23",
+    "WCD_VAR_DESC",
+    "WEAPON_APPISTOL",
+    "WT_PIST_AP",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_APPISTOL_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_AP_CLIP1",
+    "COMPONENT_APPISTOL_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_AP_CLIP2",
+    "COMPONENT_AT_PI_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_PI_SUPP",
+    "WCT_SUPP",
+    "WCD_PI_SUPP",
+    "COMPONENT_APPISTOL_VARMOD_LUXE",
+    "WCT_VAR_METAL",
+    "WCD_VAR_AP",
+    "COMPONENT_APPISTOL_CLIP_01",
+    "COMPONENT_APPISTOL_CLIP_02",
+    "COMPONENT_AT_PI_FLSH",
+    "COMPONENT_AT_PI_SUPP",
+    "COMPONENT_APPISTOL_VARMOD_SECURITY",
+    "WCT_VAR_STUD",
+    "WCD_VAR_AP",
+    "WEAPON_PISTOL50",
+    "WT_PIST_50",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_PISTOL50_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_P50_CLIP1",
+    "COMPONENT_PISTOL50_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_P50_CLIP2",
+    "COMPONENT_AT_PI_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_AR_SUPP_02",
+    "WCT_SUPP",
+    "WCD_AR_SUPP2",
+    "COMPONENT_PISTOL50_VARMOD_LUXE",
+    "WCT_VAR_SIL",
+    "WCD_VAR_P50",
+    "COMPONENT_PISTOL50_CLIP_01",
+    "COMPONENT_PISTOL50_CLIP_02",
+    "COMPONENT_AT_PI_FLSH",
+    "COMPONENT_AT_AR_SUPP_02",
+    "WEAPON_MICROSMG",
+    "WT_SMG_MCR",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_MICROSMG_CLIP_01",
+    "WCT_CLIP1",
+    "WCDMSMG_CLIP1",
+    "COMPONENT_MICROSMG_CLIP_02",
+    "WCT_CLIP2",
+    "WCDMSMG_CLIP2",
+    "COMPONENT_AT_PI_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_SCOPE_MACRO",
+    "WCT_SCOPE_MAC",
+    "WCD_SCOPE_MAC",
+    "COMPONENT_AT_AR_SUPP_02",
+    "WCT_SUPP",
+    "WCD_AR_SUPP2",
+    "COMPONENT_MICROSMG_VARMOD_LUXE",
+    "WCT_VAR_GOLD",
+    "WCD_VAR_MSMG",
+    "COMPONENT_MICROSMG_CLIP_01",
+    "COMPONENT_MICROSMG_CLIP_02",
+    "COMPONENT_AT_PI_FLSH",
+    "COMPONENT_AT_SCOPE_MACRO",
+    "COMPONENT_AT_AR_SUPP_02",
+    "COMPONENT_MICROSMG_VARMOD_SECURITY",
+    "WCT_VAR_WEED",
+    "WCD_VAR_MSMG",
+    "COMPONENT_MICROSMG_VARMOD_XM3",
+    "WCT_MSMG_XM3",
+    "WCD_VAR_DESC",
+    "COMPONENT_MICROSMG_VARMOD_FRN",
+    "WCD_VAR_DESC",
+    "WEAPON_SMG",
+    "WT_SMG",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_SMG_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_SMG_CLIP1",
+    "COMPONENT_SMG_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_SMG_CLIP2",
+    "COMPONENT_SMG_CLIP_03",
+    "WCT_CLIP_DRM",
+    "WCD_CLIP3",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_SCOPE_MACRO_02",
+    "WCT_SCOPE_MAC",
+    "WCD_SCOPE_MAC",
+    "COMPONENT_AT_PI_SUPP",
+    "WCT_SUPP",
+    "WCD_PI_SUPP",
+    "COMPONENT_SMG_VARMOD_LUXE",
+    "WCT_VAR_GOLD",
+    "WCD_VAR_SMG",
+    "COMPONENT_SMG_CLIP_01",
+    "COMPONENT_SMG_CLIP_02",
+    "COMPONENT_SMG_CLIP_03",
+    "COMPONENT_AT_AR_FLSH",
+    "COMPONENT_AT_SCOPE_MACRO_02",
+    "COMPONENT_AT_PI_SUPP",
+    "COMPONENT_GUNRUN_MK2_UPGRADE",
+    "WCT_VAR_GUN",
+    "WCD_VAR_GUN",
+    "WEAPON_ASSAULTSMG",
+    "WT_SMG_ASL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_ASSAULTSMG_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_ASMG_CLIP1",
+    "COMPONENT_ASSAULTSMG_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_ASMG_CLIP2",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_SCOPE_MACRO",
+    "WCT_SCOPE_MAC",
+    "WCD_SCOPE_MAC",
+    "COMPONENT_AT_AR_SUPP_02",
+    "WCT_SUPP",
+    "WCD_AR_SUPP2",
+    "COMPONENT_ASSAULTSMG_VARMOD_LOWRIDER",
+    "WCT_VAR_GOLD",
+    "WCD_VAR_ASMG",
+    "COMPONENT_ASSAULTSMG_CLIP_01",
+    "COMPONENT_ASSAULTSMG_CLIP_02",
+    "COMPONENT_AT_AR_FLSH",
+    "COMPONENT_AT_SCOPE_MACRO",
+    "COMPONENT_AT_AR_SUPP_02",
+    "WEAPON_ASSAULTRIFLE",
+    "WT_RIFLE_ASL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_ASSAULTRIFLE_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_AR_CLIP1",
+    "COMPONENT_ASSAULTRIFLE_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_AR_CLIP2",
+    "COMPONENT_ASSAULTRIFLE_CLIP_03",
+    "WCT_CLIP_DRM",
+    "WCD_CLIP3",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_SCOPE_MACRO",
+    "WCT_SCOPE_MAC",
+    "WCD_SCOPE_MAC",
+    "COMPONENT_AT_AR_SUPP_02",
+    "WCT_SUPP",
+    "WCD_AR_SUPP2",
+    "COMPONENT_AT_AR_AFGRIP",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "COMPONENT_ASSAULTRIFLE_VARMOD_LUXE",
+    "WCT_VAR_GOLD",
+    "WCD_VAR_AR",
+    "COMPONENT_ASSAULTRIFLE_CLIP_01",
+    "COMPONENT_ASSAULTRIFLE_CLIP_02",
+    "COMPONENT_ASSAULTRIFLE_CLIP_03",
+    "COMPONENT_AT_AR_FLSH",
+    "COMPONENT_AT_AR_AFGRIP",
+    "COMPONENT_AT_SCOPE_MACRO",
+    "COMPONENT_AT_AR_SUPP_02",
+    "COMPONENT_GUNRUN_MK2_UPGRADE",
+    "WCT_VAR_GUN",
+    "WCD_VAR_GUN",
+    "WEAPON_CARBINERIFLE",
+    "WT_RIFLE_CBN",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_CARBINERIFLE_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CR_CLIP1",
+    "COMPONENT_CARBINERIFLE_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_CR_CLIP2",
+    "COMPONENT_CARBINERIFLE_CLIP_03",
+    "WCT_CLIP_BOX",
+    "WCD_CLIP3",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_RAILCOVER_01",
+    "WCT_RAIL",
+    "WCD_AT_RAIL",
+    "COMPONENT_AT_SCOPE_MEDIUM",
+    "WCT_SCOPE_MED",
+    "WCD_SCOPE_MED",
+    "COMPONENT_AT_AR_SUPP",
+    "WCT_SUPP",
+    "WCD_AR_SUPP",
+    "COMPONENT_AT_AR_AFGRIP",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "COMPONENT_CARBINERIFLE_VARMOD_LUXE",
+    "WCT_VAR_GOLD",
+    "WCD_VAR_CR",
+    "COMPONENT_CARBINERIFLE_CLIP_01",
+    "COMPONENT_CARBINERIFLE_CLIP_02",
+    "COMPONENT_CARBINERIFLE_CLIP_03",
+    "COMPONENT_AT_AR_FLSH",
+    "COMPONENT_AT_AR_AFGRIP",
+    "COMPONENT_AT_SCOPE_MEDIUM",
+    "COMPONENT_AT_AR_SUPP",
+    "COMPONENT_CARBINERIFLE_VARMOD_MICH",
+    "WCD_VAR_DESC",
+    "COMPONENT_GUNRUN_MK2_UPGRADE",
+    "WCT_VAR_GUN",
+    "WCD_VAR_GUN",
+    "WEAPON_ADVANCEDRIFLE",
+    "WT_RIFLE_ADV",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_ADVANCEDRIFLE_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_AR_CLIP1",
+    "COMPONENT_ADVANCEDRIFLE_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_AR_CLIP2",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_SCOPE_SMALL",
+    "WCT_SCOPE_SML",
+    "WCD_SCOPE_SML",
+    "COMPONENT_AT_AR_SUPP",
+    "WCT_SUPP",
+    "WCD_AR_SUPP",
+    "COMPONENT_ADVANCEDRIFLE_VARMOD_LUXE",
+    "WCT_VAR_METAL",
+    "WCD_VAR_ADR",
+    "COMPONENT_ADVANCEDRIFLE_CLIP_01",
+    "COMPONENT_ADVANCEDRIFLE_CLIP_02",
+    "COMPONENT_AT_AR_FLSH",
+    "COMPONENT_AT_SCOPE_SMALL",
+    "COMPONENT_AT_AR_SUPP",
+    "WEAPON_MG",
+    "WT_MG",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_MG_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_MG_CLIP1",
+    "COMPONENT_MG_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_MG_CLIP2",
+    "COMPONENT_AT_SCOPE_SMALL_02",
+    "WCT_SCOPE_SML",
+    "WCD_SCOPE_SML",
+    "COMPONENT_MG_VARMOD_LOWRIDER",
+    "WCT_VAR_GOLD",
+    "WCD_VAR_MG",
+    "COMPONENT_MG_CLIP_01",
+    "COMPONENT_MG_CLIP_02",
+    "COMPONENT_AT_SCOPE_SMALL_02",
+    "WEAPON_COMBATMG",
+    "WT_MG_CBT",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_COMBATMG_CLIP_01",
+    "WCT_CLIP1",
+    "WCDCMG_CLIP1",
+    "COMPONENT_COMBATMG_CLIP_02",
+    "WCT_CLIP2",
+    "WCDCMG_CLIP2",
+    "COMPONENT_AT_SCOPE_MEDIUM",
+    "WCT_SCOPE_MED",
+    "WCD_SCOPE_MED",
+    "COMPONENT_AT_AR_AFGRIP",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "COMPONENT_COMBATMG_VARMOD_LOWRIDER",
+    "WCT_VAR_ETCHM",
+    "WCD_VAR_CBMG",
+    "COMPONENT_COMBATMG_CLIP_01",
+    "COMPONENT_COMBATMG_CLIP_02",
+    "COMPONENT_AT_SCOPE_MEDIUM",
+    "COMPONENT_AT_AR_AFGRIP",
+    "COMPONENT_GUNRUN_MK2_UPGRADE",
+    "WCT_VAR_GUN",
+    "WCD_VAR_GUN",
+    "WEAPON_PUMPSHOTGUN",
+    "WT_SG_PMP",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_PUMPSHOTGUN_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_SR_SUPP",
+    "WCT_SUPP",
+    "WCD_SR_SUPP",
+    "COMPONENT_PUMPSHOTGUN_VARMOD_LOWRIDER",
+    "WCT_VAR_GOLD",
+    "WCD_VAR_PSHT",
+    "COMPONENT_AT_AR_FLSH",
+    "COMPONENT_AT_SR_SUPP",
+    "COMPONENT_GUNRUN_MK2_UPGRADE",
+    "WCT_VAR_GUN",
+    "WCD_VAR_GUN",
+    "COMPONENT_PUMPSHOTGUN_VARMOD_SECURITY",
+    "WCT_VAR_BONE",
+    "WCD_VAR_PSHT",
+    "COMPONENT_PUMPSHOTGUN_VARMOD_XM3",
+    "WCT_PUMPSHT_XM3",
+    "WCD_VAR_PSHT",
+    "WEAPON_SAWNOFFSHOTGUN",
+    "WT_SG_SOF",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_SAWNOFFSHOTGUN_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "COMPONENT_SAWNOFFSHOTGUN_VARMOD_LUXE",
+    "WCT_VAR_METAL",
+    "WCD_VAR_SOF",
+    "WEAPON_ASSAULTSHOTGUN",
+    "WT_SG_ASL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_ASSAULTSHOTGUN_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_AS_CLIP1",
+    "COMPONENT_ASSAULTSHOTGUN_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_AS_CLIP2",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_AR_SUPP",
+    "WCT_SUPP",
+    "WCD_AR_SUPP",
+    "COMPONENT_AT_AR_AFGRIP",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "WEAPON_BULLPUPSHOTGUN",
+    "WT_SG_BLP",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_BULLPUPSHOTGUN_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_AR_SUPP_02",
+    "WCT_SUPP",
+    "WCD_AR_SUPP2",
+    "COMPONENT_AT_AR_AFGRIP",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "WEAPON_STUNGUN",
+    "WT_STUN",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_SNIPERRIFLE",
+    "WT_SNIP_RIF",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_SNIPERRIFLE_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_SR_CLIP1",
+    "COMPONENT_AT_AR_SUPP_02",
+    "WCT_SUPP",
+    "WCD_AR_SUPP2",
+    "COMPONENT_AT_SCOPE_LARGE",
+    "WCT_SCOPE_LRG",
+    "WCD_SCOPE_LRG",
+    "COMPONENT_AT_SCOPE_MAX",
+    "WCT_SCOPE_MAX",
+    "WCD_SCOPE_MAX",
+    "COMPONENT_SNIPERRIFLE_VARMOD_LUXE",
+    "WCT_VAR_WOOD",
+    "WCD_VAR_SNP",
+    "COMPONENT_SNIPERRIFLE_CLIP_01",
+    "COMPONENT_AT_SCOPE_LARGE",
+    "COMPONENT_AT_SCOPE_MAX",
+    "COMPONENT_AT_AR_SUPP_02",
+    "WEAPON_HEAVYSNIPER",
+    "WT_SNIP_HVY",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_HEAVYSNIPER_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_HS_CLIP1",
+    "COMPONENT_AT_SCOPE_LARGE",
+    "WCT_SCOPE_LRG",
+    "WCD_SCOPE_LRG",
+    "COMPONENT_AT_SCOPE_MAX",
+    "WCT_SCOPE_MAX",
+    "WCD_SCOPE_MAX",
+    "COMPONENT_GUNRUN_MK2_UPGRADE",
+    "WCT_VAR_GUN",
+    "WCD_VAR_GUN",
+    "COMPONENT_HEAVYSNIPER_VARMOD_XMAS23",
+    "WCD_VAR_DESC",
+    "WEAPON_REMOTESNIPER",
+    "WT_SNIP_RMT",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_GRENADELAUNCHER",
+    "WT_GL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_GRENADELAUNCHER_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_AR_AFGRIP",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "COMPONENT_AT_SCOPE_SMALL",
+    "WCT_SCOPE_SML",
+    "WCD_SCOPE_SML",
+    "WEAPON_GRENADELAUNCHER_SMOKE",
+    "WT_GL_SMOKE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_AR_AFGRIP",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "COMPONENT_AT_SCOPE_SMALL",
+    "WCT_SCOPE_SML",
+    "WCD_SCOPE_SML",
+    "WEAPON_RPG",
+    "WT_RPG",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_RPG_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "COMPONENT_RPG_VARMOD_TVR",
+    "WCD_VAR_DESC",
+    "WEAPON_PASSENGER_ROCKET",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_RPG_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "WEAPON_AIRSTRIKE_ROCKET",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_RPG_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "WEAPON_STINGER",
+    "WT_RPG",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_RPG_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "WEAPON_MINIGUN",
+    "WT_MINIGUN",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_MINIGUN_CLIP_01",
+    "WCT_CLIP2",
+    "WCD_MIG_CLIP2",
+    "WEAPON_GRENADE",
+    "WT_GNADE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_STICKYBOMB",
+    "WT_GNADE_STK",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_SMOKEGRENADE",
+    "WT_GNADE_SMK",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_BZGAS",
+    "WT_BZGAS",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_MOLOTOV",
+    "WT_MOLOTOV",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_FIREEXTINGUISHER",
+    "WT_FIRE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_PETROLCAN",
+    "WT_PETROL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_DIGISCANNER",
+    "WT_DIGI",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "GADGET_NIGHTVISION",
+    "WT_NV",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "GADGET_PARACHUTE",
+    "WT_PARA",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "OBJECT",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "POLICE_TORCH_FLASHLIGHT",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "WEAPON_BRIEFCASE",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_BRIEFCASE_02",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_BALL",
+    "WT_BALL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_FLARE",
+    "WT_FLARE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "VEHICLE_WEAPON_TANK",
+    "WT_V_TANK",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "VEHICLE_WEAPON_SPACE_ROCKET",
+    "WT_V_PLANEMSL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "VEHICLE_WEAPON_PLANE_ROCKET",
+    "WT_V_PLANEMSL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "VEHICLE_WEAPON_PLAYER_LASER",
+    "WT_V_PLRLSR",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "VEHICLE_WEAPON_PLAYER_BULLET",
+    "WT_V_PLRBUL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "VEHICLE_WEAPON_PLAYER_BUZZARD",
+    "WT_V_PLRBUL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "VEHICLE_WEAPON_PLAYER_HUNTER",
+    "WT_V_PLRBUL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "VEHICLE_WEAPON_PLAYER_LAZER",
+    "WT_V_LZRCAN",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "VEHICLE_WEAPON_ENEMY_LASER",
+    "WT_A_ENMYLSR",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "VEHICLE_WEAPON_SEARCHLIGHT",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "VEHICLE_WEAPON_RADAR",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_VEHICLE_ROCKET",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_RPG_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "WEAPON_BARBED_WIRE",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_DROWNING",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_DROWNING_IN_VEHICLE",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_BLEEDING",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_ELECTRIC_FENCE",
+    "WT_ELCFEN",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_EXPLOSION",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_FALL",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_EXHAUSTION",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_HIT_BY_WATER_CANNON",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_RAMMED_BY_CAR",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_RUN_OVER_BY_CAR",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_HELI_CRASH",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "VEHICLE_WEAPON_ROTORS",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_FIRE",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_ANIMAL_RETRIEVER",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_SMALL_DOG",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_TIGER_SHARK",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_HAMMERHEAD_SHARK",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_KILLER_WHALE",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_BOAR",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_PIG",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_COYOTE",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_DEER",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_HEN",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_RABBIT",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_CAT",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_COW",
+    "WT_INVALID",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_BIRD_CRAP",
+    "WT_GNADE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_BOTTLE",
+    "WT_BOTTLE",
+    "WTD_BOTTLE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_SNSPISTOL",
+    "WT_SNSPISTOL",
+    "WTD_SNSPISTOL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_SNSPISTOL_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_SNSP_CLIP1",
+    "COMPONENT_SNSPISTOL_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_SNSP_CLIP2",
+    "COMPONENT_SNSPISTOL_VARMOD_LOWRIDER",
+    "WCT_VAR_WOOD",
+    "WCD_VAR_SNS",
+    "COMPONENT_SNSPISTOL_CLIP_01",
+    "COMPONENT_SNSPISTOL_CLIP_02",
+    "COMPONENT_GUNRUN_MK2_UPGRADE",
+    "WCT_VAR_GUN",
+    "WCD_VAR_GUN",
+    "WEAPON_HEAVYPISTOL",
+    "WT_HVYPISTOL",
+    "WTD_HVYPISTOL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_HEAVYPISTOL_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_HPST_CLIP1",
+    "COMPONENT_HEAVYPISTOL_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_HPST_CLIP2",
+    "COMPONENT_AT_PI_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_PI_SUPP",
+    "WCT_SUPP",
+    "WCD_PI_SUPP",
+    "COMPONENT_HEAVYPISTOL_VARMOD_LUXE",
+    "WCT_VAR_WOOD",
+    "WCD_VAR_HPST",
+    "COMPONENT_HEAVYPISTOL_CLIP_01",
+    "COMPONENT_HEAVYPISTOL_CLIP_02",
+    "COMPONENT_AT_PI_FLSH",
+    "COMPONENT_AT_PI_SUPP",
+    "WEAPON_SPECIALCARBINE",
+    "WT_SPCARBINE",
+    "WTD_SPCARBINE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_SPECIALCARBINE_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_SCRB_CLIP1",
+    "COMPONENT_SPECIALCARBINE_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_SCRB_CLIP2",
+    "COMPONENT_SPECIALCARBINE_CLIP_03",
+    "WCT_CLIP_DRM",
+    "WCD_CLIP3",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_SCOPE_MEDIUM",
+    "WCT_SCOPE_MED",
+    "WCD_SCOPE_MED",
+    "COMPONENT_AT_AR_SUPP_02",
+    "WCT_SUPP",
+    "WCD_AR_SUPP2",
+    "COMPONENT_AT_AR_AFGRIP",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "COMPONENT_SPECIALCARBINE_VARMOD_LOWRIDER",
+    "WCT_VAR_ETCHM",
+    "WCD_VAR_SCAR",
+    "COMPONENT_SPECIALCARBINE_CLIP_01",
+    "COMPONENT_SPECIALCARBINE_CLIP_02",
+    "COMPONENT_SPECIALCARBINE_CLIP_03",
+    "COMPONENT_AT_AR_FLSH",
+    "COMPONENT_AT_AR_AFGRIP",
+    "COMPONENT_AT_SCOPE_MEDIUM",
+    "COMPONENT_AT_AR_SUPP_02",
+    "COMPONENT_SPECIALCARBINE_VARMOD_XMAS23",
+    "WCD_VAR_DESC",
+    "COMPONENT_GUNRUN_MK2_UPGRADE",
+    "WCT_VAR_GUN",
+    "WCD_VAR_GUN",
+    "WEAPON_BULLPUPRIFLE",
+    "WT_BULLRIFLE",
+    "WTD_BULLRIFLE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_BULLPUPRIFLE_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_BRIF_CLIP1",
+    "COMPONENT_BULLPUPRIFLE_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_BRIF_CLIP2",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_SCOPE_SMALL",
+    "WCT_SCOPE_SML",
+    "WCD_SCOPE_SML",
+    "COMPONENT_AT_AR_SUPP",
+    "WCT_SUPP",
+    "WCD_AR_SUPP",
+    "COMPONENT_AT_AR_AFGRIP",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "COMPONENT_BULLPUPRIFLE_VARMOD_LOW",
+    "WCT_VAR_METAL",
+    "WCD_VAR_BPR",
+    "COMPONENT_BULLPUPRIFLE_CLIP_01",
+    "COMPONENT_BULLPUPRIFLE_CLIP_02",
+    "COMPONENT_AT_AR_FLSH",
+    "COMPONENT_AT_AR_AFGRIP",
+    "COMPONENT_AT_SCOPE_SMALL",
+    "COMPONENT_AT_AR_SUPP",
+    "COMPONENT_GUNRUN_MK2_UPGRADE",
+    "WCT_VAR_GUN",
+    "WCD_VAR_GUN",
+    "WEAPON_BULLPUPRIFLE_MK2",
+    "WT_BULLRIFLE2",
+    "WTD_BULLRIFLE2",
+    "WCT_TINT_0",
+    "WCT_TINT_1",
+    "WCT_TINT_2",
+    "WCT_TINT_3",
+    "WCT_TINT_4",
+    "WCT_TINT_5",
+    "WCT_TINT_6",
+    "WCT_TINT_7",
+    "WCT_TINT_8",
+    "WCT_TINT_9",
+    "WCT_TINT_10",
+    "WCT_TINT_11",
+    "WCT_TINT_12",
+    "WCT_TINT_13",
+    "WCT_TINT_14",
+    "WCT_TINT_15",
+    "WCT_TINT_16",
+    "WCT_TINT_17",
+    "WCT_TINT_18",
+    "WCT_TINT_19",
+    "WCT_TINT_20",
+    "WCT_TINT_21",
+    "WCT_TINT_22",
+    "WCT_TINT_23",
+    "WCT_TINT_24",
+    "WCT_TINT_25",
+    "WCT_TINT_26",
+    "WCT_TINT_27",
+    "WCT_TINT_28",
+    "WCT_TINT_29",
+    "WCT_TINT_30",
+    "WCT_TINT_31",
+    "COMPONENT_BULLPUPRIFLE_MK2_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "COMPONENT_BULLPUPRIFLE_MK2_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_CLIP2",
+    "COMPONENT_BULLPUPRIFLE_MK2_CLIP_TRACER",
+    "WCT_CLIP_TR",
+    "WCD_CLIP_TR",
+    "COMPONENT_BULLPUPRIFLE_MK2_CLIP_INCENDIARY",
+    "WCT_CLIP_INC",
+    "WCD_CLIP_INC",
+    "COMPONENT_BULLPUPRIFLE_MK2_CLIP_ARMORPIERCING",
+    "WCT_CLIP_AP",
+    "WCD_CLIP_AP",
+    "COMPONENT_BULLPUPRIFLE_MK2_CLIP_FMJ",
+    "WCT_CLIP_FMJ",
+    "WCD_CLIP_FMJ",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_SIGHTS",
+    "WCT_HOLO",
+    "WCD_HOLO",
+    "COMPONENT_AT_SCOPE_MACRO_02_MK2",
+    "WCT_SCOPE_MAC2",
+    "WCD_SCOPE_MAC",
+    "COMPONENT_AT_SCOPE_SMALL_MK2",
+    "WCT_SCOPE_SML2",
+    "WCD_SCOPE_SML",
+    "COMPONENT_AT_BP_BARREL_01",
+    "WCT_BARR",
+    "WCD_BARR",
+    "COMPONENT_AT_BP_BARREL_02",
+    "WCT_BARR2",
+    "WCD_BARR2",
+    "COMPONENT_AT_AR_SUPP",
+    "WCT_SUPP",
+    "WCD_AR_SUPP",
+    "COMPONENT_AT_MUZZLE_01",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_02",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_03",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_04",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_05",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_06",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_07",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_AR_AFGRIP_02",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "COMPONENT_BULLPUPRIFLE_MK2_CAMO",
+    "WCT_CAMO_1",
+    "COMPONENT_BULLPUPRIFLE_MK2_CAMO_02",
+    "WCT_CAMO_2",
+    "COMPONENT_BULLPUPRIFLE_MK2_CAMO_03",
+    "WCT_CAMO_3",
+    "COMPONENT_BULLPUPRIFLE_MK2_CAMO_04",
+    "WCT_CAMO_4",
+    "COMPONENT_BULLPUPRIFLE_MK2_CAMO_05",
+    "WCT_CAMO_5",
+    "COMPONENT_BULLPUPRIFLE_MK2_CAMO_06",
+    "WCT_CAMO_6",
+    "COMPONENT_BULLPUPRIFLE_MK2_CAMO_07",
+    "WCT_CAMO_7",
+    "COMPONENT_BULLPUPRIFLE_MK2_CAMO_08",
+    "WCT_CAMO_8",
+    "COMPONENT_BULLPUPRIFLE_MK2_CAMO_09",
+    "WCT_CAMO_9",
+    "COMPONENT_BULLPUPRIFLE_MK2_CAMO_10",
+    "WCT_CAMO_10",
+    "COMPONENT_BULLPUPRIFLE_MK2_CAMO_IND_01",
+    "WCT_CAMO_IND",
+    "WEAPON_MARKSMANRIFLE_MK2",
+    "WT_MKRIFLE2",
+    "WTD_MKRIFLE2",
+    "WCT_TINT_0",
+    "WCT_TINT_1",
+    "WCT_TINT_2",
+    "WCT_TINT_3",
+    "WCT_TINT_4",
+    "WCT_TINT_5",
+    "WCT_TINT_6",
+    "WCT_TINT_7",
+    "WCT_TINT_8",
+    "WCT_TINT_9",
+    "WCT_TINT_10",
+    "WCT_TINT_11",
+    "WCT_TINT_12",
+    "WCT_TINT_13",
+    "WCT_TINT_14",
+    "WCT_TINT_15",
+    "WCT_TINT_16",
+    "WCT_TINT_17",
+    "WCT_TINT_18",
+    "WCT_TINT_19",
+    "WCT_TINT_20",
+    "WCT_TINT_21",
+    "WCT_TINT_22",
+    "WCT_TINT_23",
+    "WCT_TINT_24",
+    "WCT_TINT_25",
+    "WCT_TINT_26",
+    "WCT_TINT_27",
+    "WCT_TINT_28",
+    "WCT_TINT_29",
+    "WCT_TINT_30",
+    "WCT_TINT_31",
+    "COMPONENT_MARKSMANRIFLE_MK2_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "COMPONENT_MARKSMANRIFLE_MK2_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_CLIP2",
+    "COMPONENT_MARKSMANRIFLE_MK2_CLIP_ARMORPIERCING",
+    "WCT_CLIP_AP",
+    "WCD_CLIP_AP",
+    "COMPONENT_MARKSMANRIFLE_MK2_CLIP_FMJ",
+    "WCT_CLIP_FMJ",
+    "WCD_CLIP_FMJ",
+    "COMPONENT_MARKSMANRIFLE_MK2_CLIP_INCENDIARY",
+    "WCT_CLIP_INC",
+    "WCD_CLIP_INC",
+    "COMPONENT_MARKSMANRIFLE_MK2_CLIP_TRACER",
+    "WCT_CLIP_TR",
+    "WCD_CLIP_TR",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_SIGHTS",
+    "WCT_HOLO",
+    "WCD_HOLO",
+    "COMPONENT_AT_SCOPE_MEDIUM_MK2",
+    "WCT_SCOPE_MED2",
+    "WCD_SCOPE_MED",
+    "COMPONENT_AT_SCOPE_LARGE_FIXED_ZOOM_MK2",
+    "WCT_SCOPE_LRG2",
+    "WCD_SCOPE_LRF",
+    "COMPONENT_AT_AR_SUPP",
+    "WCT_SUPP",
+    "WCD_AR_SUPP",
+    "COMPONENT_AT_MUZZLE_01",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_02",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_03",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_04",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_05",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_06",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_07",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_AR_AFGRIP_02",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "COMPONENT_AT_MRFL_BARREL_01",
+    "WCT_BARR",
+    "WCD_BARR",
+    "COMPONENT_AT_MRFL_BARREL_02",
+    "WCT_BARR2",
+    "WCD_BARR2",
+    "COMPONENT_MARKSMANRIFLE_MK2_CAMO",
+    "WCT_CAMO_1",
+    "COMPONENT_MARKSMANRIFLE_MK2_CAMO_02",
+    "WCT_CAMO_2",
+    "COMPONENT_MARKSMANRIFLE_MK2_CAMO_03",
+    "WCT_CAMO_3",
+    "COMPONENT_MARKSMANRIFLE_MK2_CAMO_04",
+    "WCT_CAMO_4",
+    "COMPONENT_MARKSMANRIFLE_MK2_CAMO_05",
+    "WCT_CAMO_5",
+    "COMPONENT_MARKSMANRIFLE_MK2_CAMO_06",
+    "WCT_CAMO_6",
+    "COMPONENT_MARKSMANRIFLE_MK2_CAMO_07",
+    "WCT_CAMO_7",
+    "COMPONENT_MARKSMANRIFLE_MK2_CAMO_08",
+    "WCT_CAMO_8",
+    "COMPONENT_MARKSMANRIFLE_MK2_CAMO_09",
+    "WCT_CAMO_9",
+    "COMPONENT_MARKSMANRIFLE_MK2_CAMO_10",
+    "WCT_CAMO_10",
+    "COMPONENT_MARKSMANRIFLE_MK2_CAMO_IND_01",
+    "WCT_CAMO_IND",
+    "WEAPON_PUMPSHOTGUN_MK2",
+    "WT_SG_PMP2",
+    "WTD_SG_PMP2",
+    "WCT_TINT_0",
+    "WCT_TINT_1",
+    "WCT_TINT_2",
+    "WCT_TINT_3",
+    "WCT_TINT_4",
+    "WCT_TINT_5",
+    "WCT_TINT_6",
+    "WCT_TINT_7",
+    "WCT_TINT_8",
+    "WCT_TINT_9",
+    "WCT_TINT_10",
+    "WCT_TINT_11",
+    "WCT_TINT_12",
+    "WCT_TINT_13",
+    "WCT_TINT_14",
+    "WCT_TINT_15",
+    "WCT_TINT_16",
+    "WCT_TINT_17",
+    "WCT_TINT_18",
+    "WCT_TINT_19",
+    "WCT_TINT_20",
+    "WCT_TINT_21",
+    "WCT_TINT_22",
+    "WCT_TINT_23",
+    "WCT_TINT_24",
+    "WCT_TINT_25",
+    "WCT_TINT_26",
+    "WCT_TINT_27",
+    "WCT_TINT_28",
+    "WCT_TINT_29",
+    "WCT_TINT_30",
+    "WCT_TINT_31",
+    "COMPONENT_PUMPSHOTGUN_MK2_CLIP_01",
+    "WCT_SHELL",
+    "WCD_SHELL",
+    "COMPONENT_PUMPSHOTGUN_MK2_CLIP_ARMORPIERCING",
+    "WCT_SHELL_AP",
+    "WCD_SHELL_AP",
+    "COMPONENT_PUMPSHOTGUN_MK2_CLIP_EXPLOSIVE",
+    "WCT_SHELL_EX",
+    "WCD_SHELL_EX",
+    "COMPONENT_PUMPSHOTGUN_MK2_CLIP_HOLLOWPOINT",
+    "WCT_SHELL_HP",
+    "WCD_SHELL_HP",
+    "COMPONENT_PUMPSHOTGUN_MK2_CLIP_INCENDIARY",
+    "WCT_SHELL_INC",
+    "WCD_SHELL_INC",
+    "COMPONENT_AT_SIGHTS",
+    "WCT_HOLO",
+    "WCD_HOLO",
+    "COMPONENT_AT_SCOPE_MACRO_MK2",
+    "WCT_SCOPE_MAC2",
+    "WCD_SCOPE_MAC",
+    "COMPONENT_AT_SCOPE_SMALL_MK2",
+    "WCT_SCOPE_SML2",
+    "WCD_SCOPE_SML",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_SR_SUPP_03",
+    "WCT_SUPP",
+    "WCD_SR_SUPP",
+    "COMPONENT_AT_MUZZLE_08",
+    "WCT_MUZZ",
+    "WCD_MUZZ_SR",
+    "COMPONENT_PUMPSHOTGUN_MK2_CAMO",
+    "WCT_CAMO_1",
+    "COMPONENT_PUMPSHOTGUN_MK2_CAMO_02",
+    "WCT_CAMO_2",
+    "COMPONENT_PUMPSHOTGUN_MK2_CAMO_03",
+    "WCT_CAMO_3",
+    "COMPONENT_PUMPSHOTGUN_MK2_CAMO_04",
+    "WCT_CAMO_4",
+    "COMPONENT_PUMPSHOTGUN_MK2_CAMO_05",
+    "WCT_CAMO_5",
+    "COMPONENT_PUMPSHOTGUN_MK2_CAMO_06",
+    "WCT_CAMO_6",
+    "COMPONENT_PUMPSHOTGUN_MK2_CAMO_07",
+    "WCT_CAMO_7",
+    "COMPONENT_PUMPSHOTGUN_MK2_CAMO_08",
+    "WCT_CAMO_8",
+    "COMPONENT_PUMPSHOTGUN_MK2_CAMO_09",
+    "WCT_CAMO_9",
+    "COMPONENT_PUMPSHOTGUN_MK2_CAMO_10",
+    "WCT_CAMO_10",
+    "COMPONENT_PUMPSHOTGUN_MK2_CAMO_IND_01",
+    "WCT_CAMO_IND",
+    "WEAPON_SNSPISTOL_MK2",
+    "WT_SNSPISTOL2",
+    "WTD_SNSPISTOL2",
+    "WCT_TINT_0",
+    "WCT_TINT_1",
+    "WCT_TINT_2",
+    "WCT_TINT_3",
+    "WCT_TINT_4",
+    "WCT_TINT_5",
+    "WCT_TINT_6",
+    "WCT_TINT_7",
+    "WCT_TINT_8",
+    "WCT_TINT_9",
+    "WCT_TINT_10",
+    "WCT_TINT_11",
+    "WCT_TINT_12",
+    "WCT_TINT_13",
+    "WCT_TINT_14",
+    "WCT_TINT_15",
+    "WCT_TINT_16",
+    "WCT_TINT_17",
+    "WCT_TINT_18",
+    "WCT_TINT_19",
+    "WCT_TINT_20",
+    "WCT_TINT_21",
+    "WCT_TINT_22",
+    "WCT_TINT_23",
+    "WCT_TINT_24",
+    "WCT_TINT_25",
+    "WCT_TINT_26",
+    "WCT_TINT_27",
+    "WCT_TINT_28",
+    "WCT_TINT_29",
+    "WCT_TINT_30",
+    "WCT_TINT_31",
+    "COMPONENT_SNSPISTOL_MK2_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "COMPONENT_SNSPISTOL_MK2_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_CLIP2",
+    "COMPONENT_SNSPISTOL_MK2_CLIP_TRACER",
+    "WCT_CLIP_TR",
+    "WCD_CLIP_TR_RV",
+    "COMPONENT_SNSPISTOL_MK2_CLIP_INCENDIARY",
+    "WCT_CLIP_INC",
+    "WCD_CLIP_INC_NS",
+    "COMPONENT_SNSPISTOL_MK2_CLIP_HOLLOWPOINT",
+    "WCT_CLIP_HP",
+    "WCD_CLIP_HP_RV",
+    "COMPONENT_SNSPISTOL_MK2_CLIP_FMJ",
+    "WCT_CLIP_FMJ",
+    "WCD_CLIP_FMJ_RV",
+    "COMPONENT_AT_PI_FLSH_03",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_PI_RAIL_02",
+    "WCT_SCOPE_PI",
+    "WCD_SCOPE_PI",
+    "COMPONENT_AT_PI_SUPP_02",
+    "WCT_SUPP",
+    "WCD_PI_SUPP",
+    "COMPONENT_AT_PI_COMP_02",
+    "WCT_COMP",
+    "WCD_COMP",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_SLIDE",
+    "WCT_CAMO_1",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_02_SLIDE",
+    "WCT_CAMO_2",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_03_SLIDE",
+    "WCT_CAMO_3",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_04_SLIDE",
+    "WCT_CAMO_4",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_05_SLIDE",
+    "WCT_CAMO_5",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_06_SLIDE",
+    "WCT_CAMO_6",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_07_SLIDE",
+    "WCT_CAMO_7",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_08_SLIDE",
+    "WCT_CAMO_8",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_09_SLIDE",
+    "WCT_CAMO_9",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_10_SLIDE",
+    "WCT_CAMO_10",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_IND_01_SLIDE",
+    "WCT_CAMO_IND",
+    "COMPONENT_SNSPISTOL_MK2_CAMO",
+    "WCT_CAMO_1",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_02",
+    "WCT_CAMO_2",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_03",
+    "WCT_CAMO_3",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_04",
+    "WCT_CAMO_4",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_05",
+    "WCT_CAMO_5",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_06",
+    "WCT_CAMO_6",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_07",
+    "WCT_CAMO_7",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_08",
+    "WCT_CAMO_8",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_09",
+    "WCT_CAMO_9",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_10",
+    "WCT_CAMO_10",
+    "COMPONENT_SNSPISTOL_MK2_CAMO_IND_01",
+    "WCT_CAMO_IND",
+    "WEAPON_SPECIALCARBINE_MK2",
+    "WT_SPCARBINE2",
+    "WTD_SPCARBINE2",
+    "WCT_TINT_0",
+    "WCT_TINT_1",
+    "WCT_TINT_2",
+    "WCT_TINT_3",
+    "WCT_TINT_4",
+    "WCT_TINT_5",
+    "WCT_TINT_6",
+    "WCT_TINT_7",
+    "WCT_TINT_8",
+    "WCT_TINT_9",
+    "WCT_TINT_10",
+    "WCT_TINT_11",
+    "WCT_TINT_12",
+    "WCT_TINT_13",
+    "WCT_TINT_14",
+    "WCT_TINT_15",
+    "WCT_TINT_16",
+    "WCT_TINT_17",
+    "WCT_TINT_18",
+    "WCT_TINT_19",
+    "WCT_TINT_20",
+    "WCT_TINT_21",
+    "WCT_TINT_22",
+    "WCT_TINT_23",
+    "WCT_TINT_24",
+    "WCT_TINT_25",
+    "WCT_TINT_26",
+    "WCT_TINT_27",
+    "WCT_TINT_28",
+    "WCT_TINT_29",
+    "WCT_TINT_30",
+    "WCT_TINT_31",
+    "COMPONENT_SPECIALCARBINE_MK2_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "COMPONENT_SPECIALCARBINE_MK2_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_CLIP2",
+    "COMPONENT_SPECIALCARBINE_MK2_CLIP_TRACER",
+    "WCT_CLIP_TR",
+    "WCD_CLIP_TR",
+    "COMPONENT_SPECIALCARBINE_MK2_CLIP_INCENDIARY",
+    "WCT_CLIP_INC",
+    "WCD_CLIP_INC",
+    "COMPONENT_SPECIALCARBINE_MK2_CLIP_ARMORPIERCING",
+    "WCT_CLIP_AP",
+    "WCD_CLIP_AP",
+    "COMPONENT_SPECIALCARBINE_MK2_CLIP_FMJ",
+    "WCT_CLIP_FMJ",
+    "WCD_CLIP_FMJ",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_SIGHTS",
+    "WCT_HOLO",
+    "WCD_HOLO",
+    "COMPONENT_AT_SCOPE_MACRO_MK2",
+    "WCT_SCOPE_MAC2",
+    "WCD_SCOPE_MAC",
+    "COMPONENT_AT_SCOPE_MEDIUM_MK2",
+    "WCT_SCOPE_MED2",
+    "WCD_SCOPE_MED",
+    "COMPONENT_AT_AR_SUPP_02",
+    "WCT_SUPP",
+    "WCD_AR_SUPP2",
+    "COMPONENT_AT_MUZZLE_01",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_02",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_03",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_04",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_05",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_06",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_07",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_AR_AFGRIP_02",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "COMPONENT_AT_SC_BARREL_01",
+    "WCT_BARR",
+    "WCD_BARR",
+    "COMPONENT_AT_SC_BARREL_02",
+    "WCT_BARR2",
+    "WCD_BARR2",
+    "COMPONENT_SPECIALCARBINE_MK2_CAMO",
+    "WCT_CAMO_1",
+    "COMPONENT_SPECIALCARBINE_MK2_CAMO_02",
+    "WCT_CAMO_2",
+    "COMPONENT_SPECIALCARBINE_MK2_CAMO_03",
+    "WCT_CAMO_3",
+    "COMPONENT_SPECIALCARBINE_MK2_CAMO_04",
+    "WCT_CAMO_4",
+    "COMPONENT_SPECIALCARBINE_MK2_CAMO_05",
+    "WCT_CAMO_5",
+    "COMPONENT_SPECIALCARBINE_MK2_CAMO_06",
+    "WCT_CAMO_6",
+    "COMPONENT_SPECIALCARBINE_MK2_CAMO_07",
+    "WCT_CAMO_7",
+    "COMPONENT_SPECIALCARBINE_MK2_CAMO_08",
+    "WCT_CAMO_8",
+    "COMPONENT_SPECIALCARBINE_MK2_CAMO_09",
+    "WCT_CAMO_9",
+    "COMPONENT_SPECIALCARBINE_MK2_CAMO_10",
+    "WCT_CAMO_10",
+    "COMPONENT_SPECIALCARBINE_MK2_CAMO_IND_01",
+    "WCT_CAMO_IND",
+    "WEAPON_ARENA_MACHINE_GUN",
+    "WT_V_PLRBUL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_ARENA_HOMING_MISSILE",
+    "WT_V_LZRCAN",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_ACIDPACKAGE",
+    "WT_ACIDPACKAGE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_CANDYCANE",
+    "WT_CANDYCANE",
+    "WTD_CANDYCANE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_RAILGUNXM3",
+    "WT_RAILGUNXM3",
+    "WTD_RAILGUNXM3",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_RAILGUNXM3_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_RLGN_CLIP1",
+    "WEAPON_PISTOLXM3",
+    "WT_PISTOLXM3",
+    "WTD_PISTOLXM3",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_PISTOLXM3_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_PXM3_CLIP1",
+    "COMPONENT_PISTOLXM3_SUPP",
+    "WCT_SUPP",
+    "WCD_PI_SUPP",
+    "WEAPON_HOMINGLAUNCHER",
+    "WT_HOMLNCH",
+    "WTD_HOMLNCH",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_HOMINGLAUNCHER_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "WEAPON_PROXMINE",
+    "WT_PRXMINE",
+    "WTD_PRXMINE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_SNOWBALL",
+    "WT_SNWBALL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_DOUBLEACTION",
+    "WT_REV_DA",
+    "WTD_REV_DA",
+    "WM_TINT0",
+    "COMPONENT_DOUBLEACTION_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_REV_DA_CLIP",
+    "WEAPON_REVOLVER_MK2",
+    "WT_REVOLVER2",
+    "WTD_REVOLVER2",
+    "WCT_TINT_0",
+    "WCT_TINT_1",
+    "WCT_TINT_2",
+    "WCT_TINT_3",
+    "WCT_TINT_4",
+    "WCT_TINT_5",
+    "WCT_TINT_6",
+    "WCT_TINT_7",
+    "WCT_TINT_8",
+    "WCT_TINT_9",
+    "WCT_TINT_10",
+    "WCT_TINT_11",
+    "WCT_TINT_12",
+    "WCT_TINT_13",
+    "WCT_TINT_14",
+    "WCT_TINT_15",
+    "WCT_TINT_16",
+    "WCT_TINT_17",
+    "WCT_TINT_18",
+    "WCT_TINT_19",
+    "WCT_TINT_20",
+    "WCT_TINT_21",
+    "WCT_TINT_22",
+    "WCT_TINT_23",
+    "WCT_TINT_24",
+    "WCT_TINT_25",
+    "WCT_TINT_26",
+    "WCT_TINT_27",
+    "WCT_TINT_28",
+    "WCT_TINT_29",
+    "WCT_TINT_30",
+    "WCT_TINT_31",
+    "COMPONENT_REVOLVER_MK2_CLIP_01",
+    "WCT_CLIP1_RV",
+    "WCD_CLIP1_RV",
+    "COMPONENT_REVOLVER_MK2_CLIP_FMJ",
+    "WCT_CLIP_FMJ",
+    "WCD_CLIP_FMJ_RV",
+    "COMPONENT_REVOLVER_MK2_CLIP_HOLLOWPOINT",
+    "WCT_CLIP_HP",
+    "WCD_CLIP_HP_RV",
+    "COMPONENT_REVOLVER_MK2_CLIP_INCENDIARY",
+    "WCT_CLIP_INC",
+    "WCD_CLIP_INC_RV",
+    "COMPONENT_REVOLVER_MK2_CLIP_TRACER",
+    "WCT_CLIP_TR",
+    "WCD_CLIP_TR_RV",
+    "COMPONENT_AT_SIGHTS",
+    "WCT_HOLO",
+    "WCD_HOLO",
+    "COMPONENT_AT_SCOPE_MACRO_MK2",
+    "WCT_SCOPE_MAC2",
+    "WCD_SCOPE_MAC",
+    "COMPONENT_AT_PI_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_PI_COMP_03",
+    "WCT_COMP",
+    "WCD_COMP",
+    "COMPONENT_REVOLVER_MK2_CAMO",
+    "WCT_CAMO_1",
+    "COMPONENT_REVOLVER_MK2_CAMO_02",
+    "WCT_CAMO_2",
+    "COMPONENT_REVOLVER_MK2_CAMO_03",
+    "WCT_CAMO_3",
+    "COMPONENT_REVOLVER_MK2_CAMO_04",
+    "WCT_CAMO_4",
+    "COMPONENT_REVOLVER_MK2_CAMO_05",
+    "WCT_CAMO_5",
+    "COMPONENT_REVOLVER_MK2_CAMO_06",
+    "WCT_CAMO_6",
+    "COMPONENT_REVOLVER_MK2_CAMO_07",
+    "WCT_CAMO_7",
+    "COMPONENT_REVOLVER_MK2_CAMO_08",
+    "WCT_CAMO_8",
+    "COMPONENT_REVOLVER_MK2_CAMO_09",
+    "WCT_CAMO_9",
+    "COMPONENT_REVOLVER_MK2_CAMO_10",
+    "WCT_CAMO_10",
+    "COMPONENT_REVOLVER_MK2_CAMO_IND_01",
+    "WCT_CAMO_IND",
+    "WEAPON_RAYPISTOL",
+    "WT_RAYPISTOL",
+    "WTD_RAYPISTOL",
+    "RWT_TINT0",
+    "RWT_TINT1",
+    "RWT_TINT2",
+    "RWT_TINT3",
+    "RWT_TINT4",
+    "RWT_TINT5",
+    "RWT_TINT6",
+    "COMPONENT_RAYPISTOL_VARMOD_XMAS18",
+    "WCT_VAR_RAY18",
+    "WCD_VAR_RAY18",
+    "WEAPON_RAYCARBINE",
+    "WT_RAYCARBINE",
+    "WTD_RAYCARBINE",
+    "RWT_TINT0",
+    "RWT_TINT1",
+    "RWT_TINT2",
+    "RWT_TINT3",
+    "RWT_TINT4",
+    "RWT_TINT5",
+    "RWT_TINT6",
+    "WEAPON_RAYMINIGUN",
+    "WT_RAYMINIGUN",
+    "WTD_RAYMINIGUN",
+    "RWT_TINT0",
+    "RWT_TINT1",
+    "RWT_TINT2",
+    "RWT_TINT3",
+    "RWT_TINT4",
+    "RWT_TINT5",
+    "RWT_TINT6",
+    "COMPONENT_MINIGUN_CLIP_01",
+    "WCT_CLIP2",
+    "WCD_MIG_CLIP2",
+    "WEAPON_GUSENBERG",
+    "WT_GUSNBRG",
+    "WTD_GUSNBRG",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_GUSENBERG_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_GSNB_CLIP1",
+    "COMPONENT_GUSENBERG_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_GSNB_CLIP2",
+    "WEAPON_DAGGER",
+    "WT_DAGGER",
+    "WTD_DAGGER",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_VINTAGEPISTOL",
+    "WT_VPISTOL",
+    "WTD_VPISTOL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_VINTAGEPISTOL_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_VPST_CLIP1",
+    "COMPONENT_VINTAGEPISTOL_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_VPST_CLIP2",
+    "COMPONENT_AT_PI_SUPP",
+    "WCT_SUPP",
+    "WCD_PI_SUPP",
+    "WEAPON_MUSKET",
+    "WT_MUSKET",
+    "WTD_MUSKET",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_MUSKET_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "WEAPON_FIREWORK",
+    "WT_FIREWRK",
+    "WTD_FIREWRK",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_FIREWORK_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "WEAPON_RAILGUN",
+    "WT_RAILGUN",
+    "WTD_RAILGUN",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_RAILGUN_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_RLGN_CLIP1",
+    "WEAPON_HATCHET",
+    "WT_HATCHET",
+    "WTD_HATCHET",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_MARKSMANRIFLE",
+    "WT_MKRIFLE",
+    "WTD_MKRIFLE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_MARKSMANRIFLE_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_MKRF_CLIP1",
+    "COMPONENT_MARKSMANRIFLE_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_MKRF_CLIP2",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_SCOPE_LARGE_FIXED_ZOOM",
+    "WCT_SCOPE_LRG",
+    "WCD_SCOPE_LRF",
+    "COMPONENT_AT_AR_SUPP",
+    "WCT_SUPP",
+    "WCD_AR_SUPP",
+    "COMPONENT_AT_AR_AFGRIP",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "COMPONENT_MARKSMANRIFLE_VARMOD_LUXE",
+    "WCT_VAR_GOLD",
+    "WCD_VAR_MKRF",
+    "COMPONENT_MARKSMANRIFLE_CLIP_01",
+    "COMPONENT_MARKSMANRIFLE_CLIP_02",
+    "COMPONENT_AT_AR_FLSH",
+    "COMPONENT_AT_AR_AFGRIP",
+    "COMPONENT_AT_SCOPE_LARGE_FIXED_ZOOM",
+    "COMPONENT_AT_AR_SUPP",
+    "COMPONENT_GUNRUN_MK2_UPGRADE",
+    "WCT_VAR_GUN",
+    "WCD_VAR_GUN",
+    "WEAPON_HEAVYSHOTGUN",
+    "WT_HVYSHGN",
+    "WTD_HVYSHGN",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_HEAVYSHOTGUN_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_HVSG_CLIP1",
+    "COMPONENT_HEAVYSHOTGUN_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_HVSG_CLIP2",
+    "COMPONENT_HEAVYSHOTGUN_CLIP_03",
+    "WCT_CLIP_DRM",
+    "WCD_CLIP3",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_AR_SUPP_02",
+    "WCT_SUPP",
+    "WCD_AR_SUPP2",
+    "COMPONENT_AT_AR_AFGRIP",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "WEAPON_GARBAGEBAG",
+    "WT_KNIFE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_HANDCUFFS",
+    "WT_KNIFE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_CERAMICPISTOL",
+    "WT_CERPST",
+    "WTD_CERPST",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_CERAMICPISTOL_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_P_CLIP1",
+    "COMPONENT_CERAMICPISTOL_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_P_CLIP2",
+    "COMPONENT_CERAMICPISTOL_SUPP",
+    "WCT_SUPP",
+    "WCD_PI_SUPP",
+    "WEAPON_HAZARDCAN",
+    "WT_HAZARDCAN",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_TRANQUILIZER",
+    "WT_STUN",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_COMBATSHOTGUN",
+    "WT_CMBSHGN",
+    "WTD_CMBSHGN",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_COMBATSHOTGUN_CLIP_01",
+    "WCT_SHELL",
+    "WCD_SHELL",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_AR_SUPP",
+    "WCT_SUPP",
+    "WCD_AR_SUPP",
+    "WEAPON_GADGETPISTOL",
+    "WT_GDGTPST",
+    "WTD_GDGTPST",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_GADGETPISTOL_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "WEAPON_MILITARYRIFLE",
+    "WT_MLTRYRFL",
+    "WTD_MLTRYRFL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_MILITARYRIFLE_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_AR_CLIP1",
+    "COMPONENT_MILITARYRIFLE_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_AR_CLIP2",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_MILITARYRIFLE_SIGHT_01",
+    "WCT_MRFL_SIGHT",
+    "WCD_MRFL_SIGHT",
+    "COMPONENT_AT_SCOPE_SMALL",
+    "WCT_SCOPE_SML",
+    "WCD_SCOPE_SML",
+    "COMPONENT_AT_AR_SUPP",
+    "WCT_SUPP",
+    "WCD_AR_SUPP",
+    "VEHICLE_WEAPON_PLAYER_SAVAGE",
+    "WT_V_LZRCAN",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "VEHICLE_WEAPON_NOSE_TURRET_VALKYRIE",
+    "WT_V_PLRBUL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "VEHICLE_WEAPON_TURRET_VALKYRIE",
+    "WT_V_TURRET",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "VEHICLE_WEAPON_TURRET_TECHNICAL",
+    "WT_V_TURRET",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "VEHICLE_WEAPON_TURRET_INSURGENT",
+    "WT_V_TURRET",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_FLAREGUN",
+    "WT_FLAREGUN",
+    "WTD_FLAREGUN",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_FLAREGUN_CLIP_01",
+    "WCT_CLIP1",
+    "WCT_INVALID",
+    "WEAPON_NAVYREVOLVER",
+    "WT_REV_NV",
+    "WTD_REV_NV",
+    "WM_TINT0",
+    "COMPONENT_NAVYREVOLVER_CLIP_01",
+    "WCT_CLIP1",
+    "WEAPON_KNUCKLE",
+    "WT_KNUCKLE",
+    "WTD_KNUCKLE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_KNUCKLE_VARMOD_BASE",
+    "WT_KNUCKLE",
+    "WCD_VAR_DESC",
+    "COMPONENT_KNUCKLE_VARMOD_PIMP",
+    "WCT_KNUCK_02",
+    "WCD_VAR_DESC",
+    "COMPONENT_KNUCKLE_VARMOD_BALLAS",
+    "WCT_KNUCK_BG",
+    "WCD_VAR_DESC",
+    "COMPONENT_KNUCKLE_VARMOD_DOLLAR",
+    "WCT_KNUCK_DLR",
+    "WCD_VAR_DESC",
+    "COMPONENT_KNUCKLE_VARMOD_DIAMOND",
+    "WCT_KNUCK_DMD",
+    "WCD_VAR_DESC",
+    "COMPONENT_KNUCKLE_VARMOD_HATE",
+    "WCT_KNUCK_HT",
+    "WCD_VAR_DESC",
+    "COMPONENT_KNUCKLE_VARMOD_LOVE",
+    "WCT_KNUCK_LV",
+    "WCD_VAR_DESC",
+    "COMPONENT_KNUCKLE_VARMOD_PLAYER",
+    "WCT_KNUCK_PC",
+    "WCD_VAR_DESC",
+    "COMPONENT_KNUCKLE_VARMOD_KING",
+    "WCT_KNUCK_SLG",
+    "WCD_VAR_DESC",
+    "COMPONENT_KNUCKLE_VARMOD_VAGOS",
+    "WCT_KNUCK_VG",
+    "WCD_VAR_DESC",
+    "WEAPON_MARKSMANPISTOL",
+    "WT_MKPISTOL",
+    "WTD_MKPISTOL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_MARKSMANPISTOL_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "WEAPON_COMBATPDW",
+    "WT_COMBATPDW",
+    "WTD_COMBATPDW",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_COMBATPDW_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_PDW_CLIP1",
+    "COMPONENT_COMBATPDW_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_PDW_CLIP2",
+    "COMPONENT_COMBATPDW_CLIP_03",
+    "WCT_CLIP_DRM",
+    "WCD_CLIP3",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_AR_AFGRIP",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "COMPONENT_AT_SCOPE_SMALL",
+    "WCT_SCOPE_SML",
+    "WCD_SCOPE_SML",
+    "WEAPON_DBSHOTGUN",
+    "WT_DBSHGN",
+    "WTD_DBSHGN",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_DBSHOTGUN_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "WEAPON_COMPACTRIFLE",
+    "WT_CMPRIFLE",
+    "WTD_CMPRIFLE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_COMPACTRIFLE_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CMPR_CLIP1",
+    "COMPONENT_COMPACTRIFLE_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_CMPR_CLIP2",
+    "COMPONENT_COMPACTRIFLE_CLIP_03",
+    "WCT_CLIP_DRM",
+    "WCD_CLIP3",
+    "WEAPON_MACHINEPISTOL",
+    "WT_MCHPIST",
+    "WTD_MCHPIST",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_MACHINEPISTOL_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_MCHP_CLIP1",
+    "COMPONENT_MACHINEPISTOL_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_MCHP_CLIP2",
+    "COMPONENT_MACHINEPISTOL_CLIP_03",
+    "WCT_CLIP_DRM",
+    "WCD_CLIP3",
+    "COMPONENT_AT_PI_SUPP",
+    "WCT_SUPP",
+    "WCD_PI_SUPP",
+    "WEAPON_MACHETE",
+    "WT_MACHETE",
+    "WTD_MACHETE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_FLASHLIGHT",
+    "WT_FLASHLIGHT",
+    "WTD_FLASHLIGHT",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_FLASHLIGHT_LIGHT",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "VEHICLE_WEAPON_TURRET_LIMO",
+    "WT_V_TURRET",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_AIR_DEFENCE_GUN",
+    "WT_V_LZRCAN",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_REVOLVER",
+    "WT_REVOLVER",
+    "WTD_REVOLVER",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_REVOLVER_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_REV_CLIP1",
+    "COMPONENT_REVOLVER_VARMOD_BOSS",
+    "WCT_REV_VARB",
+    "WCD_REV_VARB",
+    "COMPONENT_REVOLVER_VARMOD_GOON",
+    "WCT_REV_VARG",
+    "WCD_REV_VARG",
+    "COMPONENT_GUNRUN_MK2_UPGRADE",
+    "WCT_VAR_GUN",
+    "WCD_VAR_GUN",
+    "WEAPON_SWITCHBLADE",
+    "WT_SWBLADE",
+    "WTD_SWBLADE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_SWITCHBLADE_VARMOD_BASE",
+    "WCT_SB_BASE",
+    "WCD_VAR_DESC",
+    "COMPONENT_SWITCHBLADE_VARMOD_VAR1",
+    "WCT_SB_VAR1",
+    "WCD_VAR_DESC",
+    "COMPONENT_SWITCHBLADE_VARMOD_VAR2",
+    "WCT_SB_VAR2",
+    "WCD_VAR_DESC",
+    "VEHICLE_WEAPON_TURRET_BOXVILLE",
+    "WT_V_TURRET",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "VEHICLE_WEAPON_RUINER_BULLET",
+    "WT_V_PLRBUL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "VEHICLE_WEAPON_RUINER_ROCKET",
+    "WT_V_PLANEMSL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "VEHICLE_WEAPON_CANNON_BLAZER",
+    "WT_V_PLRBUL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_AUTOSHOTGUN",
+    "WT_AUTOSHGN",
+    "WTD_AUTOSHGN",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_AUTOSHOTGUN_CLIP_01",
+    "WCT_CLIP1",
+    "WEAPON_BATTLEAXE",
+    "WT_BATTLEAXE",
+    "WTD_BATTLEAXE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_COMPACTLAUNCHER",
+    "WT_CMPGL",
+    "WTD_CMPGL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_COMPACTLAUNCHER_CLIP_01",
+    "WCT_CLIP1",
+    "WEAPON_MINISMG",
+    "WT_MINISMG",
+    "WTD_MINISMG",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_MINISMG_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_SCRP_CLIP1",
+    "COMPONENT_MINISMG_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_SCRP_CLIP2",
+    "WEAPON_POOLCUE",
+    "WT_POOLCUE",
+    "WTD_POOLCUE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_WRENCH",
+    "WT_WRENCH",
+    "WTD_WRENCH",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_PIPEBOMB",
+    "WT_PIPEBOMB",
+    "WTD_PIPEBOMB",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_CARBINERIFLE_MK2",
+    "WT_RIFLE_CBN2",
+    "WTD_RIFLE_CBN2",
+    "WCT_TINT_0",
+    "WCT_TINT_1",
+    "WCT_TINT_2",
+    "WCT_TINT_3",
+    "WCT_TINT_4",
+    "WCT_TINT_5",
+    "WCT_TINT_6",
+    "WCT_TINT_7",
+    "WCT_TINT_8",
+    "WCT_TINT_9",
+    "WCT_TINT_10",
+    "WCT_TINT_11",
+    "WCT_TINT_12",
+    "WCT_TINT_13",
+    "WCT_TINT_14",
+    "WCT_TINT_15",
+    "WCT_TINT_16",
+    "WCT_TINT_17",
+    "WCT_TINT_18",
+    "WCT_TINT_19",
+    "WCT_TINT_20",
+    "WCT_TINT_21",
+    "WCT_TINT_22",
+    "WCT_TINT_23",
+    "WCT_TINT_24",
+    "WCT_TINT_25",
+    "WCT_TINT_26",
+    "WCT_TINT_27",
+    "WCT_TINT_28",
+    "WCT_TINT_29",
+    "WCT_TINT_30",
+    "WCT_TINT_31",
+    "COMPONENT_CARBINERIFLE_MK2_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "COMPONENT_CARBINERIFLE_MK2_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_CLIP2",
+    "COMPONENT_CARBINERIFLE_MK2_CLIP_ARMORPIERCING",
+    "WCT_CLIP_AP",
+    "WCD_CLIP_AP",
+    "COMPONENT_CARBINERIFLE_MK2_CLIP_FMJ",
+    "WCT_CLIP_FMJ",
+    "WCD_CLIP_FMJ",
+    "COMPONENT_CARBINERIFLE_MK2_CLIP_INCENDIARY",
+    "WCT_CLIP_INC",
+    "WCD_CLIP_INC",
+    "COMPONENT_CARBINERIFLE_MK2_CLIP_TRACER",
+    "WCT_CLIP_TR",
+    "WCD_CLIP_TR",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_SIGHTS",
+    "WCT_HOLO",
+    "WCD_HOLO",
+    "COMPONENT_AT_SCOPE_MACRO_MK2",
+    "WCT_SCOPE_MAC2",
+    "WCD_SCOPE_MAC",
+    "COMPONENT_AT_SCOPE_MEDIUM_MK2",
+    "WCT_SCOPE_MED2",
+    "WCD_SCOPE_MED",
+    "COMPONENT_AT_AR_SUPP",
+    "WCT_SUPP",
+    "WCD_AR_SUPP",
+    "COMPONENT_AT_MUZZLE_01",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_02",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_03",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_04",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_05",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_06",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_07",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_AR_AFGRIP_02",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "COMPONENT_AT_CR_BARREL_01",
+    "WCT_BARR",
+    "WCD_BARR",
+    "COMPONENT_AT_CR_BARREL_02",
+    "WCT_BARR2",
+    "WCD_BARR2",
+    "COMPONENT_CARBINERIFLE_MK2_CAMO",
+    "WCT_CAMO_1",
+    "COMPONENT_CARBINERIFLE_MK2_CAMO_02",
+    "WCT_CAMO_2",
+    "COMPONENT_CARBINERIFLE_MK2_CAMO_03",
+    "WCT_CAMO_3",
+    "COMPONENT_CARBINERIFLE_MK2_CAMO_04",
+    "WCT_CAMO_4",
+    "COMPONENT_CARBINERIFLE_MK2_CAMO_05",
+    "WCT_CAMO_5",
+    "COMPONENT_CARBINERIFLE_MK2_CAMO_06",
+    "WCT_CAMO_6",
+    "COMPONENT_CARBINERIFLE_MK2_CAMO_07",
+    "WCT_CAMO_7",
+    "COMPONENT_CARBINERIFLE_MK2_CAMO_08",
+    "WCT_CAMO_8",
+    "COMPONENT_CARBINERIFLE_MK2_CAMO_09",
+    "WCT_CAMO_9",
+    "COMPONENT_CARBINERIFLE_MK2_CAMO_10",
+    "WCT_CAMO_10",
+    "COMPONENT_CARBINERIFLE_MK2_CAMO_IND_01",
+    "WCT_CAMO_IND",
+    "WEAPON_ASSAULTRIFLE_MK2",
+    "WT_RIFLE_ASL2",
+    "WTD_RIFLE_ASL2",
+    "WCT_TINT_0",
+    "WCT_TINT_1",
+    "WCT_TINT_2",
+    "WCT_TINT_3",
+    "WCT_TINT_4",
+    "WCT_TINT_5",
+    "WCT_TINT_6",
+    "WCT_TINT_7",
+    "WCT_TINT_8",
+    "WCT_TINT_9",
+    "WCT_TINT_10",
+    "WCT_TINT_11",
+    "WCT_TINT_12",
+    "WCT_TINT_13",
+    "WCT_TINT_14",
+    "WCT_TINT_15",
+    "WCT_TINT_16",
+    "WCT_TINT_17",
+    "WCT_TINT_18",
+    "WCT_TINT_19",
+    "WCT_TINT_20",
+    "WCT_TINT_21",
+    "WCT_TINT_22",
+    "WCT_TINT_23",
+    "WCT_TINT_24",
+    "WCT_TINT_25",
+    "WCT_TINT_26",
+    "WCT_TINT_27",
+    "WCT_TINT_28",
+    "WCT_TINT_29",
+    "WCT_TINT_30",
+    "WCT_TINT_31",
+    "COMPONENT_ASSAULTRIFLE_MK2_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "COMPONENT_ASSAULTRIFLE_MK2_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_CLIP2",
+    "COMPONENT_ASSAULTRIFLE_MK2_CLIP_ARMORPIERCING",
+    "WCT_CLIP_AP",
+    "WCD_CLIP_AP",
+    "COMPONENT_ASSAULTRIFLE_MK2_CLIP_FMJ",
+    "WCT_CLIP_FMJ",
+    "WCD_CLIP_FMJ",
+    "COMPONENT_ASSAULTRIFLE_MK2_CLIP_INCENDIARY",
+    "WCT_CLIP_INC",
+    "WCD_CLIP_INC",
+    "COMPONENT_ASSAULTRIFLE_MK2_CLIP_TRACER",
+    "WCT_CLIP_TR",
+    "WCD_CLIP_TR",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_SIGHTS",
+    "WCT_HOLO",
+    "WCD_HOLO",
+    "COMPONENT_AT_SCOPE_MACRO_MK2",
+    "WCT_SCOPE_MAC2",
+    "WCD_SCOPE_MAC",
+    "COMPONENT_AT_SCOPE_MEDIUM_MK2",
+    "WCT_SCOPE_MED2",
+    "WCD_SCOPE_MED",
+    "COMPONENT_AT_AR_SUPP_02",
+    "WCT_SUPP",
+    "WCD_AR_SUPP2",
+    "COMPONENT_AT_MUZZLE_01",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_02",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_03",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_04",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_05",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_06",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_07",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_AR_AFGRIP_02",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "COMPONENT_AT_AR_BARREL_01",
+    "WCT_BARR",
+    "WCD_BARR",
+    "COMPONENT_AT_AR_BARREL_02",
+    "WCT_BARR2",
+    "WCD_BARR2",
+    "COMPONENT_ASSAULTRIFLE_MK2_CAMO",
+    "WCT_CAMO_1",
+    "COMPONENT_ASSAULTRIFLE_MK2_CAMO_02",
+    "WCT_CAMO_2",
+    "COMPONENT_ASSAULTRIFLE_MK2_CAMO_03",
+    "WCT_CAMO_3",
+    "COMPONENT_ASSAULTRIFLE_MK2_CAMO_04",
+    "WCT_CAMO_4",
+    "COMPONENT_ASSAULTRIFLE_MK2_CAMO_05",
+    "WCT_CAMO_5",
+    "COMPONENT_ASSAULTRIFLE_MK2_CAMO_06",
+    "WCT_CAMO_6",
+    "COMPONENT_ASSAULTRIFLE_MK2_CAMO_07",
+    "WCT_CAMO_7",
+    "COMPONENT_ASSAULTRIFLE_MK2_CAMO_08",
+    "WCT_CAMO_8",
+    "COMPONENT_ASSAULTRIFLE_MK2_CAMO_09",
+    "WCT_CAMO_9",
+    "COMPONENT_ASSAULTRIFLE_MK2_CAMO_10",
+    "WCT_CAMO_10",
+    "COMPONENT_ASSAULTRIFLE_MK2_CAMO_IND_01",
+    "WCT_CAMO_IND",
+    "WEAPON_COMBATMG_MK2",
+    "WT_MG_CBT2",
+    "WTD_MG_CBT2",
+    "WCT_TINT_0",
+    "WCT_TINT_1",
+    "WCT_TINT_2",
+    "WCT_TINT_3",
+    "WCT_TINT_4",
+    "WCT_TINT_5",
+    "WCT_TINT_6",
+    "WCT_TINT_7",
+    "WCT_TINT_8",
+    "WCT_TINT_9",
+    "WCT_TINT_10",
+    "WCT_TINT_11",
+    "WCT_TINT_12",
+    "WCT_TINT_13",
+    "WCT_TINT_14",
+    "WCT_TINT_15",
+    "WCT_TINT_16",
+    "WCT_TINT_17",
+    "WCT_TINT_18",
+    "WCT_TINT_19",
+    "WCT_TINT_20",
+    "WCT_TINT_21",
+    "WCT_TINT_22",
+    "WCT_TINT_23",
+    "WCT_TINT_24",
+    "WCT_TINT_25",
+    "WCT_TINT_26",
+    "WCT_TINT_27",
+    "WCT_TINT_28",
+    "WCT_TINT_29",
+    "WCT_TINT_30",
+    "WCT_TINT_31",
+    "COMPONENT_COMBATMG_MK2_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "COMPONENT_COMBATMG_MK2_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_CLIP2",
+    "COMPONENT_COMBATMG_MK2_CLIP_ARMORPIERCING",
+    "WCT_CLIP_AP",
+    "WCD_CLIP_AP",
+    "COMPONENT_COMBATMG_MK2_CLIP_FMJ",
+    "WCT_CLIP_FMJ",
+    "WCD_CLIP_FMJ",
+    "COMPONENT_COMBATMG_MK2_CLIP_INCENDIARY",
+    "WCT_CLIP_INC",
+    "WCD_CLIP_INC",
+    "COMPONENT_COMBATMG_MK2_CLIP_TRACER",
+    "WCT_CLIP_TR",
+    "WCD_CLIP_TR",
+    "COMPONENT_AT_SIGHTS",
+    "WCT_HOLO",
+    "WCD_HOLO",
+    "COMPONENT_AT_SCOPE_SMALL_MK2",
+    "WCT_SCOPE_SML2",
+    "WCD_SCOPE_SML",
+    "COMPONENT_AT_SCOPE_MEDIUM_MK2",
+    "WCT_SCOPE_MED2",
+    "WCD_SCOPE_MED",
+    "COMPONENT_AT_MUZZLE_01",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_02",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_03",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_04",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_05",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_06",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_07",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_AR_AFGRIP_02",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "COMPONENT_AT_MG_BARREL_01",
+    "WCT_BARR",
+    "WCD_BARR",
+    "COMPONENT_AT_MG_BARREL_02",
+    "WCT_BARR2",
+    "WCD_BARR2",
+    "COMPONENT_COMBATMG_MK2_CAMO",
+    "WCT_CAMO_1",
+    "COMPONENT_COMBATMG_MK2_CAMO_02",
+    "WCT_CAMO_2",
+    "COMPONENT_COMBATMG_MK2_CAMO_03",
+    "WCT_CAMO_3",
+    "COMPONENT_COMBATMG_MK2_CAMO_04",
+    "WCT_CAMO_4",
+    "COMPONENT_COMBATMG_MK2_CAMO_05",
+    "WCT_CAMO_5",
+    "COMPONENT_COMBATMG_MK2_CAMO_06",
+    "WCT_CAMO_6",
+    "COMPONENT_COMBATMG_MK2_CAMO_07",
+    "WCT_CAMO_7",
+    "COMPONENT_COMBATMG_MK2_CAMO_08",
+    "WCT_CAMO_8",
+    "COMPONENT_COMBATMG_MK2_CAMO_09",
+    "WCT_CAMO_9",
+    "COMPONENT_COMBATMG_MK2_CAMO_10",
+    "WCT_CAMO_10",
+    "COMPONENT_COMBATMG_MK2_CAMO_IND_01",
+    "WCT_CAMO_IND",
+    "WEAPON_SMG_MK2",
+    "WT_SMG2",
+    "WTD_SMG2",
+    "WCT_TINT_0",
+    "WCT_TINT_1",
+    "WCT_TINT_2",
+    "WCT_TINT_3",
+    "WCT_TINT_4",
+    "WCT_TINT_5",
+    "WCT_TINT_6",
+    "WCT_TINT_7",
+    "WCT_TINT_8",
+    "WCT_TINT_9",
+    "WCT_TINT_10",
+    "WCT_TINT_11",
+    "WCT_TINT_12",
+    "WCT_TINT_13",
+    "WCT_TINT_14",
+    "WCT_TINT_15",
+    "WCT_TINT_16",
+    "WCT_TINT_17",
+    "WCT_TINT_18",
+    "WCT_TINT_19",
+    "WCT_TINT_20",
+    "WCT_TINT_21",
+    "WCT_TINT_22",
+    "WCT_TINT_23",
+    "WCT_TINT_24",
+    "WCT_TINT_25",
+    "WCT_TINT_26",
+    "WCT_TINT_27",
+    "WCT_TINT_28",
+    "WCT_TINT_29",
+    "WCT_TINT_30",
+    "WCT_TINT_31",
+    "COMPONENT_SMG_MK2_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "COMPONENT_SMG_MK2_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_CLIP2",
+    "COMPONENT_SMG_MK2_CLIP_FMJ",
+    "WCT_CLIP_FMJ",
+    "WCD_CLIP_FMJ",
+    "COMPONENT_SMG_MK2_CLIP_HOLLOWPOINT",
+    "WCT_CLIP_HP",
+    "WCD_CLIP_HP",
+    "COMPONENT_SMG_MK2_CLIP_INCENDIARY",
+    "WCT_CLIP_INC",
+    "WCD_CLIP_INC",
+    "COMPONENT_SMG_MK2_CLIP_TRACER",
+    "WCT_CLIP_TR",
+    "WCD_CLIP_TR",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_SIGHTS_SMG",
+    "WCT_HOLO",
+    "WCD_HOLO",
+    "COMPONENT_AT_SCOPE_MACRO_02_SMG_MK2",
+    "WCT_SCOPE_MAC2",
+    "WCD_SCOPE_MAC",
+    "COMPONENT_AT_SCOPE_SMALL_SMG_MK2",
+    "WCT_SCOPE_SML2",
+    "WCD_SCOPE_SML",
+    "COMPONENT_AT_PI_SUPP",
+    "WCT_SUPP",
+    "WCD_PI_SUPP",
+    "COMPONENT_AT_MUZZLE_01",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_02",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_03",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_04",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_05",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_06",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_MUZZLE_07",
+    "WCT_MUZZ",
+    "WCD_MUZZ",
+    "COMPONENT_AT_SB_BARREL_01",
+    "WCT_BARR",
+    "WCD_BARR",
+    "COMPONENT_AT_SB_BARREL_02",
+    "WCT_BARR2",
+    "WCD_BARR2",
+    "COMPONENT_SMG_MK2_CAMO",
+    "WCT_CAMO_1",
+    "COMPONENT_SMG_MK2_CAMO_02",
+    "WCT_CAMO_2",
+    "COMPONENT_SMG_MK2_CAMO_03",
+    "WCT_CAMO_3",
+    "COMPONENT_SMG_MK2_CAMO_04",
+    "WCT_CAMO_4",
+    "COMPONENT_SMG_MK2_CAMO_05",
+    "WCT_CAMO_5",
+    "COMPONENT_SMG_MK2_CAMO_06",
+    "WCT_CAMO_6",
+    "COMPONENT_SMG_MK2_CAMO_07",
+    "WCT_CAMO_7",
+    "COMPONENT_SMG_MK2_CAMO_08",
+    "WCT_CAMO_8",
+    "COMPONENT_SMG_MK2_CAMO_09",
+    "WCT_CAMO_9",
+    "COMPONENT_SMG_MK2_CAMO_10",
+    "WCT_CAMO_10",
+    "COMPONENT_SMG_MK2_CAMO_IND_01",
+    "WCT_CAMO_IND",
+    "WEAPON_HEAVYSNIPER_MK2",
+    "WT_SNIP_HVY2",
+    "WTD_SNIP_HVY2",
+    "WCT_TINT_0",
+    "WCT_TINT_1",
+    "WCT_TINT_2",
+    "WCT_TINT_3",
+    "WCT_TINT_4",
+    "WCT_TINT_5",
+    "WCT_TINT_6",
+    "WCT_TINT_7",
+    "WCT_TINT_8",
+    "WCT_TINT_9",
+    "WCT_TINT_10",
+    "WCT_TINT_11",
+    "WCT_TINT_12",
+    "WCT_TINT_13",
+    "WCT_TINT_14",
+    "WCT_TINT_15",
+    "WCT_TINT_16",
+    "WCT_TINT_17",
+    "WCT_TINT_18",
+    "WCT_TINT_19",
+    "WCT_TINT_20",
+    "WCT_TINT_21",
+    "WCT_TINT_22",
+    "WCT_TINT_23",
+    "WCT_TINT_24",
+    "WCT_TINT_25",
+    "WCT_TINT_26",
+    "WCT_TINT_27",
+    "WCT_TINT_28",
+    "WCT_TINT_29",
+    "WCT_TINT_30",
+    "WCT_TINT_31",
+    "COMPONENT_HEAVYSNIPER_MK2_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "COMPONENT_HEAVYSNIPER_MK2_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_CLIP2",
+    "COMPONENT_HEAVYSNIPER_MK2_CLIP_ARMORPIERCING",
+    "WCT_CLIP_AP",
+    "WCD_CLIP_AP",
+    "COMPONENT_HEAVYSNIPER_MK2_CLIP_EXPLOSIVE",
+    "WCT_CLIP_EX",
+    "WCD_CLIP_EX",
+    "COMPONENT_HEAVYSNIPER_MK2_CLIP_FMJ",
+    "WCT_CLIP_FMJ",
+    "WCD_CLIP_FMJ",
+    "COMPONENT_HEAVYSNIPER_MK2_CLIP_INCENDIARY",
+    "WCT_CLIP_INC",
+    "WCD_CLIP_INC_SN",
+    "COMPONENT_AT_SCOPE_LARGE_MK2",
+    "WCT_SCOPE_LRG2",
+    "WCD_SCOPE_LRG",
+    "COMPONENT_AT_SCOPE_MAX",
+    "WCT_SCOPE_MAX",
+    "WCD_SCOPE_MAX",
+    "COMPONENT_AT_SCOPE_NV",
+    "WCT_SCOPE_NV",
+    "WCD_SCOPE_NV",
+    "COMPONENT_AT_SCOPE_THERMAL",
+    "WCT_SCOPE_TH",
+    "WCD_SCOPE_TH",
+    "COMPONENT_AT_SR_SUPP_03",
+    "WCT_SUPP",
+    "WCD_SR_SUPP",
+    "COMPONENT_AT_MUZZLE_08",
+    "WCT_MUZZ",
+    "WCD_MUZZ_SR",
+    "COMPONENT_AT_MUZZLE_09",
+    "WCT_MUZZ",
+    "WCD_MUZZ_SR",
+    "COMPONENT_AT_SR_BARREL_01",
+    "WCT_BARR",
+    "WCD_BARR",
+    "COMPONENT_AT_SR_BARREL_02",
+    "WCT_BARR2",
+    "WCD_BARR2",
+    "COMPONENT_HEAVYSNIPER_MK2_CAMO",
+    "WCT_CAMO_1",
+    "COMPONENT_HEAVYSNIPER_MK2_CAMO_02",
+    "WCT_CAMO_2",
+    "COMPONENT_HEAVYSNIPER_MK2_CAMO_03",
+    "WCT_CAMO_3",
+    "COMPONENT_HEAVYSNIPER_MK2_CAMO_04",
+    "WCT_CAMO_4",
+    "COMPONENT_HEAVYSNIPER_MK2_CAMO_05",
+    "WCT_CAMO_5",
+    "COMPONENT_HEAVYSNIPER_MK2_CAMO_06",
+    "WCT_CAMO_6",
+    "COMPONENT_HEAVYSNIPER_MK2_CAMO_07",
+    "WCT_CAMO_7",
+    "COMPONENT_HEAVYSNIPER_MK2_CAMO_08",
+    "WCT_CAMO_8",
+    "COMPONENT_HEAVYSNIPER_MK2_CAMO_09",
+    "WCT_CAMO_9",
+    "COMPONENT_HEAVYSNIPER_MK2_CAMO_10",
+    "WCT_CAMO_10",
+    "COMPONENT_HEAVYSNIPER_MK2_CAMO_IND_01",
+    "WCT_CAMO_IND",
+    "WEAPON_PISTOL_MK2",
+    "WT_PIST2",
+    "WTD_PIST2",
+    "WCT_TINT_0",
+    "WCT_TINT_1",
+    "WCT_TINT_2",
+    "WCT_TINT_3",
+    "WCT_TINT_4",
+    "WCT_TINT_5",
+    "WCT_TINT_6",
+    "WCT_TINT_7",
+    "WCT_TINT_8",
+    "WCT_TINT_9",
+    "WCT_TINT_10",
+    "WCT_TINT_11",
+    "WCT_TINT_12",
+    "WCT_TINT_13",
+    "WCT_TINT_14",
+    "WCT_TINT_15",
+    "WCT_TINT_16",
+    "WCT_TINT_17",
+    "WCT_TINT_18",
+    "WCT_TINT_19",
+    "WCT_TINT_20",
+    "WCT_TINT_21",
+    "WCT_TINT_22",
+    "WCT_TINT_23",
+    "WCT_TINT_24",
+    "WCT_TINT_25",
+    "WCT_TINT_26",
+    "WCT_TINT_27",
+    "WCT_TINT_28",
+    "WCT_TINT_29",
+    "WCT_TINT_30",
+    "WCT_TINT_31",
+    "COMPONENT_PISTOL_MK2_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CLIP1",
+    "COMPONENT_PISTOL_MK2_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_CLIP2",
+    "COMPONENT_PISTOL_MK2_CLIP_FMJ",
+    "WCT_CLIP_FMJ",
+    "WCD_CLIP_FMJ",
+    "COMPONENT_PISTOL_MK2_CLIP_HOLLOWPOINT",
+    "WCT_CLIP_HP",
+    "WCD_CLIP_HP",
+    "COMPONENT_PISTOL_MK2_CLIP_INCENDIARY",
+    "WCT_CLIP_INC",
+    "WCD_CLIP_INC",
+    "COMPONENT_PISTOL_MK2_CLIP_TRACER",
+    "WCT_CLIP_TR",
+    "WCD_CLIP_TR",
+    "COMPONENT_AT_PI_RAIL",
+    "WCT_SCOPE_PI",
+    "WCD_SCOPE_PI",
+    "COMPONENT_AT_PI_FLSH_02",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_PI_SUPP_02",
+    "WCT_SUPP",
+    "WCD_PI_SUPP",
+    "COMPONENT_AT_PI_COMP",
+    "WCT_COMP",
+    "WCD_COMP",
+    "COMPONENT_PISTOL_MK2_VARMOD_XM3_SLIDE",
+    "COMPONENT_PISTOL_MK2_VARMOD_XM3",
+    "WCT_PISTMK2_XM3",
+    "COMPONENT_PISTOL_MK2_CAMO_SLIDE",
+    "WCT_CAMO_1",
+    "COMPONENT_PISTOL_MK2_CAMO_02_SLIDE",
+    "WCT_CAMO_1",
+    "COMPONENT_PISTOL_MK2_CAMO_03_SLIDE",
+    "WCT_CAMO_1",
+    "COMPONENT_PISTOL_MK2_CAMO_04_SLIDE",
+    "WCT_CAMO_1",
+    "COMPONENT_PISTOL_MK2_CAMO_05_SLIDE",
+    "WCT_CAMO_1",
+    "COMPONENT_PISTOL_MK2_CAMO_06_SLIDE",
+    "WCT_CAMO_1",
+    "COMPONENT_PISTOL_MK2_CAMO_07_SLIDE",
+    "WCT_CAMO_1",
+    "COMPONENT_PISTOL_MK2_CAMO_08_SLIDE",
+    "WCT_CAMO_1",
+    "COMPONENT_PISTOL_MK2_CAMO_09_SLIDE",
+    "WCT_CAMO_1",
+    "COMPONENT_PISTOL_MK2_CAMO_10_SLIDE",
+    "WCT_CAMO_1",
+    "COMPONENT_PISTOL_MK2_CAMO_IND_01_SLIDE",
+    "WCT_CAMO_IND",
+    "COMPONENT_PISTOL_MK2_CAMO",
+    "WCT_CAMO_1",
+    "COMPONENT_PISTOL_MK2_CAMO_02",
+    "WCT_CAMO_2",
+    "COMPONENT_PISTOL_MK2_CAMO_03",
+    "WCT_CAMO_3",
+    "COMPONENT_PISTOL_MK2_CAMO_04",
+    "WCT_CAMO_4",
+    "COMPONENT_PISTOL_MK2_CAMO_05",
+    "WCT_CAMO_5",
+    "COMPONENT_PISTOL_MK2_CAMO_06",
+    "WCT_CAMO_6",
+    "COMPONENT_PISTOL_MK2_CAMO_07",
+    "WCT_CAMO_7",
+    "COMPONENT_PISTOL_MK2_CAMO_08",
+    "WCT_CAMO_8",
+    "COMPONENT_PISTOL_MK2_CAMO_09",
+    "WCT_CAMO_9",
+    "COMPONENT_PISTOL_MK2_CAMO_10",
+    "WCT_CAMO_10",
+    "COMPONENT_PISTOL_MK2_CAMO_IND_01",
+    "WCT_CAMO_IND",
+    "WEAPON_STONE_HATCHET",
+    "WT_SHATCHET",
+    "WTD_SHATCHET",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_TACTICALRIFLE",
+    "WT_TACRIFLE",
+    "WTD_TACRIFLE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_TACTICALRIFLE_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CR_CLIP1",
+    "COMPONENT_TACTICALRIFLE_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_CR_CLIP2",
+    "COMPONENT_AT_AR_FLSH_REH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_AR_SUPP_02",
+    "WCT_SUPP",
+    "WCD_AR_SUPP2",
+    "COMPONENT_AT_AR_AFGRIP",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "WEAPON_METALDETECTOR",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_PRECISIONRIFLE",
+    "WT_PRCSRIFLE",
+    "WTD_PRCSRIFLE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_PRECISIONRIFLE_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_CR_CLIP1",
+    "WEAPON_FERTILIZERCAN",
+    "WT_FERTILIZERCAN",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_HEAVYRIFLE",
+    "WT_HEAVYRIFLE",
+    "WTD_HEAVYRIFLE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_HEAVYRIFLE_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_HVRFL_CLIP1",
+    "COMPONENT_HEAVYRIFLE_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_HVRFL_CLIP2",
+    "COMPONENT_HEAVYRIFLE_SIGHT_01",
+    "WCT_HVYRFLE_SIG",
+    "WCD_HVRFL_SIG",
+    "COMPONENT_AT_SCOPE_MEDIUM",
+    "WCT_SCOPE_MED",
+    "WCD_SCOPE_MED",
+    "COMPONENT_AT_AR_FLSH",
+    "WCT_FLASH",
+    "WCD_FLASH",
+    "COMPONENT_AT_AR_SUPP",
+    "WCT_SUPP",
+    "WCD_AR_SUPP",
+    "COMPONENT_AT_AR_AFGRIP",
+    "WCT_GRIP",
+    "WCD_GRIP",
+    "COMPONENT_HEAVYRIFLE_CAMO1",
+    "WCT_CAMO_1",
+    "WEAPON_STUNGUN_MP",
+    "WT_STUN",
+    "WTD_STNGUNMP",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_STUNGUN_VARMOD_BAIL",
+    "WCD_VAR_DESC",
+    "WEAPON_EMPLAUNCHER",
+    "WT_EMPL",
+    "WTD_EMPL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_EMPLAUNCHER_CLIP_01",
+    "WCT_CLIP1",
+    "WEAPON_TECPISTOL",
+    "WT_TECPISTOL",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_TECPISTOL_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_TECP_CLIP1",
+    "COMPONENT_TECPISTOL_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_TECP_CLIP2",
+    "COMPONENT_AT_AR_SUPP_02",
+    "WCT_SUPP",
+    "WCD_AR_SUPP2",
+    "COMPONENT_AT_SCOPE_MACRO",
+    "WCT_SCOPE_MAC",
+    "WCD_SCOPE_MAC",
+    "WEAPON_BATTLERIFLE",
+    "WT_BATTLERIFLE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "COMPONENT_BATTLERIFLE_CLIP_01",
+    "WCT_CLIP1",
+    "WCD_BTRIF_CLIP1",
+    "COMPONENT_BATTLERIFLE_CLIP_02",
+    "WCT_CLIP2",
+    "WCD_BTRIF_CLIP2",
+    "COMPONENT_AT_AR_SUPP",
+    "WCT_SUPP",
+    "WCD_AR_SUPP",
+    "WEAPON_HACKINGDEVICE",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_SNOWLAUNCHER",
+    "WT_SNOWLNCHR",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+    "WEAPON_STUNROD",
+    "WM_TINT0",
+    "WM_TINT1",
+    "WM_TINT2",
+    "WM_TINT3",
+    "WM_TINT4",
+    "WM_TINT5",
+    "WM_TINT6",
+    "WM_TINT7",
+}
+
+menu.action(test, "GIVE_WEAPON_TO_PED", {}, "", function()
+
+        for _, list in pairs(weapons) do
+            WEAPON.GIVE_WEAPON_TO_PED(players.user_ped(),util.joaat(list),INT_MAX,false,false)
+-- print(list)
+        end
+end)
+
+
+menu.toggle_loop(world, "TASK_COMBAT_PED", {}, "", function()
+    for k, ent in pairs(entities.get_all_peds_as_handles()) do
+        if not entities.is_player_ped(ent) then
+            for _, list in pairs(weapons) do
+                WEAPON.GIVE_WEAPON_TO_PED(ent,util.joaat(list),INT_MAX,false,true)
+    -- print(list)
+            end
+            -- TASK.TASK_COMBAT_PED(ent, players.user_ped(), 0, 16)
+        end
+    end
+
+end)
