@@ -2,6 +2,8 @@
 -- chat gpt
 -- JinxScript
 -- Heist Control
+local CWeaponDamageEventTrigger = memory.rip(memory.scan("E8 ? ? ? ? 44 8B 7D 80") + 1)
+
 function latiao_server_TRANSACTION(hash)
 
     print(hash)
@@ -2242,27 +2244,35 @@ local function latiaostandMenuSetup(pid)
         local pos = players.get_position(pid)
         local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
         util.trigger_script_event(1 << pid, {-503325966})
+        local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+
+
+        local pPed =  entities.handle_to_pointer(ped)
+        local pedPtr = entities.handle_to_pointer(players.user_ped())
         -- TASK.CLEAR_PED_TASKS_IMMEDIATELY(playerped)
         -- (Type: weapon_tranquilizer, Damage: 0, Flags: 540688, true, 3)
 
-        MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 0, true,
-            util.joaat("weapon_tranquilizer"), players.user_ped(), false, true, INT_MAX)
+        util.call_foreign_function(CWeaponDamageEventTrigger, pedPtr, pPed, pPed + 0x90, 0, 1, util.joaat("weapon_tranquilizer"), 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0)
+
         if not players.exists(pid) then
             util.stop_thread()
         end
     end)
 
     menu.toggle_loop(latiaostandMenu, "无限死亡击杀", {}, "", function()
-        -- util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
-        local pos = players.get_position(pid)
-        local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+        local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+
+
+        local pPed =  entities.handle_to_pointer(ped)
+        local pedPtr = entities.handle_to_pointer(players.user_ped())
 -- // (Type: weapon_tranquilizer, Damage: 0, Flags: 513, true, 3)
-        MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 0, true,
-            util.joaat("weapon_tranquilizer"), players.user_ped(), false, true, INT_MAX)
+util.call_foreign_function(CWeaponDamageEventTrigger, pedPtr, pPed, pPed + 0x90, 0, 1, util.joaat("weapon_tranquilizer"), 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0)
+
         if not players.exists(pid) then
             util.stop_thread()
         end
     end)
+
 
 end
 
