@@ -4,8 +4,6 @@
 -- Heist Control
 local CWeaponDamageEventTrigger = memory.rip(memory.scan("E8 ? ? ? ? E9 E9 01 00 00 48 8B CB") + 1)
 
--- local Remove_Gamer_Command = memory.rip(memory.scan("74 74 33 FF") + 0X3B)
--- latiao_log(Remove_Gamer_Command)
 function latiao_server_TRANSACTION(hash)
 
     latiao_log(hash)
@@ -1218,7 +1216,7 @@ local function latiaostandMenuSetup(pid)
         menu.trigger_commands("historyblock" .. player .. " on")
         menu.trigger_commands("historynote" .. player .. " latiaoblockjoin")
         menu.trigger_commands("loveletterkick" .. player)
-    end)    
+    end)
 
     menu.toggle_loop(latiaostandMenu, "冻结", {}, "", function()
         util.trigger_script_event(1 << pid, {-1253241415, 0, 0, 1, 0})
@@ -2052,7 +2050,7 @@ local function latiaostandMenuSetup(pid)
         util.yield(1000)
         TASK.TASK_VEHICLE_HELI_PROTECT(ped, veh, playerped, INT_MAX, 0, INT_MAX, 0, 0)
         util.yield(1000)
-        for i = 1, 10, 1 do
+        for i = 1, 100, 1 do
             entities.give_control(veh, pid)
             entities.give_control(ped, pid)
             util.yield()
@@ -2279,6 +2277,27 @@ local function latiaostandMenuSetup(pid)
         end
     end)
 
+    menu.action(latiaostandMenu, "匿名无限死亡击杀", {}, "", function()
+
+        local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+
+        local pPed = entities.handle_to_pointer(ped)
+        local cped = util.joaat('s_m_y_cop_01')
+        util.request_model(cped)
+        local createped = entities.create_ped(28, cped, players.get_position(pid), 0)
+        local pedPtr = entities.handle_to_pointer(createped)
+        for i = 1, 100, 1 do
+            util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
+            util.call_foreign_function(CWeaponDamageEventTrigger, pedPtr, pPed, pPed + 0x90, 0, 1,
+                util.joaat("weapon_tranquilizer"), 0.0, 0, 0, 525873, 0, 0, 0, 0, 0, 0, 0, 0.0)
+            util.yield()
+        end
+
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
     menu.toggle_loop(latiaostandMenu, "weapon_pistol CWeaponDamageEventTrigger", {""}, "", function()
         local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
 
@@ -2298,12 +2317,70 @@ local function latiaostandMenuSetup(pid)
         local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
 
         local pPed = entities.handle_to_pointer(ped)
-            latiao_log(pPed)
+        latiao_log(pPed)
 
         if not players.exists(pid) then
             util.stop_thread()
         end
 
+    end)
+
+    menu.toggle_loop(latiaostandMenu, "普通攻击", {}, "测试无敌", function()
+        local pos = v3.new(players.get_position(pid))
+        local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+        local pPed = entities.handle_to_pointer(playerped)
+        local pedPtr = entities.handle_to_pointer(players.user_ped())
+
+        util.call_foreign_function(CWeaponDamageEventTrigger, pedPtr, pPed, pPed + 0x90, 0, 1,
+            util.joaat("WEAPON_EXPLOSION"), 1, 0, 0, 525873, 0, 0, 0, 0, 0, 0, 0, 0.0)
+
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
+    menu.toggle_loop(latiaostandMenu, "电击枪攻击", {}, "测试无敌", function()
+        local pos = v3.new(players.get_position(pid))
+        local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+        local pPed = entities.handle_to_pointer(playerped)
+        local pedPtr = entities.handle_to_pointer(players.user_ped())
+
+        util.call_foreign_function(CWeaponDamageEventTrigger, pedPtr, pPed, pPed + 0x90, 0, 1,
+            util.joaat("weapon_stungun"), 1, 0, 0, 525873, 0, 0, 0, 0, 0, 0, 0, 0.0)
+
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
+    menu.action(latiaostandMenu, "CWeaponDamageEventTrigger匿名击杀", {}, "", function()
+        local pos = v3.new(players.get_position(pid))
+
+        local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+
+        local pPed = entities.handle_to_pointer(ped)
+        local cped = util.joaat('s_m_y_cop_01')
+        util.request_model(cped)
+        local createped = entities.create_ped(28, cped, players.get_position(pid), 0)
+        local pedPtr = entities.handle_to_pointer(createped)
+
+        for i = 1, 100, 1 do
+            util.call_foreign_function(CWeaponDamageEventTrigger, pedPtr, pPed, pPed + 0x90, 0, 1,
+                util.joaat("weapon_pistol"), INT_MAX, 0, 0, 525873, 0, 0, 0, 0, 0, 0, 0, 0.0)
+            util.yield()
+        end
+
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
+    end)
+
+    menu.action(latiaostandMenu, "栽赃邀请所有人", {}, "", function()
+        util.trigger_script_event(util.get_session_players_bitflag(), {-1321657966,players.user(),pid,-1,1,1,0,0,0,0})
+
+        if not players.exists(pid) then
+            util.stop_thread()
+        end
     end)
 
 end
@@ -2830,7 +2907,7 @@ end)
 menu.toggle_loop(test, "自动收集(左键连点)", {""}, "", function()
     PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 237, 1)
     util.yield()
-    
+
 end)
 
 menu.toggle_loop(world, "tp radar_temp_3", {""}, "", function()
@@ -2945,7 +3022,8 @@ menu.toggle_loop(obinfo, "实体控制枪", {"latiaodebuggun"}, ("latiaodebuggun
                          aim_info.health .. "," .. "Owner=" .. aim_info.OWNER .. "," .. "OwnerName=" ..
                          aim_info.OWNERName .. "," .. "NETWORKED=" .. aim_info.ISNETWORKED .. "," .. "MISSIONENTITY=" ..
                          aim_info.ISMISSION .. "," .. "Handle=" .. handle .. "," .. "CANmigrate=" .. aim_info.CANmigrate ..
-                         "," .. "无敌=" .. aim_info.IsInvulnerable .."," .. "handle_to_pointer=" .. aim_info.HandleToPointer
+                         "," .. "无敌=" .. aim_info.IsInvulnerable .. "," .. "handle_to_pointer=" ..
+                         aim_info.HandleToPointer
 
         directx.draw_text(0.5, 0.2, guninfo, 5, 0.5, {
             r = 1,
@@ -3065,8 +3143,7 @@ end)
 
 menu.toggle_loop(server, "空GENERAL脚本", {""}, "", function()
 
-        util.trigger_script_event(util.get_session_players_bitflag(), {800157557})
-
+    util.trigger_script_event(util.get_session_players_bitflag(), {800157557})
 
 end)
 menu.toggle_loop(server, "空公寓邀请脚本", {""}, "", function()
@@ -5124,14 +5201,46 @@ menu.toggle_loop(server, "所有人无限死亡", {}, "", function()
     for k, pPed in pairs(entities.get_all_peds_as_pointers()) do
         if entities.is_player_ped(pPed) then
 
-            -- local playerped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-            -- local pPed =  entities.handle_to_pointer(ent)
             local pedPtr = entities.handle_to_pointer(players.user_ped())
-            -- util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
-            -- util.trigger_script_event(1 << pid, {-503325966})
+
             util.call_foreign_function(CWeaponDamageEventTrigger, pedPtr, pPed, pPed + 144, 0, 1,
                 util.joaat("weapon_tranquilizer"), 0, 0, 0, 525873, 0, 0, 0, 0, 0, 0, 0, 0.0)
-            -- FIRE.ADD_OWNED_EXPLOSION(players.user_ped(), pos.x, pos.y, pos.z, math.random(0, 82), INT_MAX, false, true, 0.0)
+
+        end
+    end
+
+end)
+
+-- local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+
+-- local pPed = entities.handle_to_pointer(ped)
+-- local cped = util.joaat('s_m_y_cop_01')
+-- util.request_model(cped)
+-- local createped = entities.create_ped(28, cped, players.get_position(pid), 0)
+-- local pedPtr = entities.handle_to_pointer(createped)
+-- for i = 1, 100, 1 do
+--     util.trigger_script_event(1 << pid, {800157557, pid, 225624744, pid})
+--     util.call_foreign_function(CWeaponDamageEventTrigger, pedPtr, pPed, pPed + 0x90, 0, 1,
+--         util.joaat("weapon_tranquilizer"), 0.0, 0, 0, 525873, 0, 0, 0, 0, 0, 0, 0, 0.0)
+--     util.yield()
+-- end
+
+menu.action(server, "所有人匿名无限死亡", {}, "", function()
+    local cped = util.joaat('s_m_y_cop_01')
+util.request_model(cped)
+local createped = entities.create_ped(28, cped, players.get_position(players.user()), 0)
+local pedPtr = entities.handle_to_pointer(createped)
+    for k, pPed in pairs(entities.get_all_peds_as_pointers()) do
+        if entities.is_player_ped(pPed) then
+
+
+for i = 1, 10, 1 do
+    util.call_foreign_function(CWeaponDamageEventTrigger, pedPtr, pPed, pPed + 144, 0, 1,
+    util.joaat("weapon_pistol"), INT_MAX, 0, 0, 525873, 0, 0, 0, 0, 0, 0, 0, 0.0)  
+    util.yield()
+end
+
+                -- weapon_tranquilizer
         end
     end
 
@@ -5162,9 +5271,8 @@ end)
 local entity_owner = {
     screen_pos = memory.alloc(8),
     range = 100.0,
-    text_size = 0.5,
+    text_size = 0.5
 }
-
 
 -- aim_info.hash = ENTITY.GET_ENTITY_MODEL(handle)
 -- aim_info.model = util.reverse_joaat(aim_info.hash)
@@ -5176,78 +5284,98 @@ local entity_owner = {
 -- aim_info.CANmigrate = entities.get_can_migrate(handle)
 -- aim_info.IsInvulnerable = entities.is_invulnerable(handle)
 
-menu.toggle_loop(world, "显示所有所有", { "" }, "", function()
+menu.toggle_loop(world, "显示所有所有", {""}, "", function()
     local player_pos = ENTITY.GET_ENTITY_COORDS(players.user_ped())
 
     for _, ent in pairs(ALL_Entities()) do
-            local ent_pos = ENTITY.GET_ENTITY_COORDS(ent)
+        local ent_pos = ENTITY.GET_ENTITY_COORDS(ent)
 
-                if util.get_screen_coord_from_world_coord_no_adjustment(ent_pos.x, ent_pos.y, ent_pos.z, entity_owner.screen_pos, entity_owner.screen_pos + 4) then
-                    local screen_x, screen_y = memory.read_float(entity_owner.screen_pos),
-                        memory.read_float(entity_owner.screen_pos + 4)
-                        local mode = ENTITY.GET_ENTITY_MODEL(ent)
-                    local ent_name = util.reverse_joaat(mode)
-                    local owner = entities.get_owner(ent)
-                    local screen_text = string.format("%s (%s)", ent_name, players.get_name(owner))
+        if util.get_screen_coord_from_world_coord_no_adjustment(ent_pos.x, ent_pos.y, ent_pos.z,
+            entity_owner.screen_pos, entity_owner.screen_pos + 4) then
+            local screen_x, screen_y = memory.read_float(entity_owner.screen_pos),
+                memory.read_float(entity_owner.screen_pos + 4)
+            local mode = ENTITY.GET_ENTITY_MODEL(ent)
+            local ent_name = util.reverse_joaat(mode)
+            local owner = entities.get_owner(ent)
+            local screen_text = string.format("%s (%s)", ent_name, players.get_name(owner))
 
-                    directx.draw_text(screen_x, screen_y, screen_text, ALIGN_TOP_LEFT, entity_owner.text_size, 1,0,0,1)
-                end
-            end
-        -- end
+            directx.draw_text(screen_x, screen_y, screen_text, ALIGN_TOP_LEFT, entity_owner.text_size, 1, 0, 0, 1)
+        end
+    end
+    -- end
     -- end
 end)
-menu.toggle_loop(world, "显示所有载具 所有者", { "" }, "", function()
+menu.toggle_loop(world, "显示所有载具 所有者", {""}, "", function()
     local player_pos = ENTITY.GET_ENTITY_COORDS(players.user_ped())
 
     for _, ent in pairs(entities.get_all_vehicles_as_handles()) do
-            local ent_pos = ENTITY.GET_ENTITY_COORDS(ent)
+        local ent_pos = ENTITY.GET_ENTITY_COORDS(ent)
 
-                if util.get_screen_coord_from_world_coord_no_adjustment(ent_pos.x, ent_pos.y, ent_pos.z, entity_owner.screen_pos, entity_owner.screen_pos + 4) then
-                    local screen_x, screen_y = memory.read_float(entity_owner.screen_pos),
-                        memory.read_float(entity_owner.screen_pos + 4)
-                        local mode = ENTITY.GET_ENTITY_MODEL(ent)
-                    local ent_name = util.reverse_joaat(mode)
-                    local owner = entities.get_owner(ent)
-                    local screen_text = string.format("%s (%s)", ent_name, players.get_name(owner))
+        if util.get_screen_coord_from_world_coord_no_adjustment(ent_pos.x, ent_pos.y, ent_pos.z,
+            entity_owner.screen_pos, entity_owner.screen_pos + 4) then
+            local screen_x, screen_y = memory.read_float(entity_owner.screen_pos),
+                memory.read_float(entity_owner.screen_pos + 4)
+            local mode = ENTITY.GET_ENTITY_MODEL(ent)
+            local ent_name = util.reverse_joaat(mode)
+            local owner = entities.get_owner(ent)
+            local screen_text = string.format("%s (%s)", ent_name, players.get_name(owner))
 
-                    directx.draw_text(screen_x, screen_y, screen_text, ALIGN_TOP_LEFT, entity_owner.text_size, 1,0,0,1)
-                end
-            end
-        -- end
+            directx.draw_text(screen_x, screen_y, screen_text, ALIGN_TOP_LEFT, entity_owner.text_size, 1, 0, 0, 1)
+        end
+    end
+    -- end
     -- end
 end)
-menu.toggle_loop(world, "显示所有所有ped 所有者", { "" }, "", function()
+menu.toggle_loop(world, "显示所有所有ped 所有者", {""}, "", function()
     local player_pos = ENTITY.GET_ENTITY_COORDS(players.user_ped())
 
-    for _, ent in pairs( entities.get_all_peds_as_handles()) do
-            local ent_pos = ENTITY.GET_ENTITY_COORDS(ent)
+    for _, ent in pairs(entities.get_all_peds_as_handles()) do
+        local ent_pos = ENTITY.GET_ENTITY_COORDS(ent)
 
-                if util.get_screen_coord_from_world_coord_no_adjustment(ent_pos.x, ent_pos.y, ent_pos.z, entity_owner.screen_pos, entity_owner.screen_pos + 4) then
-                    local screen_x, screen_y = memory.read_float(entity_owner.screen_pos),
-                        memory.read_float(entity_owner.screen_pos + 4)
-                        local mode = ENTITY.GET_ENTITY_MODEL(ent)
-                    local ent_name = util.reverse_joaat(mode)
-                    local owner = entities.get_owner(ent)
-                    local screen_text = string.format("%s (%s)", ent_name, players.get_name(owner))
+        if util.get_screen_coord_from_world_coord_no_adjustment(ent_pos.x, ent_pos.y, ent_pos.z,
+            entity_owner.screen_pos, entity_owner.screen_pos + 4) then
+            local screen_x, screen_y = memory.read_float(entity_owner.screen_pos),
+                memory.read_float(entity_owner.screen_pos + 4)
+            local mode = ENTITY.GET_ENTITY_MODEL(ent)
+            local ent_name = util.reverse_joaat(mode)
+            local owner = entities.get_owner(ent)
+            local screen_text = string.format("%s (%s)", ent_name, players.get_name(owner))
 
-                    directx.draw_text(screen_x, screen_y, screen_text, ALIGN_TOP_LEFT, entity_owner.text_size, 1,0,0,1)
-                end
-            end
-        -- end
+            directx.draw_text(screen_x, screen_y, screen_text, ALIGN_TOP_LEFT, entity_owner.text_size, 1, 0, 0, 1)
+        end
+    end
+    -- end
     -- end
 end)
 
+menu.toggle_loop(world, "消弱所有ped", {""}, "", function()
 
-menu.toggle_loop(world, "消弱所有ped", { "" }, "", function()
-
-
-    for _, ent in pairs( entities.get_all_peds_as_handles()) do
+    for _, ent in pairs(entities.get_all_peds_as_handles()) do
         PED.SET_PED_SHOOT_RATE(ent, 0)
     end
 end)
-
 
 menu.toggle_loop(server, "数字刷屏", {"latiaocleanchat"}, "latiaocleanchat.", function()
     chat.send_message(math.random(INT_MIN, INT_MAX), false, true, true)
     util.yield(10000)
 end)
+
+-- menu.action(server, "绳子全局崩2", {""}, "", function()
+
+--     PHYSICS.ADD_ROPE(0,0,0,0,0,0,0,1,-100,1.0,0,false,false,false,5.0,false,0)
+--     -- int ADD_​ROPE(
+--     --     Vector3 vec,
+--     --     Vector3 rot_,
+--     --     float length,
+--     --     int ropeType,
+--     --     float maxLength,
+--     --     float minLength,
+--     --     float windingSpeed,
+--     --     BOOL p11,
+--     --     BOOL p12,
+--     --     BOOL rigid,
+--     --     float p14,
+--     --     BOOL breakWhenShot,
+--     --     Any* unkPtr
+--     --     )
+-- end)
