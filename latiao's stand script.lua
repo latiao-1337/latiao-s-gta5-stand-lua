@@ -5225,26 +5225,7 @@ end)
 --     util.yield()
 -- end
 
-menu.action(server, "所有人匿名无限死亡", {}, "", function()
-    local cped = util.joaat('s_m_y_cop_01')
-util.request_model(cped)
-local createped = entities.create_ped(28, cped, players.get_position(players.user()), 0)
-local pedPtr = entities.handle_to_pointer(createped)
-    for k, pPed in pairs(entities.get_all_peds_as_pointers()) do
-        if entities.is_player_ped(pPed) then
 
-
-for i = 1, 10, 1 do
-    util.call_foreign_function(CWeaponDamageEventTrigger, pedPtr, pPed, pPed + 144, 0, 1,
-    util.joaat("weapon_pistol"), INT_MAX, 0, 0, 525873, 0, 0, 0, 0, 0, 0, 0, 0.0)  
-    util.yield()
-end
-
-                -- weapon_tranquilizer
-        end
-    end
-
-end)
 
 menu.toggle_loop(server, "自动任务脚本主机", {"latiaoautoScripthost"}, ("autoScripthost"), function()
     local FM_script = {"fm_mission_controller", "fm_mission_controller_2020"}
