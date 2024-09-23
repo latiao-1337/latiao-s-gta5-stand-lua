@@ -1,1 +1,6 @@
-
+- Hi, I'm @latiao-1337  
+- Web: https://latiao1337.xyz/  
+- Discord: latiao_owo  
+- Discord Server: https://discord.gg/kPhhqtPb7d  
+- Mail: latiao_owo@outlook.com  
+- Github: https://github.com/latiao-1337/  
